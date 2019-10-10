@@ -1,0 +1,4 @@
+(library
+ (name lxc)
+ (c_flags (-llxc))
+ (libraries ctypes))
