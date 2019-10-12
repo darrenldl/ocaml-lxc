@@ -1,4 +1,5 @@
 #include <lxc/lxccontainer.h>
+#include <lxc/attach_options.h>
 #include <stdint.h>
 
 struct bdev_specs_glue {
