@@ -2,7 +2,7 @@
  (name      lxc)
  (flags     (-w "+a-4-29-37-40-42-44-48-50-32"))
  (c_flags   (-llxc))
- ; (c_names   lxc_glue.c)
+ (c_names   lxc_glue)
  (libraries ctypes))
 
 (rule
