@@ -6,21 +6,31 @@
  (libraries ctypes))
 
 (rule
- (targets lxc_glue.c)
- (deps    ../code_gen/lxc_c_ffi/lxc_glue.c)
+ (targets ffi_bindings.ml)
+ (deps    ../code_gen/ffi_bindings.ml)
  (action  (copy %{deps} %{targets})))
 
 (rule
- (targets lxc_c_ffi_ml_file_gen.c)
- (deps    (:gen ../code_gen/lxc_c_ffi/lxc_c_ffi_c_file_gen.exe))
+ (targets lxc_glue.c)
+ (deps    ../code_gen/lxc_glue.c)
+ (action  (copy %{deps} %{targets})))
+
+(rule
+ (targets ml_stubs_gen.c)
+ (deps    (:gen ../code_gen/c_stubs_gen.exe))
  (action  (with-stdout-to %{targets} (run %{gen}))))
 
 (rule
- (targets lxc_c_ffi_ml_file_gen.o)
- (deps    lxc_c_ffi_ml_file_gen.c)
+ (targets ml_stubs_gen.o)
+ (deps    ml_stubs_gen.c)
  (action  (run ocamlfind ocamlc -package ctypes,ctypes.foreign -ccopt -llxc %{deps})))
 
 (rule
- (targets lxc_c_ffi_ml_file_gen.exe)
- (deps    lxc_c_ffi_ml_file_gen.o)
+ (targets ml_stubs_gen.exe)
+ (deps    ml_stubs_gen.o)
  (action  (run %{cc} -o %{targets} %{deps})))
+
+(rule
+ (targets ml_stubs.ml)
+ (deps    ml_stubs_gen.exe)
+ (action  (with-stdout-to %{targets} (run %{deps}))))
