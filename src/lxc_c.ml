@@ -17,6 +17,8 @@ module Lxc_snapshot = struct
 
   let free = field t "free"
       (funptr (ptr t @-> returning void))
+
+  let () = seal t
 end
 
 module Bdev_specs = struct
@@ -26,6 +28,8 @@ module Bdev_specs = struct
     let t : t structure typ = structure "zfs"
 
     let zfsroot = field t "zfsroot" (ptr char)
+
+    let () = seal t
   end
 
   module Lvm = struct
@@ -38,6 +42,8 @@ module Bdev_specs = struct
     let lv = field t "lv" (ptr char)
 
     let thinpool = field t "thinpool" (ptr char)
+
+    let () = seal t
   end
 
   module Rbd = struct
@@ -48,6 +54,8 @@ module Bdev_specs = struct
     let rbdname = field t "rbdname" (ptr char)
 
     let rbdpool = field t "rbdpool" (ptr char)
+
+    let () = seal t
   end
 
   type t
@@ -65,7 +73,25 @@ module Bdev_specs = struct
   let dir = field t "dir" (ptr char)
 
   let rbd = field t "rbd" Rbd.t
+
+  let () = seal t
 end
+
+  module Migrate_cmd = struct
+    let migrate_pre_dump = S.constant "MIGRATE_PRE_DUMP" int
+
+    let migrate_dump = S.constant "MIGRATE_DUMP" int
+
+    let migrate_restore = S.constant "MIGRATE_RESTORE" int
+
+    let migrate_feature_check = S.constant "MIGRATE_FEATURE_CHECK" int
+  end
+
+  module Feature_checks = struct
+    let feature_mem_track = S.constant "FEATURE_MEM_TRACK" ullong
+
+    let feature_lazy_pages = constant "FEATURE_LAZY_PAGES" ullong
+  end
 
 module Migrate_opts = struct
   type t
@@ -93,6 +119,8 @@ module Migrate_opts = struct
   let ghost_limit = field t "ghost_limit" uint64_t
 
   let features_to_check = field t "features_to_check" uint64_t
+
+  let () = seal t
 end
 
 module Lxc_console_log = struct
@@ -107,6 +135,8 @@ module Lxc_console_log = struct
   let read_max = field t "read_max" (ptr uint64_t)
 
   let data = field t "data" (ptr char)
+
+  let () = seal t
 end
 
 module Lxc_mount = struct
@@ -115,6 +145,8 @@ module Lxc_mount = struct
   let t : t structure typ = structure "lxc_mount"
 
   let version = field t "version" int
+
+  let () = seal t
 end
 
 type lxc_container
@@ -340,3 +372,5 @@ let umount =
 let seccomp_notify_fd =
   field lxc_container "seccomp_notify_fd"
     (funptr (ptr lxc_container @-> returning int))
+
+let () = seal lxc_container
