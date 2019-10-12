@@ -5,6 +5,50 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
     let pid_t = S.lift_typ PosixTypes.pid_t
 
     let uid_t = S.lift_typ Posix_types.uid_t
+
+    let gid_t = S.lift_typ Posix_types.gid_t
+  end
+
+  module Lxc_attach_env_policy_t = struct
+    let lxc_attach_keep_env = S.constant "LXC_ATTACH_KEEP_ENV" int64_t
+
+    let lxc_attach_clear_env = S.constant "LXC_ATTACH_CLEAR_ENV" int64_t
+
+    type t =
+      | Lxc_attach_keep_env
+      | Lxc_attach_clear_env
+
+    let t = enum "lxc_attach_env_policy_t" ~typedef:true
+        [Lxc_attach_keep_env, lxc_attach_keep_env;
+         Lxc_attach_clear_env, lxc_attach_clear_env]
+  end
+
+  module Lxc_attach_flags = struct
+    let lxc_attach_move_to_cgroup = S.constant "LXC_ATTACH_MOVE_TO_CGROUP" int
+
+    let lxc_attach_drop_capabilities = S.constant "LXC_ATTACH_DROP_CAPABILITIES" int
+
+    let lxc_attach_set_personality = S.constant "LXC_ATTACH_SET_PERSONALITY" int
+
+    let lxc_attach_lsm_exec = S.constant "LXC_ATTACH_LSM_EXEC" int
+
+    let lxc_attach_remount_proc_sys =
+      S.constant "LXC_ATTACH_REMOUNT_PROC_SYS" int
+
+    let lxc_attach_lsm_now =
+      S.constant "LXC_ATTACH_LSM_NOW" int
+
+    let lxc_attach_no_new_privs =
+      S.constant "LXC_ATTACH_NO_NEW_PRIVS" int
+
+    let lxc_attach_terminal =
+      S.constant "LXC_ATTACH_TERMINAL" int
+
+    let lxc_attach_default =
+      S.constant "LXC_ATTACH_DEFAULT" int
+
+    let lxc_attach_lsm =
+      S.constant "LXC_ATTACH_LSM" int
   end
 
   module Lxc_attach_options = struct
@@ -25,6 +69,38 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
 
     let initial_cwd =
       field t "initial_cwd" (ptr char)
+
+    let uid =
+      field t "uid" Posix.uid_t
+
+    let gid =
+      field t "gid" Posix.gid_t
+
+    let env_policy =
+      field t "env_policy"
+        Lxc_attach_env_policy_t.t
+
+    let extra_env_vars =
+      field t "extra_env_vars"
+        (ptr (ptr char))
+
+    let extra_keep_env =
+      field t "extra_keep_env"
+        (ptr (ptr char))
+
+    let stdin_fd =
+      field t "stdin_fd"
+        int
+
+    let stdout_fd =
+      field t "stdout_fd"
+        int
+
+    let stderr_fd =
+      field t "stderr_fd"
+        int
+
+    let log_fd = field t "log_fd" int
   end
 
   module Lxc_snapshot = struct
