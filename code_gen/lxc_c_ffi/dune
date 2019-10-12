@@ -1,6 +1,0 @@
-(executable
- (name      lxc_c_ffi_c_file_gen)
- (flags     (-w "+a-4-29-37-40-42-44-48-50-32"))
- (libraries ctypes
-            ctypes.foreign
-            ctypes.stubs))
