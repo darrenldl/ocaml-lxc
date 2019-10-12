@@ -25,25 +25,25 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
     let () = seal t
   end
 
-  module Bdev_specs = struct
-    module Zfs = struct
-      type zfs
+  module Bdev_specs_glue = struct
+    module Zfs_glue = struct
+      type zfs_glue
 
-      type t = zfs Ctypes.structure
+      type t = zfs_glue Ctypes.structure
 
-      let t : t typ = structure "zfs"
+      let t : t typ = structure "zfs_glue"
 
       let zfsroot = field t "zfsroot" (ptr char)
 
       let () = seal t
     end
 
-    module Lvm = struct
-      type lvm
+    module Lvm_glue = struct
+      type lvm_glue
 
-      type t = lvm Ctypes.structure
+      type t = lvm_glue Ctypes.structure
 
-      let t : t typ = structure "lvm"
+      let t : t typ = structure "lvm_glue"
 
       let vg = field t "vg" (ptr char)
 
@@ -54,12 +54,12 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
       let () = seal t
     end
 
-    module Rbd = struct
-      type rbd
+    module Rbd_glue = struct
+      type rbd_glue
 
-      type t = rbd Ctypes.structure
+      type t = rbd_glue Ctypes.structure
 
-      let t : t typ = structure "rbd"
+      let t : t typ = structure "rbd_glue"
 
       let rbdname = field t "rbdname" (ptr char)
 
@@ -68,23 +68,23 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
       let () = seal t
     end
 
-    type bdev_specs
+    type bdev_specs_glue
 
-    type t = bdev_specs Ctypes.structure
+    type t = bdev_specs_glue Ctypes.structure
 
-    let t : t typ = structure "bdev_specs"
+    let t : t typ = structure "bdev_specs_glue"
 
     let fstype = field t "fstype" (ptr char)
 
     let fssize = field t "fssize" uint64_t
 
-    let zfs = field t "zfs" Zfs.t
+    let zfs = field t "zfs" Zfs_glue.t
 
-    let lvm = field t "lvm" Lvm.t
+    let lvm = field t "lvm" Lvm_glue.t
 
     let dir = field t "dir" (ptr char)
 
-    let rbd = field t "rbd" Rbd.t
+    let rbd = field t "rbd" Rbd_glue.t
 
     let () = seal t
   end
@@ -243,7 +243,7 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
   let create =
     field lxc_container "create"
       (static_funptr
-         ( ptr lxc_container @-> ptr char @-> ptr char @-> ptr Bdev_specs.t
+         ( ptr lxc_container @-> ptr char @-> ptr char @-> ptr Bdev_specs_glue.t
            @-> int @-> ptr char @-> returning bool ))
 
   let rename =

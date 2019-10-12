@@ -2,21 +2,21 @@ let headers = ["#include <lxc/lxccontainer.h>";
                "#include <stdint.h>"]
 
 let glue = {|
-struct glue_bdev_specs {
-	char *fstype; /*!< Filesystem type */
-	uint64_t fssize;  /*!< Filesystem size in bytes */
-	struct zfs {
-		char *zfsroot; /*!< ZFS root path */
+struct bdev_specs_glue {
+	char *fstype;
+	uint64_t fssize;
+	struct zfs_glue {
+		char *zfsroot;
 	} zfs;
-	struct lvm {
-		char *vg; /*!< LVM Volume Group name */
-		char *lv; /*!< LVM Logical Volume name */
-		char *thinpool; /*!< LVM thin pool to use, if any */
+	struct lvm_glue {
+		char *vg;
+		char *lv;
+		char *thinpool;
 	} lvm;
-	char *dir; /*!< Directory path */
-	struct rbd {
-		char *rbdname; /*!< RBD image name */
-		char *rbdpool; /*!< Ceph pool name */
+	char *dir;
+	struct rbd_glue {
+		char *rbdname;
+		char *rbdpool;
 	} rbd;
 };
 |}
