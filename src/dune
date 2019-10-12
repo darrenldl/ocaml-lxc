@@ -10,6 +10,6 @@
  (action  (with-stdout-to %{targets} (run %{gen}))))
 
 (rule
- (targets lxc_c_ffi_ml_file_gen.exe)
+ (targets lxc_c_ffi_ml_file_gen.o)
  (deps    lxc_c_ffi_ml_file_gen.c)
- (action  (run ocamlfind ocamlc -package ctypes,ctypes.foreign -ccopt -llxc -o %{targets} %{deps})))
+ (action  (run ocamlfind ocamlc -package ctypes,ctypes.foreign -ccopt -llxc %{deps})))
