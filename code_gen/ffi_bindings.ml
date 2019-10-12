@@ -103,18 +103,6 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
     let migrate_restore = S.constant "MIGRATE_RESTORE" int64_t
 
     let migrate_feature_check = S.constant "MIGRATE_FEATURE_CHECK" int64_t
-
-    type t =
-      | Migrate_pre_dump
-      | Migrate_dump
-      | Migrate_restore
-      | Migrate_feature_check
-
-    let t = enum "" ~typedef:false
-        [Migrate_pre_dump, migrate_pre_dump;
-         Migrate_dump, migrate_dump;
-         Migrate_restore, migrate_restore;
-         Migrate_feature_check, migrate_feature_check]
   end
 
   module Feature_checks = struct
