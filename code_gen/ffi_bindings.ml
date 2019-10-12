@@ -1,4 +1,4 @@
-module Bindings (S : Cstubs_structs.TYPE) = struct
+module Stubs (S : Cstubs_structs.TYPE) = struct
   open S
 
   module Posix = struct

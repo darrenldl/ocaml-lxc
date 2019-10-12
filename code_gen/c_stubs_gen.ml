@@ -13,4 +13,4 @@ let () =
        with
        | End_of_file -> ()
     );
-  Cstubs_structs.write_c c_fmt (module Ffi_bindings.Bindings)
+  Cstubs_structs.write_c c_fmt (module Ffi_bindings.Stubs)
