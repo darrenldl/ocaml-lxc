@@ -1,7 +1,9 @@
 module Bindings (S : Cstubs_structs.TYPE) = struct
   open S
 
-  let pid_t = S.lift_typ PosixTypes.pid_t
+  module Posix = struct
+    let pid_t = S.lift_typ PosixTypes.pid_t
+  end
 
   module Lxc_snapshot = struct
     type lxc_snapshot
@@ -175,7 +177,7 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let init_pid =
     field lxc_container "init_pid"
-      (static_funptr (ptr lxc_container @-> returning pid_t))
+      (static_funptr (ptr lxc_container @-> returning Posix.pid_t))
 
   let load_config =
     field lxc_container "load_config"
