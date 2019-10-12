@@ -3,12 +3,28 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
 
   module Posix = struct
     let pid_t = S.lift_typ PosixTypes.pid_t
+
+    let uid_t = S.lift_typ Posix_types.uid_t
   end
 
   module Lxc_attach_options = struct
     type lxc_attach_options_t
 
     type t = lxc_attach_options_t Ctypes.structure
+
+    let t : t typ = structure "lxc_attach_options_t"
+
+    let attach_flags =
+      field t "attach_flags" int
+
+    let namespaces =
+      field t "namespaces" int
+
+    let personality =
+      field t "personality" int
+
+    let initial_cwd =
+      field t "initial_cwd" (ptr char)
   end
 
   module Lxc_snapshot = struct

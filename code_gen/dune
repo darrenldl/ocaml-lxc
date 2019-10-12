@@ -3,4 +3,5 @@
  (flags     (-w "+a-4-29-37-40-42-44-48-50-32"))
  (libraries ctypes
             ctypes.foreign
-            ctypes.stubs))
+            ctypes.stubs
+            posix-types))
