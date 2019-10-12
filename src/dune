@@ -1,5 +1,5 @@
 (library
- (name lxc)
- (flags       (-w "+a-4-29-37-40-42-44-48-50-32"))
- (c_flags (-llxc))
+ (name      lxc)
+ (flags     (-w "+a-4-29-37-40-42-44-48-50-32"))
+ (c_flags   (-llxc))
  (libraries ctypes))

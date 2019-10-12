@@ -90,19 +90,19 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
   end
 
   module Migrate_cmd = struct
-    let migrate_pre_dump = S.constant "MIGRATE_PRE_DUMP"
+    let migrate_pre_dump = S.constant "MIGRATE_PRE_DUMP" int
 
-    let migrate_dump = S.constant "MIGRATE_DUMP"
+    let migrate_dump = S.constant "MIGRATE_DUMP" int
 
-    let migrate_restore = S.constant "MIGRATE_RESTORE"
+    let migrate_restore = S.constant "MIGRATE_RESTORE" int
 
-    let migrate_feature_check = S.constant "MIGRATE_FEATURE_CHECK"
+    let migrate_feature_check = S.constant "MIGRATE_FEATURE_CHECK" int
   end
 
   module Feature_checks = struct
-    let feature_mem_track = S.constant "FEATURE_MEM_TRACK"
+    let feature_mem_track = S.constant "FEATURE_MEM_TRACK" ullong
 
-    let feature_lazy_pages = S.constant "FEATURE_LAZY_PAGES"
+    let feature_lazy_pages = S.constant "FEATURE_LAZY_PAGES" ullong
   end
 
   module Migrate_opts = struct
