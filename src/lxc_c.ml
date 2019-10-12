@@ -2,6 +2,23 @@ open Ctypes
 open PosixTypes
 open Foreign
 
+module Lxc_snapshot = struct
+  type t
+
+  let t : t structure typ = structure "lxc_snapshot"
+
+  let name = field t "name" (ptr char)
+
+  let comment_pathname = field t "comment_pathname" (ptr char)
+
+  let timestamp = field t "timestamp" (ptr char)
+
+  let lxcpath = field t "lxcpath" (ptr char)
+
+  let free = field t "free"
+      (funptr (ptr t @-> returning void))
+end
+
 module Bdev_specs = struct
   module Zfs = struct
     type t
@@ -71,7 +88,33 @@ module Migrate_opts = struct
 
   let action_script = field t "action_script" (ptr char)
 
-  let disable_skip_in_flight = field t "disable_skip_in_flight"
+  let disable_skip_in_flight = field t "disable_skip_in_flight" bool
+
+  let ghost_limit = field t "ghost_limit" uint64_t
+
+  let features_to_check = field t "features_to_check" uint64_t
+end
+
+module Lxc_console_log = struct
+  type t
+
+  let t : t structure typ = structure "lxc_console_log"
+
+  let clear = field t "clear" bool
+
+  let read = field t "read" bool
+
+  let read_max = field t "read_max" (ptr uint64_t)
+
+  let data = field t "data" (ptr char)
+end
+
+module Lxc_mount = struct
+  type t
+
+  let t : t structure typ = structure "lxc_mount"
+
+  let version = field t "version" int
 end
 
 type lxc_container
@@ -228,7 +271,7 @@ let snapshot =
 
 let snapshot_list =
   field lxc_container "snapshot_list"
-    (funptr (ptr lxc_container @-> ptr (ptr lxc_container) @-> returning int))
+    (funptr (ptr lxc_container @-> ptr (ptr Lxc_snapshot.t) @-> returning int))
 
 let snapshot_restore =
   field lxc_container "snapshot_restore"
@@ -276,4 +319,24 @@ let snapshot_destroy_all =
 
 let migrate =
   field lxc_container "migrate"
-    (funptr (ptr lxc_container @-> uint @-> ))
+    (funptr (ptr lxc_container @-> uint @-> ptr Migrate_opts.t @-> uint @-> returning int))
+
+let console_log =
+  field lxc_container "console_log"
+    (funptr (ptr lxc_container @-> ptr Lxc_console_log.t @-> returning int))
+
+let reboot2 =
+  field lxc_container "reboot2"
+    (funptr (ptr lxc_container @-> int @-> returning bool))
+
+let mount =
+  field lxc_container "mount"
+    (funptr (ptr lxc_container @-> ptr char @-> ptr char @-> ptr char @-> ulong @-> ptr void @-> ptr Lxc_mount.t @-> returning int))
+
+let umount =
+  field lxc_container "umount"
+    (funptr (ptr lxc_container @-> ptr char @-> ulong @-> ptr Lxc_mount.t @-> returning int))
+
+let seccomp_notify_fd =
+  field lxc_container "seccomp_notify_fd"
+    (funptr (ptr lxc_container @-> returning int))
