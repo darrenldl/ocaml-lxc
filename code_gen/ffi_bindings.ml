@@ -442,10 +442,10 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
          ( ptr lxc_container @-> int @-> int @-> int @-> int @-> int
            @-> returning int ))
 
-  (* let attach_run_wait =
-   *   field lxc_container "attach_run_wait"
-   *     (static_funptr
-   *        (ptr lxc_container @-> ptr Lxc_)) *)
+  let attach_run_wait =
+    field lxc_container "attach_run_wait"
+      (static_funptr
+         (ptr lxc_container @-> ptr Lxc_attach_options.t @-> string @-> ptr string @-> returning int))
 
   let snapshot =
     field lxc_container "snapshot"
