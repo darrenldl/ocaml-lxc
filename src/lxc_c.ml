@@ -20,8 +20,7 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
     let lxcpath = field t "lxcpath" (ptr char)
 
-    let free = field t "free"
-        (static_funptr (ptr t @-> returning void))
+    let free = field t "free" (static_funptr (ptr t @-> returning void))
 
     let () = seal t
   end
@@ -36,7 +35,7 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
       let zfsroot = field t "zfsroot" (ptr char)
 
-    let () = seal t
+      let () = seal t
     end
 
     module Lvm = struct
@@ -146,7 +145,8 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   type lxc_container
 
-  let lxc_container : lxc_container Ctypes.structure typ = structure "lxc_container"
+  let lxc_container : lxc_container Ctypes.structure typ =
+    structure "lxc_container"
 
   let error_string = field lxc_container "error_string" (ptr char)
 
@@ -169,7 +169,8 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
       (static_funptr (ptr lxc_container @-> returning bool))
 
   let freeze =
-    field lxc_container "freeze" (static_funptr (ptr lxc_container @-> returning bool))
+    field lxc_container "freeze"
+      (static_funptr (ptr lxc_container @-> returning bool))
 
   let unfreeze =
     field lxc_container "unfreeze"
@@ -185,10 +186,12 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let start =
     field lxc_container "start"
-      (static_funptr (ptr lxc_container @-> int @-> ptr (ptr char) @-> returning bool))
+      (static_funptr
+         (ptr lxc_container @-> int @-> ptr (ptr char) @-> returning bool))
 
   let stop =
-    field lxc_container "stop" (static_funptr (ptr lxc_container @-> returning bool))
+    field lxc_container "stop"
+      (static_funptr (ptr lxc_container @-> returning bool))
 
   let want_daemonize =
     field lxc_container "want_daemonize"
@@ -208,10 +211,12 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let set_config_item =
     field lxc_container "set_config_item"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
 
   let destroy =
-    field lxc_container "destroy" (static_funptr (ptr lxc_container @-> returning bool))
+    field lxc_container "destroy"
+      (static_funptr (ptr lxc_container @-> returning bool))
 
   let save_config =
     field lxc_container "save_config"
@@ -225,8 +230,7 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let rename =
     field lxc_container "rename"
-      (static_funptr
-         (ptr lxc_container @-> ptr char @-> returning bool))
+      (static_funptr (ptr lxc_container @-> ptr char @-> returning bool))
 
   let reboot =
     field lxc_container "reboot"
@@ -246,7 +250,8 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let get_config_item =
     field lxc_container "get_config_item"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> int @-> returning int))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> ptr char @-> int @-> returning int))
 
   let get_running_config_item =
     field lxc_container "get_running_config_item"
@@ -254,7 +259,8 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let get_keys =
     field lxc_container "get_keys"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> int @-> returning int))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> ptr char @-> int @-> returning int))
 
   let get_interfaces =
     field lxc_container "get_interfaces"
@@ -262,15 +268,19 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let get_ips =
     field lxc_container "get_ips"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> int @-> returning (ptr (ptr char))))
+      (static_funptr
+         ( ptr lxc_container @-> ptr char @-> ptr char @-> int
+           @-> returning (ptr (ptr char)) ))
 
   let get_cgroup_item =
     field lxc_container "get_cgroup_item"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> int @-> returning int))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> ptr char @-> int @-> returning int))
 
   let set_cgroup_item =
     field lxc_container "set_cgroup_item"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
 
   let get_config_path =
     field lxc_container "get_config_path"
@@ -282,15 +292,22 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let clone =
     field lxc_container "clone"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> ptr char @-> int @-> ptr char @-> ptr char @-> uint64_t @-> ptr (ptr char) @-> returning (ptr lxc_container)))
+      (static_funptr
+         ( ptr lxc_container @-> ptr char @-> ptr char @-> ptr char @-> int
+           @-> ptr char @-> ptr char @-> uint64_t
+           @-> ptr (ptr char)
+           @-> returning (ptr lxc_container) ))
 
   let console_getfd =
     field lxc_container "console_getfd"
-      (static_funptr (ptr lxc_container @-> ptr int @-> ptr int @-> returning int))
+      (static_funptr
+         (ptr lxc_container @-> ptr int @-> ptr int @-> returning int))
 
   let console =
     field lxc_container "console"
-      (static_funptr (ptr lxc_container @-> int @-> int @-> int @-> int @-> int @-> returning int))
+      (static_funptr
+         ( ptr lxc_container @-> int @-> int @-> int @-> int @-> int
+           @-> returning int ))
 
   let snapshot =
     field lxc_container "snapshot"
@@ -298,11 +315,13 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let snapshot_list =
     field lxc_container "snapshot_list"
-      (static_funptr (ptr lxc_container @-> ptr (ptr Lxc_snapshot.t) @-> returning int))
+      (static_funptr
+         (ptr lxc_container @-> ptr (ptr Lxc_snapshot.t) @-> returning int))
 
   let snapshot_restore =
     field lxc_container "snapshot_restore"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
 
   let snapshot_destroy =
     field lxc_container "snapshot_destroy"
@@ -314,27 +333,33 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let add_device_node =
     field lxc_container "add_device_node"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
 
   let remove_device_node =
     field lxc_container "remove_device_node"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
 
   let attach_interface =
     field lxc_container "attach_interface"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
 
   let detach_interface =
     field lxc_container "detach_interface"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> ptr char @-> returning bool))
 
   let checkpoint =
     field lxc_container "checkpoint"
-      (static_funptr (ptr lxc_container @-> ptr char @-> bool @-> bool @-> returning bool))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> bool @-> bool @-> returning bool))
 
   let restore =
     field lxc_container "restore"
-      (static_funptr (ptr lxc_container @-> ptr char @-> bool @-> returning bool))
+      (static_funptr
+         (ptr lxc_container @-> ptr char @-> bool @-> returning bool))
 
   let destroy_with_snapshots =
     field lxc_container "destroy_with_snapshots"
@@ -346,11 +371,14 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let migrate =
     field lxc_container "migrate"
-      (static_funptr (ptr lxc_container @-> uint @-> ptr Migrate_opts.t @-> uint @-> returning int))
+      (static_funptr
+         ( ptr lxc_container @-> uint @-> ptr Migrate_opts.t @-> uint
+           @-> returning int ))
 
   let console_log =
     field lxc_container "console_log"
-      (static_funptr (ptr lxc_container @-> ptr Lxc_console_log.t @-> returning int))
+      (static_funptr
+         (ptr lxc_container @-> ptr Lxc_console_log.t @-> returning int))
 
   let reboot2 =
     field lxc_container "reboot2"
@@ -358,11 +386,15 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
 
   let mount =
     field lxc_container "mount"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ptr char @-> ptr char @-> ulong @-> ptr void @-> ptr Lxc_mount.t @-> returning int))
+      (static_funptr
+         ( ptr lxc_container @-> ptr char @-> ptr char @-> ptr char @-> ulong
+           @-> ptr void @-> ptr Lxc_mount.t @-> returning int ))
 
   let umount =
     field lxc_container "umount"
-      (static_funptr (ptr lxc_container @-> ptr char @-> ulong @-> ptr Lxc_mount.t @-> returning int))
+      (static_funptr
+         ( ptr lxc_container @-> ptr char @-> ulong @-> ptr Lxc_mount.t
+           @-> returning int ))
 
   let seccomp_notify_fd =
     field lxc_container "seccomp_notify_fd"
