@@ -1,5 +1,36 @@
 (library
- (name lxc)
- (flags       (-w "+a-4-29-37-40-42-44-48-50-32"))
- (c_flags (-llxc))
+ (name      lxc)
+ (flags     (-w "+a-4-29-37-40-42-44-48-50-32"))
+ (c_flags   (-llxc))
+ (c_names   lxc_glue)
  (libraries ctypes))
+
+(rule
+ (targets ffi_bindings.ml)
+ (deps    ../code_gen/ffi_bindings.ml)
+ (action  (copy %{deps} %{targets})))
+
+(rule
+ (targets lxc_glue.c)
+ (deps    ../code_gen/lxc_glue.c)
+ (action  (copy %{deps} %{targets})))
+
+(rule
+ (targets ml_stubs_gen.c)
+ (deps    (:gen ../code_gen/c_stubs_gen.exe))
+ (action  (with-stdout-to %{targets} (run %{gen}))))
+
+(rule
+ (targets ml_stubs_gen.o)
+ (deps    ml_stubs_gen.c)
+ (action  (run ocamlfind ocamlc -package ctypes,ctypes.foreign -ccopt -llxc %{deps})))
+
+(rule
+ (targets ml_stubs_gen.exe)
+ (deps    ml_stubs_gen.o)
+ (action  (run %{cc} -o %{targets} %{deps})))
+
+(rule
+ (targets ml_stubs.ml)
+ (deps    ml_stubs_gen.exe)
+ (action  (with-stdout-to %{targets} (run %{deps}))))
