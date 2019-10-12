@@ -30,7 +30,7 @@ let create_glue =
 
 let lxc_container_new =
   Foreign.foreign "lxc_container_new"
-    (string @-> string @-> returning (ptr Stubs.lxc_container))
+    (string @-> string @-> returning (ptr_opt Stubs.lxc_container))
 
 let lxc_container_get =
   Foreign.foreign "lxc_container_get"
