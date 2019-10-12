@@ -2,7 +2,13 @@
  (name      lxc)
  (flags     (-w "+a-4-29-37-40-42-44-48-50-32"))
  (c_flags   (-llxc))
+ ; (c_names   lxc_glue.c)
  (libraries ctypes))
+
+(rule
+ (targets lxc_glue.c)
+ (deps    ../code_gen/lxc_c_ffi/lxc_glue.c)
+ (action  (copy %{deps} %{targets})))
 
 (rule
  (targets lxc_c_ffi_ml_file_gen.c)
@@ -13,3 +19,8 @@
  (targets lxc_c_ffi_ml_file_gen.o)
  (deps    lxc_c_ffi_ml_file_gen.c)
  (action  (run ocamlfind ocamlc -package ctypes,ctypes.foreign -ccopt -llxc %{deps})))
+
+(rule
+ (targets lxc_c_ffi_ml_file_gen.exe)
+ (deps    lxc_c_ffi_ml_file_gen.o)
+ (action  (run %{cc} -o %{targets} %{deps})))
