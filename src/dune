@@ -3,3 +3,13 @@
  (flags     (-w "+a-4-29-37-40-42-44-48-50-32"))
  (c_flags   (-llxc))
  (libraries ctypes))
+
+(rule
+ (targets lxc_c_ffi_ml_file_gen.c)
+ (deps    (:gen ../code_gen/lxc_c_ffi/lxc_c_ffi_c_file_gen.exe))
+ (action  (with-stdout-to %{targets} (run %{gen}))))
+
+(rule
+ (targets lxc_c_ffi_ml_file_gen.exe)
+ (deps    lxc_c_ffi_ml_file_gen.c)
+ (action  (run ocamlfind ocamlc -package ctypes,ctypes.foreign -ccopt -llxc -o %{targets} %{deps})))
