@@ -1,0 +1,2 @@
+(executable
+ (name lxc_c_ffi_c_file_gen))
