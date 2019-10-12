@@ -302,7 +302,7 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
 
   let load_config =
     field lxc_container "load_config"
-      (static_funptr (ptr lxc_container @-> string @-> returning bool))
+      (static_funptr (ptr lxc_container @-> string_opt @-> returning bool))
 
   let start =
     field lxc_container "start"
@@ -323,7 +323,7 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
 
   let config_file_name =
     field lxc_container "config_file_name"
-      (static_funptr (ptr lxc_container @-> returning string))
+      (static_funptr (ptr lxc_container @-> returning string_opt))
 
   let wait =
     field lxc_container "wait"
@@ -365,11 +365,11 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
   let get_config_item =
     field lxc_container "get_config_item"
       (static_funptr
-         (ptr lxc_container @-> string @-> ptr char @-> int @-> returning int))
+         (ptr lxc_container @-> string @-> ptr_opt char @-> int @-> returning int))
 
   let get_running_config_item =
     field lxc_container "get_running_config_item"
-      (static_funptr (ptr lxc_container @-> string @-> returning string))
+      (static_funptr (ptr lxc_container @-> string @-> returning string_opt))
 
   let get_keys =
     field lxc_container "get_keys"

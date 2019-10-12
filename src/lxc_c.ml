@@ -25,8 +25,8 @@ end
 let create_glue =
   Foreign.foreign "create_glue"
     ( ptr Stubs.lxc_container @-> string @-> string
-      @-> ptr Stubs.Bdev_specs_glue.t
-      @-> int @-> ptr string @-> returning bool )
+      @-> ptr_opt Stubs.Bdev_specs_glue.t
+      @-> int @-> ptr_opt string @-> returning bool )
 
 let lxc_container_new =
   Foreign.foreign "lxc_container_new"
