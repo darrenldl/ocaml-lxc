@@ -1,4 +1,4 @@
-SRCFILES = src/*.ml*
+SRCFILES = src/*.ml* code_gen/*.ml*
 
 # CINAPSFILES = src/*.cinaps
 
