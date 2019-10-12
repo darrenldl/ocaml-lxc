@@ -1,6 +1,8 @@
 open Ctypes
 module Stubs = Ffi_bindings.Stubs (Ml_stubs)
 
+exception Unexpected_value
+
 module Migrate_cmd = struct
   open Stubs.Migrate_cmd
 
@@ -20,6 +22,41 @@ module Migrate_cmd = struct
       migrate_restore
     | Migrate_feature_check ->
       migrate_feature_check
+end
+
+module State = struct
+  type t =
+    | Stopped
+    | Starting
+    | Running
+    | Stopping
+    | Aborting
+    | Freezing
+    | Frozen
+    | Thawed
+
+  let to_string t =
+    match t with
+    | Stopped -> "STOPPED"
+    | Starting -> "STARTING"
+    | Running -> "RUNNING"
+    | Stopping -> "STOPPING"
+    | Aborting -> "ABORTING"
+    | Freezing -> "FREEZING"
+    | Frozen -> "FROZEN"
+    | Thawed -> "THAWED"
+
+  let of_string t =
+    match t with
+    | "STOPPED" -> Stopped
+    | "STARTING" -> Starting
+    | "RUNNING" -> Running
+    | "STOPPING" -> Stopping
+    | "ABORTING" -> Aborting
+    | "FREEZING" -> Freezing
+    | "FROZEN" -> Frozen
+    | "THAWED" -> Thawed
+    | _ -> raise Unexpected_value
 end
 
 let create_glue =

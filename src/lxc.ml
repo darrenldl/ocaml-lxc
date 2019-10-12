@@ -1,4 +1,5 @@
 open Misc_utils
+open Ctypes
 
 type t = {
   lxc_container : Lxc_c.Stubs.lxc_container Ctypes.structure Ctypes.ptr
