@@ -149,6 +149,8 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
     let read_max = field t "read_max" (ptr uint64_t)
 
     let data = field t "data" (ptr char)
+
+    let () = seal t
   end
 
   module Lxc_mount = struct
@@ -159,6 +161,8 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
     let t : t typ = structure "lxc_mount"
 
     let version = field t "version" int
+
+    let () = seal t
   end
 
   type lxc_container
