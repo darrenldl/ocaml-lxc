@@ -85,6 +85,24 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
     let dir = field t "dir" (ptr char)
 
     let rbd = field t "rbd" Rbd.t
+
+    let () = seal t
+  end
+
+  module Migrate_cmd = struct
+    let migrate_pre_dump = S.constant "MIGRATE_PRE_DUMP"
+
+    let migrate_dump = S.constant "MIGRATE_DUMP"
+
+    let migrate_restore = S.constant "MIGRATE_RESTORE"
+
+    let migrate_feature_check = S.constant "MIGRATE_FEATURE_CHECK"
+  end
+
+  module Feature_checks = struct
+    let feature_mem_track = S.constant "FEATURE_MEM_TRACK"
+
+    let feature_lazy_pages = S.constant "FEATURE_LAZY_PAGES"
   end
 
   module Migrate_opts = struct
@@ -399,4 +417,6 @@ module Bindings (S : Cstubs_structs.TYPE) = struct
   let seccomp_notify_fd =
     field lxc_container "seccomp_notify_fd"
       (static_funptr (ptr lxc_container @-> returning int))
+
+  let () = seal lxc_container
 end
