@@ -1,3 +1,5 @@
+open Ctypes
+
 module Stubs = Ffi_bindings.Stubs (Ml_stubs)
 
 module Migrate_cmd = struct
@@ -20,3 +22,8 @@ module Migrate_cmd = struct
     | Migrate_feature_check ->
       migrate_feature_check
 end
+
+let create_glue =
+  Foreign.foreign "create_glue"
+    ( ptr Stubs.lxc_container @-> string @-> string @-> ptr Stubs.Bdev_specs_glue.t
+      @-> int @-> string @-> returning bool )

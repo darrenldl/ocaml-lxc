@@ -244,12 +244,6 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
     field lxc_container "save_config"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
 
-  let create =
-    field lxc_container "create"
-      (static_funptr
-         ( ptr lxc_container @-> string @-> string @-> ptr Bdev_specs_glue.t
-           @-> int @-> string @-> returning bool ))
-
   let rename =
     field lxc_container "rename"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
