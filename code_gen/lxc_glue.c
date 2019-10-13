@@ -48,6 +48,4 @@ bool create_glue(struct lxc_container *c, const char *t, const char *bdevtype,
 }
 
 /*$
- */
-
-/*$*/
+ *//*$*/
