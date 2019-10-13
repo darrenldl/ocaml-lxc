@@ -109,7 +109,12 @@ let gen_lxc_container_funptr_field_ml {fun_name; other_param_tys; ret_ty} =
 
 let gen_lxc_container_funptr_field_ml_glue {fun_name; other_param_tys; ret_ty}
   =
-  ()
+  Printf.printf "let %s%s =\n" fun_name glue_fun_name_suffix;
+  Printf.printf "  foreign \"%s%s\"\n" fun_name glue_fun_name_suffix;
+  Printf.printf "    (%s\n"
+    (String.concat " @-> "
+       ("ptr lxc_container" :: List.map c_type_to_ocaml_type other_param_tys));
+  Printf.printf "     @-> returning (%s))\n" (c_type_to_ocaml_type ret_ty)
 
 (* let gen_lxc_container_funptr_field_ml_glue
  *     {fun_name; param_tys; ret_ty} =
@@ -260,6 +265,9 @@ let funptr_records =
 
 let gen_lxc_container_funptr_field_ml_all () =
   List.iter gen_lxc_container_funptr_field_ml funptr_records
+
+let gen_lxc_container_funptr_field_ml_glue_all () =
+  List.iter gen_lxc_container_funptr_field_ml_glue funptr_records
 
 let gen_lxc_container_funptr_field_c_glue_header_all () =
   List.iter gen_lxc_container_funptr_field_c_glue_header funptr_records
