@@ -1,0 +1,40 @@
+type funptr_record =
+  { func_name : string
+  ; param_tys : string list
+  ; ret_ty : string }
+
+let contains_substring s ~substr =
+  let re = Str.regexp_string substr in
+  try
+    Str.search_forward re s 0 |> ignore;
+    true
+  with Not_found -> false
+
+let strip_char char s =
+  let re = Str.regexp_string (Printf.sprintf "%c" char) in
+  Str.global_replace re "" s
+
+let strip_chars chars s =
+  Seq.fold_left (fun s c -> strip_char c s) s (String.to_seq chars)
+
+let gen_lxc_container_funptr_c_glue {func_name; param_tys; ret_ty} =
+  assert (List.hd param_tys = "struct lxc_container *");
+  let func_name = strip_chars "*()" func_name in
+  let container_param =
+    Printf.sprintf "%s c" (List.hd param_tys)
+  in
+  let other_params =
+    List.tl param_tys |> List.mapi (fun i ty -> Printf.sprintf "%s a%d" ty i)
+  in
+  let params = container_param :: other_params in
+  Printf.printf "%s %s(%s) {" ret_ty func_name (String.concat ", " params);
+  print_endline "}";
+  print_newline ()
+
+let funptr_records =
+  [ { ret_ty = "bool"
+    ; func_name = "*load_config"
+    ; param_tys = ["struct lxc_container *"; "const char *"] }
+  ; ]
+
+let () = List.iter gen_lxc_container_funptr_c_glue funptr_records

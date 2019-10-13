@@ -37,26 +37,43 @@ module State = struct
 
   let to_string t =
     match t with
-    | Stopped -> "STOPPED"
-    | Starting -> "STARTING"
-    | Running -> "RUNNING"
-    | Stopping -> "STOPPING"
-    | Aborting -> "ABORTING"
-    | Freezing -> "FREEZING"
-    | Frozen -> "FROZEN"
-    | Thawed -> "THAWED"
+    | Stopped ->
+      "STOPPED"
+    | Starting ->
+      "STARTING"
+    | Running ->
+      "RUNNING"
+    | Stopping ->
+      "STOPPING"
+    | Aborting ->
+      "ABORTING"
+    | Freezing ->
+      "FREEZING"
+    | Frozen ->
+      "FROZEN"
+    | Thawed ->
+      "THAWED"
 
   let of_string t =
     match t with
-    | "STOPPED" -> Stopped
-    | "STARTING" -> Starting
-    | "RUNNING" -> Running
-    | "STOPPING" -> Stopping
-    | "ABORTING" -> Aborting
-    | "FREEZING" -> Freezing
-    | "FROZEN" -> Frozen
-    | "THAWED" -> Thawed
-    | _ -> raise Unexpected_value
+    | "STOPPED" ->
+      Stopped
+    | "STARTING" ->
+      Starting
+    | "RUNNING" ->
+      Running
+    | "STOPPING" ->
+      Stopping
+    | "ABORTING" ->
+      Aborting
+    | "FREEZING" ->
+      Freezing
+    | "FROZEN" ->
+      Frozen
+    | "THAWED" ->
+      Thawed
+    | _ ->
+      raise Unexpected_value
 end
 
 let create_glue =

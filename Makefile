@@ -1,6 +1,6 @@
 SRCFILES = src/*.ml* code_gen/*.ml*
 
-# CINAPSFILES = src/*.cinaps
+CINAPSFILES = code_gen/*.cinaps
 
 OCAMLFORMAT = ocamlformat \
 	--inplace \

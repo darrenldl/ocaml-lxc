@@ -365,7 +365,8 @@ module Stubs (S : Cstubs_structs.TYPE) = struct
   let get_config_item =
     field lxc_container "get_config_item"
       (static_funptr
-         (ptr lxc_container @-> string @-> ptr_opt char @-> int @-> returning int))
+         ( ptr lxc_container @-> string @-> ptr_opt char @-> int
+           @-> returning int ))
 
   let get_running_config_item =
     field lxc_container "get_running_config_item"
