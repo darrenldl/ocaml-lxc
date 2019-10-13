@@ -1,7 +1,7 @@
 open Ctypes
 open Types
 
-module Func_stubs (F : Cstubs.FOREIGN) = struct
+module Fun_stubs (F : Cstubs.FOREIGN) = struct
   open F
 
   let create_glue =
