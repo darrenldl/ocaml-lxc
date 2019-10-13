@@ -237,7 +237,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
   (*$ #use "code_gen/gen.cinaps";;
 
-       List.iter gen_lxc_container_funptr_field funptr_records
+      gen_lxc_container_funptr_field_all ()
   *)
 
   let is_defined =

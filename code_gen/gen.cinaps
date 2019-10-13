@@ -3,7 +3,7 @@ type funptr_record =
   ; other_param_tys : string list
   ; ret_ty : string }
 
-let glue_fun_name_suffix = "glu"
+let glue_fun_name_suffix = "_glu"
 
 let contains_substring s ~substr =
   let re = Str.regexp_string substr in
@@ -254,3 +254,9 @@ let funptr_records =
 (* let () = *)
 (* List.iter (gen_lxc_container_funptr_field_c_glue ~fun_name_suffix) funptr_records *)
 (* List.iter gen_lxc_container_funptr_field funptr_records *)
+
+let gen_lxc_container_funptr_field_all () =
+  List.iter gen_lxc_container_funptr_field funptr_records
+
+let gen_lxc_container_funptr_field_c_glue_all =
+  List.iter gen_lxc_container_funptr_field_c_glue funptr_records
