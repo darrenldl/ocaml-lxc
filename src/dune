@@ -1,8 +1,9 @@
 (library
  (name      lxc)
- (flags     (-w "+a-4-29-37-40-42-44-48-50-32"))
+ (flags     (-w "+a-4-9-29-37-40-42-44-48-50-32"))
  (c_flags   (-llxc))
- (c_names   lxc_glue)
+ (c_names   lxc_glue
+            ffi_bindings_c_stubs)
  (libraries ctypes
             posix-types))
 
@@ -19,6 +20,11 @@
 (rule
  (targets ffi_bindings.ml)
  (deps    ../code_gen/ffi_bindings.ml)
+ (action  (copy %{deps} %{targets})))
+
+(rule
+ (targets lxc_glue.h)
+ (deps    ../code_gen/lxc_glue.h)
  (action  (copy %{deps} %{targets})))
 
 (rule
