@@ -3,6 +3,8 @@ type funptr_record =
   ; other_param_tys : string list
   ; ret_ty : string }
 
+let glue_fun_name_suffix = "glu"
+
 let contains_substring s ~substr =
   let re = Str.regexp_string substr in
   try
@@ -17,7 +19,7 @@ let strip_char char s =
 let strip_chars chars s =
   Seq.fold_left (fun s c -> strip_char c s) s (String.to_seq chars)
 
-let gen_lxc_container_funptr_field_c_glue ~fun_name_suffix
+let gen_lxc_container_funptr_field_c_glue
     {fun_name; other_param_tys; ret_ty} =
   let gen_func_arg_field param_and_ty_list =
     String.concat ", "
@@ -33,7 +35,7 @@ let gen_lxc_container_funptr_field_c_glue ~fun_name_suffix
     other_param_tys |> List.mapi (fun i ty -> (Printf.sprintf "a%d" i, ty))
   in
   let params = container_param_and_ty :: other_param_and_ty in
-  Printf.printf "%s %s%s(%s) {\n" ret_ty fun_name fun_name_suffix
+  Printf.printf "%s %s%s(%s) {\n" ret_ty fun_name glue_fun_name_suffix
     (gen_func_arg_field params);
   Printf.printf "  return c->%s(%s);\n" fun_name (gen_names params);
   print_endline "}";
@@ -249,8 +251,6 @@ let funptr_records =
         ; "struct lxc_mount *" ] }
   ; {ret_ty = "int"; fun_name = "seccomp_notify_fd"; other_param_tys = []}
     (* dummy *) ]
-
-let fun_name_suffix = "_glue"
 
 (* let () = *)
 (* List.iter (gen_lxc_container_funptr_field_c_glue ~fun_name_suffix) funptr_records *)
