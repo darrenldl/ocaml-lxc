@@ -19,6 +19,10 @@ OCPINDENT = ocp-indent \
 	$(SRCFILES) \
 	$(CINAPSFILES)
 
+CLANG_FORMAT = clang-format \
+	-i \
+	$(C_FILES)
+
 .PHONY: all
 all :
 	dune build @all
@@ -27,6 +31,10 @@ all :
 format :
 	$(OCAMLFORMAT)
 	$(OCPINDENT)
+
+.PHONY: format_c
+format_c :
+	$(CLANG_FORMAT)
 
 .PHONY: cinaps
 cinaps :
