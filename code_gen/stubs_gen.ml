@@ -13,5 +13,4 @@ let gen_ffi_typs_stubs () =
        with End_of_file -> ());
   Cstubs_structs.write_c c_fmt (module Ffi_types.Types_stubs)
 
-let () =
-  gen_ffi_typs_stubs ()
+let () = gen_ffi_typs_stubs ()

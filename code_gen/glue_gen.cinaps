@@ -41,17 +41,17 @@ let gen_lxc_container_funptr_c_glue ~func_name_suffix
   print_endline "}";
   print_newline ()
 
-let gen_lxc_container_funptr_ml_glue
-    {func_name; param_tys; ret_ty} =
-  let gen_func_arg_field param_and_ty_list =
-    String.concat ", "
-      (List.map
-         (fun (name, ty) -> Printf.sprintf "%s %s" ty name)
-         param_and_ty_list)
-  in
-  let gen_names param_and_ty_list =
-    String.concat ", " (List.map (fun (name, _) -> name) param_and_ty_list)
-  in
+(* let gen_lxc_container_funptr_ml_glue
+ *     {func_name; param_tys; ret_ty} =
+ *   let gen_func_arg_field param_and_ty_list =
+ *     String.concat ", "
+ *       (List.map
+ *          (fun (name, ty) -> Printf.sprintf "%s %s" ty name)
+ *          param_and_ty_list)
+ *   in
+ *   let gen_names param_and_ty_list =
+ *     String.concat ", " (List.map (fun (name, _) -> name) param_and_ty_list)
+ *   in *)
 
 let funptr_records =
   [ { ret_ty = "bool"
