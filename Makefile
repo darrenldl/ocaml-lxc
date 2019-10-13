@@ -1,6 +1,6 @@
 SRCFILES = src/*.ml* code_gen/*.ml*
 
-C_FILES = code_gen/*.c
+C_FILES = code_gen/*.c code_gen/*.h
 
 CINAPSFILES = code_gen/*.cinaps
 

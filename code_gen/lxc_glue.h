@@ -28,4 +28,7 @@ struct bdev_specs bdev_specs_glue_dissolve(struct bdev_specs_glue * src);
 bool create_glu(struct lxc_container *c, const char *t, const char *bdevtype,
                 struct bdev_specs_glue *specs_glue, int flags, char *const argv[]);
 
+
+/*$
+ *//*$*/
 #endif
