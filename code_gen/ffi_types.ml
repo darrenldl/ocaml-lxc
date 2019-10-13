@@ -97,7 +97,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
   module Bdev_specs_glue = struct
     module Zfs_glue = struct
-      let t = lift_typ Types.Zfs_glue.t
+      let t = lift_typ Types.Bdev_specs_glue.Zfs_glue.t
 
       let zfsroot = field t "zfsroot" string
 
@@ -105,11 +105,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     end
 
     module Lvm_glue = struct
-      type lvm_glue
-
-      type t = lvm_glue Ctypes.structure
-
-      let t : t typ = structure "lvm_glue"
+      let t = lift_typ Types.Bdev_specs_glue.Lvm_glue.t
 
       let vg = field t "vg" string
 
@@ -121,11 +117,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     end
 
     module Rbd_glue = struct
-      type rbd_glue
-
-      type t = rbd_glue Ctypes.structure
-
-      let t : t typ = structure "rbd_glue"
+      let t = lift_typ Types.Bdev_specs_glue.Rbd_glue.t
 
       let rbdname = field t "rbdname" string
 
@@ -168,11 +160,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   end
 
   module Migrate_opts = struct
-    type migrate_opts
-
-    type t = migrate_opts Ctypes.structure
-
-    let t : t typ = structure "migrate_opts"
+    let t = lift_typ Types.Migrate_opts.t
 
     let directory = field t "directory" string
 
@@ -198,11 +186,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   end
 
   module Lxc_console_log = struct
-    type lxc_console_log
-
-    type t = lxc_console_log Ctypes.structure
-
-    let t : t typ = structure "lxc_console_log"
+    let t = lift_typ Types.Lxc_console_log.t
 
     let clear = field t "clear" bool
 
@@ -216,11 +200,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   end
 
   module Lxc_mount = struct
-    type lxc_mount
-
-    type t = lxc_mount Ctypes.structure
-
-    let t : t typ = structure "lxc_mount"
+    let t = lift_typ Types.Lxc_mount.t
 
     let version = field t "version" int
 
@@ -228,11 +208,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   end
 
   module Lxc_log = struct
-    type lxc_log
-
-    type t = lxc_log Ctypes.structure
-
-    let t : t typ = structure "lxc_log"
+    let t = lift_typ Types.Lxc_log.t
 
     let name = field t "name" string
 
