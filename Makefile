@@ -42,6 +42,7 @@ cinaps :
 	cinaps -i $(C_FILES)
 	$(OCAMLFORMAT)
 	$(OCPINDENT)
+	$(CLANG_FORMAT)
 
 .PHONY : clean
 clean:
