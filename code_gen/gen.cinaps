@@ -1,0 +1,297 @@
+type funptr_record =
+  { fun_name : string
+  ; other_param_tys : string list
+  ; ret_ty : string }
+
+let glue_fun_name_suffix = "__glue"
+
+let contains_substring s ~substr =
+  let re = Str.regexp_string substr in
+  try
+    Str.search_forward re s 0 |> ignore;
+    true
+  with Not_found -> false
+
+let strip_char char s =
+  let re = Str.regexp_string (Printf.sprintf "%c" char) in
+  Str.global_replace re "" s
+
+let strip_chars chars s =
+  Seq.fold_left (fun s c -> strip_char c s) s (String.to_seq chars)
+
+let patch_c_type s =
+  match s with
+  | "const char * const *" ->
+    "char **"
+  | "char * const *" ->
+    "char **"
+  | "const char **" ->
+    "char **"
+  | "const char *" ->
+    "char *"
+  | _ ->
+    s
+
+let gen_c_func_arg_field param_and_ty_list =
+  String.concat ", "
+    (List.map
+       (fun (name, ty) -> Printf.sprintf "%s %s" (patch_c_type ty) name)
+       param_and_ty_list)
+
+let gen_c_func_arg_names param_and_ty_list =
+  String.concat ", "
+    (List.map
+       (fun (name, ty) -> Printf.sprintf "(%s) %s" ty name)
+       param_and_ty_list)
+
+let gen_lxc_container_funptr_field_c_glue_header
+    {fun_name; other_param_tys; ret_ty} =
+  let container_param_and_ty = ("c", "struct lxc_container *") in
+  let other_param_and_ty =
+    other_param_tys |> List.mapi (fun i ty -> (Printf.sprintf "a%d" i, ty))
+  in
+  let params = container_param_and_ty :: other_param_and_ty in
+  Printf.printf "%s %s%s(%s);\n" (patch_c_type ret_ty) fun_name
+    glue_fun_name_suffix
+    (gen_c_func_arg_field params);
+  print_newline ()
+
+let gen_lxc_container_funptr_field_c_glue_code
+    {fun_name; other_param_tys; ret_ty} =
+  let container_param_and_ty = ("c", "struct lxc_container *") in
+  let other_param_and_ty =
+    other_param_tys |> List.mapi (fun i ty -> (Printf.sprintf "a%d" i, ty))
+  in
+  let params = container_param_and_ty :: other_param_and_ty in
+  Printf.printf "%s %s%s(%s) {\n" (patch_c_type ret_ty) fun_name
+    glue_fun_name_suffix
+    (gen_c_func_arg_field params);
+  Printf.printf "  return (%s)c->%s(%s);\n" (patch_c_type ret_ty) fun_name
+    (gen_c_func_arg_names params);
+  print_endline "}";
+  print_newline ()
+
+let c_type_to_ocaml_type s =
+  let rec aux acc count =
+    if count = 0 then acc else aux (Printf.sprintf "ptr (%s)" acc) (pred count)
+  in
+  match s with
+  | "char *" ->
+    "ptr char"
+  | "const char *" ->
+    "string"
+  | "struct lxc_container *" ->
+    "ptr lxc_container"
+  | "struct lxc_mount *" ->
+    "ptr Lxc_mount.t"
+  | "lxc_attach_options_t *" ->
+    "ptr Lxc_attach_options_t.t"
+  | "struct lxc_snapshot **" ->
+    "ptr (ptr Lxc_snapshot.t)"
+  | "struct lxc_snapshot *" ->
+    "ptr Lxc_snapshot.t"
+  | "struct migrate_opts *" ->
+    "ptr Migrate_opts.t"
+  | "struct lxc_console_log *" ->
+    "ptr Lxc_console_log.t"
+  | "pid_t" ->
+    "Posix_types.pid_t"
+  | "char * const *" ->
+    "ptr (ptr char)"
+  | "const char * const *" ->
+    "ptr string"
+  | "const char **" ->
+    "ptr string"
+  | "unsigned int" ->
+    "uint"
+  | "unsigned long" ->
+    "ulong"
+  | "const void *" ->
+    "ptr void"
+  | _ ->
+    let re = Str.regexp_string "*" in
+    let splits = Str.full_split re s in
+    let pointer_count =
+      splits
+      |> List.filter (fun s ->
+          match s with Str.Delim _ -> true | _ -> false)
+      |> List.length
+    in
+    aux (strip_chars "*" s) pointer_count
+
+let gen_lxc_container_funptr_field_ml {fun_name; other_param_tys; ret_ty} =
+  Printf.printf "let %s =\n" fun_name;
+  Printf.printf "  field lxc_container \"%s\"\n" fun_name;
+  Printf.printf "    (static_funptr\n";
+  Printf.printf "       (%s\n"
+    (String.concat " @-> "
+       ("ptr lxc_container" :: List.map c_type_to_ocaml_type other_param_tys));
+  Printf.printf "        @-> returning (%s)))\n" (c_type_to_ocaml_type ret_ty)
+
+let gen_lxc_container_funptr_field_ml_glue {fun_name; other_param_tys; ret_ty}
+  =
+  Printf.printf "let %s%s =\n" fun_name glue_fun_name_suffix;
+  Printf.printf "  foreign \"%s%s\"\n" fun_name glue_fun_name_suffix;
+  Printf.printf "    (%s\n"
+    (String.concat " @-> "
+       ("ptr lxc_container" :: List.map c_type_to_ocaml_type other_param_tys));
+  Printf.printf "     @-> returning (%s))\n" (c_type_to_ocaml_type ret_ty)
+
+(* let gen_lxc_container_funptr_field_ml_glue
+ *     {fun_name; param_tys; ret_ty} =
+ *   let gen_func_arg_field param_and_ty_list =
+ *     String.concat ", "
+ *       (List.map
+ *          (fun (name, ty) -> Printf.sprintf "%s %s" ty name)
+ *          param_and_ty_list)
+ *   in
+ *   let gen_names param_and_ty_list =
+ *     String.concat ", " (List.map (fun (name, _) -> name) param_and_ty_list)
+ *   in *)
+
+let funptr_records =
+  [ {ret_ty = "bool"; fun_name = "is_defined"; other_param_tys = []}
+  ; {ret_ty = "const char *"; fun_name = "state"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "is_running"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "freeze"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "unfreeze"; other_param_tys = []}
+  ; {ret_ty = "pid_t"; fun_name = "init_pid"; other_param_tys = []}
+  ; { ret_ty = "bool"
+    ; fun_name = "load_config"
+    ; other_param_tys = ["const char *"] }
+  ; { ret_ty = "bool"
+    ; fun_name = "start"
+    ; other_param_tys = ["int"; "char * const *"] }
+  ; {ret_ty = "bool"; fun_name = "stop"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "want_daemonize"; other_param_tys = ["bool"]}
+  ; { ret_ty = "bool"
+    ; fun_name = "want_close_all_fds"
+    ; other_param_tys = ["bool"] }
+  ; {ret_ty = "char *"; fun_name = "config_file_name"; other_param_tys = []}
+  ; { ret_ty = "bool"
+    ; fun_name = "wait"
+    ; other_param_tys = ["const char *"; "int"] }
+  ; { ret_ty = "bool"
+    ; fun_name = "set_config_item"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; {ret_ty = "bool"; fun_name = "destroy"; other_param_tys = []}
+  ; { ret_ty = "bool"
+    ; fun_name = "save_config"
+    ; other_param_tys = ["const char *"] }
+  ; {ret_ty = "bool"; fun_name = "rename"; other_param_tys = ["const char *"]}
+  ; {ret_ty = "bool"; fun_name = "reboot"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "shutdown"; other_param_tys = ["int"]}
+  ; {ret_ty = "void"; fun_name = "clear_config"; other_param_tys = []}
+  ; { ret_ty = "bool"
+    ; fun_name = "clear_config_item"
+    ; other_param_tys = ["const char *"] }
+  ; { ret_ty = "int"
+    ; fun_name = "get_config_item"
+    ; other_param_tys = ["const char *"; "char *"; "int"] }
+  ; { ret_ty = "char *"
+    ; fun_name = "get_running_config_item"
+    ; other_param_tys = ["const char *"] }
+  ; { ret_ty = "int"
+    ; fun_name = "get_keys"
+    ; other_param_tys = ["const char *"; "char *"; "int"] }
+  ; {ret_ty = "char **"; fun_name = "get_interfaces"; other_param_tys = []}
+  ; { ret_ty = "char **"
+    ; fun_name = "get_ips"
+    ; other_param_tys = ["const char *"; "const char *"; "int"] }
+  ; { ret_ty = "int"
+    ; fun_name = "get_cgroup_item"
+    ; other_param_tys = ["const char *"; "char *"; "int"] }
+  ; { ret_ty = "bool"
+    ; fun_name = "set_cgroup_item"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "const char *"
+    ; fun_name = "get_config_path"
+    ; other_param_tys = [] }
+  ; { ret_ty = "bool"
+    ; fun_name = "set_config_path"
+    ; other_param_tys = ["const char *"] }
+  ; { ret_ty = "struct lxc_container *"
+    ; fun_name = "clone"
+    ; other_param_tys =
+        [ "const char *"
+        ; "const char *"
+        ; "int"
+        ; "const char *"
+        ; "const char *"
+        ; "uint64_t"
+        ; "char **" ] }
+  ; { ret_ty = "int"
+    ; fun_name = "console_getfd"
+    ; other_param_tys = ["int *"; "int *"] }
+  ; { ret_ty = "int"
+    ; fun_name = "console"
+    ; other_param_tys = ["int"; "int"; "int"; "int"; "int"] }
+  ; { ret_ty = "int"
+    ; fun_name = "attach_run_wait"
+    ; other_param_tys =
+        ["lxc_attach_options_t *"; "const char *"; "const char * const *"] }
+  ; {ret_ty = "int"; fun_name = "snapshot"; other_param_tys = ["const char *"]}
+  ; { ret_ty = "int"
+    ; fun_name = "snapshot_list"
+    ; other_param_tys = ["struct lxc_snapshot **"] }
+  ; { ret_ty = "bool"
+    ; fun_name = "snapshot_restore"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "bool"
+    ; fun_name = "snapshot_destroy"
+    ; other_param_tys = ["const char *"] }
+  ; {ret_ty = "bool"; fun_name = "may_control"; other_param_tys = []}
+  ; { ret_ty = "bool"
+    ; fun_name = "add_device_node"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "bool"
+    ; fun_name = "remove_device_node"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "bool"
+    ; fun_name = "attach_interface"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "bool"
+    ; fun_name = "detach_interface"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "bool"
+    ; fun_name = "checkpoint"
+    ; other_param_tys = ["char *"; "bool"; "bool"] }
+  ; { ret_ty = "bool"
+    ; fun_name = "restore"
+    ; other_param_tys = ["char *"; "bool"] }
+  ; {ret_ty = "bool"; fun_name = "destroy_with_snapshots"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "snapshot_destroy_all"; other_param_tys = []}
+  ; { ret_ty = "int"
+    ; fun_name = "migrate"
+    ; other_param_tys =
+        ["unsigned int"; "struct migrate_opts *"; "unsigned int"] }
+  ; { ret_ty = "int"
+    ; fun_name = "console_log"
+    ; other_param_tys = ["struct lxc_console_log *"] }
+  ; {ret_ty = "bool"; fun_name = "reboot2"; other_param_tys = ["int"]}
+  ; { ret_ty = "int"
+    ; fun_name = "mount"
+    ; other_param_tys =
+        [ "const char *"
+        ; "const char *"
+        ; "const char *"
+        ; "unsigned long"
+        ; "const void *"
+        ; "struct lxc_mount *" ] }
+  ; { ret_ty = "int"
+    ; fun_name = "umount"
+    ; other_param_tys = ["const char *"; "unsigned long"; "struct lxc_mount *"]
+    }
+  ; {ret_ty = "int"; fun_name = "seccomp_notify_fd"; other_param_tys = []} ]
+
+let gen_lxc_container_funptr_field_ml_all () =
+  List.iter gen_lxc_container_funptr_field_ml funptr_records
+
+let gen_lxc_container_funptr_field_ml_glue_all () =
+  List.iter gen_lxc_container_funptr_field_ml_glue funptr_records
+
+let gen_lxc_container_funptr_field_c_glue_header_all () =
+  List.iter gen_lxc_container_funptr_field_c_glue_header funptr_records
+
+let gen_lxc_container_funptr_field_c_glue_code_all () =
+  List.iter gen_lxc_container_funptr_field_c_glue_code funptr_records

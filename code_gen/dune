@@ -1,5 +1,5 @@
 (executable
- (name      c_stubs_gen)
+ (name      stubs_gen)
  (flags     (-w "+a-4-29-37-40-42-44-48-50-32"))
  (libraries ctypes
             ctypes.foreign

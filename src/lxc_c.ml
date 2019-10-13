@@ -1,10 +1,11 @@
 open Ctypes
-module Stubs = Ffi_bindings.Stubs (Ml_stubs)
+module Type_stubs = Ffi_types.Types_stubs (Ffi_types_ml_stubs)
+module Fun_stubs = Ffi_bindings.Fun_stubs (Ffi_bindings_ml_stubs)
 
 exception Unexpected_value
 
 module Migrate_cmd = struct
-  open Stubs.Migrate_cmd
+  open Type_stubs.Migrate_cmd
 
   type t =
     | Migrate_pre_dump
@@ -37,45 +38,56 @@ module State = struct
 
   let to_string t =
     match t with
-    | Stopped -> "STOPPED"
-    | Starting -> "STARTING"
-    | Running -> "RUNNING"
-    | Stopping -> "STOPPING"
-    | Aborting -> "ABORTING"
-    | Freezing -> "FREEZING"
-    | Frozen -> "FROZEN"
-    | Thawed -> "THAWED"
+    | Stopped ->
+      "STOPPED"
+    | Starting ->
+      "STARTING"
+    | Running ->
+      "RUNNING"
+    | Stopping ->
+      "STOPPING"
+    | Aborting ->
+      "ABORTING"
+    | Freezing ->
+      "FREEZING"
+    | Frozen ->
+      "FROZEN"
+    | Thawed ->
+      "THAWED"
 
   let of_string t =
     match t with
-    | "STOPPED" -> Stopped
-    | "STARTING" -> Starting
-    | "RUNNING" -> Running
-    | "STOPPING" -> Stopping
-    | "ABORTING" -> Aborting
-    | "FREEZING" -> Freezing
-    | "FROZEN" -> Frozen
-    | "THAWED" -> Thawed
-    | _ -> raise Unexpected_value
+    | "STOPPED" ->
+      Stopped
+    | "STARTING" ->
+      Starting
+    | "RUNNING" ->
+      Running
+    | "STOPPING" ->
+      Stopping
+    | "ABORTING" ->
+      Aborting
+    | "FREEZING" ->
+      Freezing
+    | "FROZEN" ->
+      Frozen
+    | "THAWED" ->
+      Thawed
+    | _ ->
+      raise Unexpected_value
 end
-
-let create_glue =
-  Foreign.foreign "create_glue"
-    ( ptr Stubs.lxc_container @-> string @-> string
-      @-> ptr_opt Stubs.Bdev_specs_glue.t
-      @-> int @-> ptr_opt string @-> returning bool )
 
 let lxc_container_new =
   Foreign.foreign "lxc_container_new"
-    (string @-> string @-> returning (ptr_opt Stubs.lxc_container))
+    (string @-> string @-> returning (ptr_opt Types.lxc_container))
 
 let lxc_container_get =
   Foreign.foreign "lxc_container_get"
-    (ptr Stubs.lxc_container @-> returning int)
+    (ptr Types.lxc_container @-> returning int)
 
 let lxc_container_put =
   Foreign.foreign "lxc_container_put"
-    (ptr Stubs.lxc_container @-> returning int)
+    (ptr Types.lxc_container @-> returning int)
 
 let lxc_get_wait_states =
   Foreign.foreign "lxc_get_wait_states" (ptr string @-> returning int)
@@ -90,27 +102,27 @@ let list_defined_containers =
   Foreign.foreign "list_defined_containers"
     ( string
       @-> ptr (ptr (ptr char))
-      @-> ptr (ptr (ptr Stubs.lxc_container))
+      @-> ptr (ptr (ptr Types.lxc_container))
       @-> returning int )
 
 let list_active_containers =
   Foreign.foreign "list_active_containers"
     ( string
       @-> ptr (ptr (ptr char))
-      @-> ptr (ptr (ptr Stubs.lxc_container))
+      @-> ptr (ptr (ptr Types.lxc_container))
       @-> returning int )
 
 let list_all_containers =
   Foreign.foreign "list_all_containers"
     ( string
       @-> ptr (ptr (ptr char))
-      @-> ptr (ptr (ptr Stubs.lxc_container))
+      @-> ptr (ptr (ptr Types.lxc_container))
       @-> returning int )
 
-let lxc_log_init =
-  Foreign.foreign "lxc_log_init" (ptr Stubs.Lxc_log.t @-> returning int)
-
-let lxc_log_close = Foreign.foreign "lxc_log_close" (void @-> returning void)
+(* let lxc_log_init =
+ *   Foreign.foreign "lxc_log_init" (ptr Types.Lxc_log.t @-> returning int)
+ * 
+ * let lxc_log_close = Foreign.foreign "lxc_log_close" (void @-> returning void) *)
 
 let lxc_config_item_is_supported =
   Foreign.foreign "lxc_config_item_is_supported" (string @-> returning bool)

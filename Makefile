@@ -1,6 +1,8 @@
 SRCFILES = src/*.ml* code_gen/*.ml*
 
-# CINAPSFILES = src/*.cinaps
+C_FILES = code_gen/*.c code_gen/*.h
+
+CINAPSFILES = code_gen/*.cinaps
 
 OCAMLFORMAT = ocamlformat \
 	--inplace \
@@ -17,6 +19,10 @@ OCPINDENT = ocp-indent \
 	$(SRCFILES) \
 	$(CINAPSFILES)
 
+CLANG_FORMAT = clang-format \
+	-i \
+	$(C_FILES)
+
 .PHONY: all
 all :
 	dune build @all
@@ -26,9 +32,14 @@ format :
 	$(OCAMLFORMAT)
 	$(OCPINDENT)
 
+.PHONY: format_c
+format_c :
+	$(CLANG_FORMAT)
+
 .PHONY: cinaps
 cinaps :
 	cinaps -i $(SRCFILES)
+	cinaps -i $(C_FILES)
 	$(OCAMLFORMAT)
 	$(OCPINDENT)
 
