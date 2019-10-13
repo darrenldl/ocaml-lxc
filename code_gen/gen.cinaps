@@ -19,8 +19,7 @@ let strip_char char s =
 let strip_chars chars s =
   Seq.fold_left (fun s c -> strip_char c s) s (String.to_seq chars)
 
-let gen_lxc_container_funptr_field_c_glue
-    {fun_name; other_param_tys; ret_ty} =
+let gen_lxc_container_funptr_field_c_glue {fun_name; other_param_tys; ret_ty} =
   let gen_func_arg_field param_and_ty_list =
     String.concat ", "
       (List.map
