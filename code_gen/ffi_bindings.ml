@@ -30,7 +30,7 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
     foreign "unfreeze__glue" (ptr lxc_container @-> returning bool)
 
   let init_pid__glue =
-    foreign "init_pid__glue" (ptr lxc_container @-> returning Posix.pid_t)
+    foreign "init_pid__glue" (ptr lxc_container @-> returning Posix_types.pid_t)
 
   let load_config__glue =
     foreign "load_config__glue"

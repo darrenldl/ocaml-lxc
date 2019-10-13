@@ -76,7 +76,7 @@ let c_type_to_ocaml_type s =
   | "struct lxc_console_log *" ->
     "ptr Lxc_console_log.t"
   | "pid_t" ->
-    "Posix.pid_t"
+    "Posix_types.pid_t"
   | "char * const *" ->
     "ptr string"
   | "const char * const *" ->

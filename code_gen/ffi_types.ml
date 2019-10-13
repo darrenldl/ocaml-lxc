@@ -1,8 +1,8 @@
 module Types_stubs (S : Cstubs_structs.TYPE) = struct
   open S
 
-  module Posix = struct
-    let pid_t = S.lift_typ PosixTypes.pid_t
+  module Posix_types = struct
+    let pid_t = S.lift_typ Posix_types.pid_t
 
     let uid_t = S.lift_typ Posix_types.uid_t
 
@@ -60,9 +60,9 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
     let initial_cwd = field t "initial_cwd" (ptr char)
 
-    let uid = field t "uid" Posix.uid_t
+    let uid = field t "uid" Posix_types.uid_t
 
-    let gid = field t "gid" Posix.gid_t
+    let gid = field t "gid" Posix_types.gid_t
 
     let env_policy = field t "env_policy" Lxc_attach_env_policy_t.t
 
@@ -262,7 +262,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
   let init_pid =
     field lxc_container "init_pid"
-      (static_funptr (ptr lxc_container @-> returning Posix.pid_t))
+      (static_funptr (ptr lxc_container @-> returning Posix_types.pid_t))
 
   let load_config =
     field lxc_container "load_config"
