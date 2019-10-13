@@ -268,20 +268,33 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     field lxc_container "load_config"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
 
+  let start =
+    field lxc_container "start"
+      (static_funptr
+         (ptr lxc_container @-> int @-> ptr string @-> returning bool))
+
+  let stop =
+    field lxc_container "stop"
+      (static_funptr (ptr lxc_container @-> returning bool))
+
+  let want_daemonize =
+    field lxc_container "want_daemonize"
+      (static_funptr (ptr lxc_container @-> returning bool))
+
+  let want_close_all_fds =
+    field lxc_container "want_close_all_fds"
+      (static_funptr (ptr lxc_container @-> bool @-> returning bool))
+
+  let config_file_name =
+    field lxc_container "config_file_name"
+      (static_funptr (ptr lxc_container @-> returning ptr char))
+
+  let wait =
+    field lxc_container "wait"
+      (static_funptr
+         (ptr lxc_container @-> ptr (const char) @-> int @-> returning bool))
+
     (*$*)
-
-let start =
-  field lxc_container "start"
-    (static_funptr
-       (ptr lxc_container @-> int @-> ptr string @-> returning bool))
-
-let stop =
-  field lxc_container "stop"
-    (static_funptr (ptr lxc_container @-> returning bool))
-
-let want_daemonize =
-  field lxc_container "want_daemonize"
-    (static_funptr (ptr lxc_container @-> bool @-> returning bool))
 
 let want_close_all_fds =
   field lxc_container "want_close_all_fds"

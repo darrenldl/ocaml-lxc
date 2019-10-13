@@ -54,6 +54,8 @@ let c_type_to_ocaml_type s =
     "ptr Lxc_mount.t"
   | "pid_t" ->
     "Posix.pid_t"
+  | "char * const []" ->
+    "ptr string"
   | _ ->
     let re = Str.regexp_string "*" in
     let splits = Str.full_split re s in
@@ -96,7 +98,20 @@ let funptr_records =
   ; {ret_ty = "pid_t"; func_name = "init_pid"; other_param_tys = []}
   ; { ret_ty = "bool"
     ; func_name = "load_config"
-    ; other_param_tys = ["const char *"] } ]
+    ; other_param_tys = ["const char *"] }
+  ; { ret_ty = "bool"
+    ; func_name = "start"
+    ; other_param_tys = ["int"; "char * const []"] }
+  ; {ret_ty = "bool"; func_name = "stop"; other_param_tys = []}
+  ; {ret_ty = "bool"; func_name = "want_daemonize"; other_param_tys = []}
+  ; { ret_ty = "bool"
+    ; func_name = "want_close_all_fds"
+    ; other_param_tys = ["bool"] }
+  ; {ret_ty = "char *"; func_name = "config_file_name"; other_param_tys = []}
+  ; { ret_ty = "bool"
+    ; func_name = "wait"
+    ; other_param_tys = ["const char*"; "int"] }
+    (* dummy *) ]
 
 let func_name_suffix = "_glue"
 
