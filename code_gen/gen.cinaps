@@ -52,10 +52,28 @@ let c_type_to_ocaml_type s =
     "ptr lxc_container"
   | "struct lxc_mount *" ->
     "ptr Lxc_mount.t"
+  | "lxc_attach_options_t *" ->
+    "ptr Lxc_attach_options_t.t"
+  | "struct lxc_snapshot **" ->
+    "ptr (ptr Lxc_snapshot.t)"
+  | "struct lxc_snapshot *" ->
+    "ptr Lxc_snapshot.t"
+  | "struct migrate_opts *" ->
+    "ptr Migrate_opts.t"
+  | "struct lxc_console_log *" ->
+    "ptr Lxc_console_log.t"
   | "pid_t" ->
     "Posix.pid_t"
   | "char * const []" ->
     "ptr string"
+  | "const char * const []" ->
+    "ptr string"
+  | "unsigned int" ->
+    "uint"
+  | "unsigned long" ->
+    "ulong"
+  | "const void *" ->
+    "ptr void"
   | _ ->
     let re = Str.regexp_string "*" in
     let splits = Str.full_split re s in
@@ -74,7 +92,7 @@ let gen_lxc_container_funptr_field {func_name; other_param_tys; ret_ty} =
   Printf.printf "       (%s\n"
     (String.concat " @-> "
        ("ptr lxc_container" :: List.map c_type_to_ocaml_type other_param_tys));
-  Printf.printf "        @-> returning %s))\n" (c_type_to_ocaml_type ret_ty);
+  Printf.printf "        @-> returning (%s)))\n" (c_type_to_ocaml_type ret_ty);
   ()
 
 (* let gen_lxc_container_funptr_field_ml_glue
@@ -110,7 +128,128 @@ let funptr_records =
   ; {ret_ty = "char *"; func_name = "config_file_name"; other_param_tys = []}
   ; { ret_ty = "bool"
     ; func_name = "wait"
-    ; other_param_tys = ["const char*"; "int"] }
+    ; other_param_tys = ["const char *"; "int"] }
+  ; { ret_ty = "bool"
+    ; func_name = "set_config_item"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; {ret_ty = "bool"; func_name = "destroy"; other_param_tys = []}
+  ; { ret_ty = "bool"
+    ; func_name = "save_config"
+    ; other_param_tys = ["const char *"] }
+  ; {ret_ty = "bool"; func_name = "rename"; other_param_tys = ["const char *"]}
+  ; {ret_ty = "bool"; func_name = "reboot"; other_param_tys = []}
+  ; {ret_ty = "bool"; func_name = "shutdown"; other_param_tys = ["int"]}
+  ; {ret_ty = "void"; func_name = "clear_config"; other_param_tys = []}
+  ; { ret_ty = "bool"
+    ; func_name = "clear_config_item"
+    ; other_param_tys = ["const char *"] }
+  ; { ret_ty = "int"
+    ; func_name = "get_config_item"
+    ; other_param_tys = ["const char *"; "char *"; "int"] }
+  ; { ret_ty = "char *"
+    ; func_name = "get_running_config_item"
+    ; other_param_tys = ["const char *"] }
+  ; { ret_ty = "int"
+    ; func_name = "get_keys"
+    ; other_param_tys = ["const char *"; "char *"; "int"] }
+  ; {ret_ty = "char **"; func_name = "get_interfaces"; other_param_tys = []}
+  ; { ret_ty = "char **"
+    ; func_name = "get_ips"
+    ; other_param_tys = ["const char *"; "const char *"; "int"] }
+  ; { ret_ty = "int"
+    ; func_name = "get_cgroup_item"
+    ; other_param_tys = ["const char *"; "char *"; "int"] }
+  ; { ret_ty = "bool"
+    ; func_name = "set_cgroup_item"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "const char *"
+    ; func_name = "get_config_path"
+    ; other_param_tys = [] }
+  ; { ret_ty = "bool"
+    ; func_name = "set_config_path"
+    ; other_param_tys = ["const char *"] }
+  ; { ret_ty = "struct lxc_container *"
+    ; func_name = "clone"
+    ; other_param_tys =
+        [ "const char *"
+        ; "const char *"
+        ; "int"
+        ; "const char *"
+        ; "const char *"
+        ; "uint64_t"
+        ; "char **" ] }
+  ; { ret_ty = "int"
+    ; func_name = "console_getfd"
+    ; other_param_tys = ["int *"; "int *"] }
+  ; { ret_ty = "int"
+    ; func_name = "console"
+    ; other_param_tys = ["int"; "int"; "int"; "int"; "int"] }
+  ; { ret_ty = "int"
+    ; func_name = "attach_run_wait"
+    ; other_param_tys =
+        [ "lxc_attach_options_t *"
+        ; "const char *"
+        ; "const char *"
+        ; "const char * const []" ] }
+  ; {ret_ty = "int"; func_name = "snapshot"; other_param_tys = ["const char *"]}
+  ; { ret_ty = "int"
+    ; func_name = "snapshot_list"
+    ; other_param_tys = ["struct lxc_snapshot **"] }
+  ; { ret_ty = "bool"
+    ; func_name = "snapshot_restore"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "bool"
+    ; func_name = "snapshot_destroy"
+    ; other_param_tys = ["const char *"] }
+  ; {ret_ty = "bool"; func_name = "may_control"; other_param_tys = []}
+  ; { ret_ty = "bool"
+    ; func_name = "add_device_node"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "bool"
+    ; func_name = "remove_device_node"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "bool"
+    ; func_name = "attach_interface"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "bool"
+    ; func_name = "detach_interface"
+    ; other_param_tys = ["const char *"; "const char *"] }
+  ; { ret_ty = "bool"
+    ; func_name = "checkpoint"
+    ; other_param_tys = ["char *"; "bool"; "bool"] }
+  ; { ret_ty = "bool"
+    ; func_name = "restore"
+    ; other_param_tys = ["char *"; "bool"] }
+  ; { ret_ty = "bool"
+    ; func_name = "destroy_with_snapshots"
+    ; other_param_tys = [] }
+  ; {ret_ty = "bool"; func_name = "snapshot_destroy_all"; other_param_tys = []}
+  ; { ret_ty = "int"
+    ; func_name = "migrate"
+    ; other_param_tys =
+        ["unsigned int"; "struct migrate_opts *"; "unsigned int"] }
+  ; { ret_ty = "int"
+    ; func_name = "console_log"
+    ; other_param_tys = ["struct lxc_console_log *"] }
+  ; {ret_ty = "bool"; func_name = "reboot2"; other_param_tys = ["int"]}
+  ; { ret_ty = "int"
+    ; func_name = "mount"
+    ; other_param_tys =
+        [ "struct lxc_container *"
+        ; "const char *"
+        ; "const char *"
+        ; "const char *"
+        ; "unsigned long"
+        ; "const void *"
+        ; "struct lxc_mount *" ] }
+  ; { ret_ty = "int"
+    ; func_name = "umount"
+    ; other_param_tys =
+        [ "struct lxc_container *"
+        ; "const char *"
+        ; "unsigned long"
+        ; "struct lxc_mount *" ] }
+  ; {ret_ty = "int"; func_name = "seccomp_notify_fd"; other_param_tys = []}
     (* dummy *) ]
 
 let func_name_suffix = "_glue"
