@@ -220,9 +220,7 @@ let funptr_records =
   ; { ret_ty = "bool"
     ; fun_name = "restore"
     ; other_param_tys = ["char *"; "bool"] }
-  ; { ret_ty = "bool"
-    ; fun_name = "destroy_with_snapshots"
-    ; other_param_tys = [] }
+  ; {ret_ty = "bool"; fun_name = "destroy_with_snapshots"; other_param_tys = []}
   ; {ret_ty = "bool"; fun_name = "snapshot_destroy_all"; other_param_tys = []}
   ; { ret_ty = "int"
     ; fun_name = "migrate"

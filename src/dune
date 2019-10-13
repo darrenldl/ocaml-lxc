@@ -27,7 +27,9 @@
  (action  (copy %{deps} %{targets})))
 
 (rule
- (targets ffi_types_ml_stubs_gen.c)
+ (targets ffi_types_ml_stubs_gen.c
+          ffi_bindings_c_stubs.c
+          ffi_bindings_ml_stubs.ml)
  (deps    (:gen ../code_gen/stubs_gen.exe))
  (action  (run %{gen})))
 
