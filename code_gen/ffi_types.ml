@@ -244,6 +244,18 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     field lxc_container "is_defined"
       (static_funptr (ptr lxc_container @-> returning bool))
 
+  let state =
+    field lxc_container "state"
+      (static_funptr (ptr lxc_container @-> returning string))
+
+  let is_running =
+    field lxc_container "is_running"
+      (static_funptr (ptr lxc_container @-> returning bool))
+
+  let is_running =
+    field lxc_container "is_running"
+      (static_funptr (ptr lxc_container @-> returning bool))
+
   let load_config =
     field lxc_container "load_config"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
