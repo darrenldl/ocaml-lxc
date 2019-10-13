@@ -235,6 +235,12 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
   let config_path = field lxc_container "config_path" (ptr char)
 
+  (*$ #use "code_gen/gen.cinaps";;
+
+      List.iter gen_lxc_container_funptr_field funptr_records
+  *)
+                    (*$*)
+
   let is_defined =
     field lxc_container "is_defined"
       (static_funptr (ptr lxc_container @-> returning bool))

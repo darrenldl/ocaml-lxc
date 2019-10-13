@@ -79,6 +79,6 @@ let funptr_records =
 
 let func_name_suffix = "_glue"
 
-let () =
+(* let () = *)
   (* List.iter (gen_lxc_container_funptr_field_c_glue ~func_name_suffix) funptr_records *)
-  List.iter gen_lxc_container_funptr_field funptr_records
+  (* List.iter gen_lxc_container_funptr_field funptr_records *)
