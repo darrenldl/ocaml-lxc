@@ -35,8 +35,9 @@ let gen_lxc_container_funptr_field_c_glue_header
     other_param_tys |> List.mapi (fun i ty -> (Printf.sprintf "a%d" i, ty))
   in
   let params = container_param_and_ty :: other_param_and_ty in
-  Printf.printf "%s %s%s(%s);" ret_ty fun_name glue_fun_name_suffix
-    (gen_c_func_arg_field params)
+  Printf.printf "%s %s%s(%s);\n" ret_ty fun_name glue_fun_name_suffix
+    (gen_c_func_arg_field params);
+  print_newline ()
 
 let gen_lxc_container_funptr_field_c_glue_code
     {fun_name; other_param_tys; ret_ty} =
