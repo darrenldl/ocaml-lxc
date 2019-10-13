@@ -1,5 +1,5 @@
 type funptr_record =
-  { func_name : string
+  { fun_name : string
   ; other_param_tys : string list
   ; ret_ty : string }
 
@@ -17,8 +17,8 @@ let strip_char char s =
 let strip_chars chars s =
   Seq.fold_left (fun s c -> strip_char c s) s (String.to_seq chars)
 
-let gen_lxc_container_funptr_field_c_glue ~func_name_suffix
-    {func_name; other_param_tys; ret_ty} =
+let gen_lxc_container_funptr_field_c_glue ~fun_name_suffix
+    {fun_name; other_param_tys; ret_ty} =
   let gen_func_arg_field param_and_ty_list =
     String.concat ", "
       (List.map
@@ -33,9 +33,9 @@ let gen_lxc_container_funptr_field_c_glue ~func_name_suffix
     other_param_tys |> List.mapi (fun i ty -> (Printf.sprintf "a%d" i, ty))
   in
   let params = container_param_and_ty :: other_param_and_ty in
-  Printf.printf "%s %s%s(%s) {\n" ret_ty func_name func_name_suffix
+  Printf.printf "%s %s%s(%s) {\n" ret_ty fun_name fun_name_suffix
     (gen_func_arg_field params);
-  Printf.printf "  return c->%s(%s);\n" func_name (gen_names params);
+  Printf.printf "  return c->%s(%s);\n" fun_name (gen_names params);
   print_endline "}";
   print_newline ()
 
@@ -85,9 +85,9 @@ let c_type_to_ocaml_type s =
     in
     aux (strip_chars "*" s) pointer_count
 
-let gen_lxc_container_funptr_field {func_name; other_param_tys; ret_ty} =
-  Printf.printf "let %s =\n" func_name;
-  Printf.printf "  field lxc_container \"%s\"\n" func_name;
+let gen_lxc_container_funptr_field {fun_name; other_param_tys; ret_ty} =
+  Printf.printf "let %s =\n" fun_name;
+  Printf.printf "  field lxc_container \"%s\"\n" fun_name;
   Printf.printf "    (static_funptr\n";
   Printf.printf "       (%s\n"
     (String.concat " @-> "
@@ -96,7 +96,7 @@ let gen_lxc_container_funptr_field {func_name; other_param_tys; ret_ty} =
   ()
 
 (* let gen_lxc_container_funptr_field_ml_glue
- *     {func_name; param_tys; ret_ty} =
+ *     {fun_name; param_tys; ret_ty} =
  *   let gen_func_arg_field param_and_ty_list =
  *     String.concat ", "
  *       (List.map
@@ -108,68 +108,68 @@ let gen_lxc_container_funptr_field {func_name; other_param_tys; ret_ty} =
  *   in *)
 
 let funptr_records =
-  [ {ret_ty = "bool"; func_name = "is_defined"; other_param_tys = []}
-  ; {ret_ty = "const char *"; func_name = "state"; other_param_tys = []}
-  ; {ret_ty = "bool"; func_name = "is_running"; other_param_tys = []}
-  ; {ret_ty = "bool"; func_name = "freeze"; other_param_tys = []}
-  ; {ret_ty = "bool"; func_name = "unfreeze"; other_param_tys = []}
-  ; {ret_ty = "pid_t"; func_name = "init_pid"; other_param_tys = []}
+  [ {ret_ty = "bool"; fun_name = "is_defined"; other_param_tys = []}
+  ; {ret_ty = "const char *"; fun_name = "state"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "is_running"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "freeze"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "unfreeze"; other_param_tys = []}
+  ; {ret_ty = "pid_t"; fun_name = "init_pid"; other_param_tys = []}
   ; { ret_ty = "bool"
-    ; func_name = "load_config"
+    ; fun_name = "load_config"
     ; other_param_tys = ["const char *"] }
   ; { ret_ty = "bool"
-    ; func_name = "start"
+    ; fun_name = "start"
     ; other_param_tys = ["int"; "char * const []"] }
-  ; {ret_ty = "bool"; func_name = "stop"; other_param_tys = []}
-  ; {ret_ty = "bool"; func_name = "want_daemonize"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "stop"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "want_daemonize"; other_param_tys = []}
   ; { ret_ty = "bool"
-    ; func_name = "want_close_all_fds"
+    ; fun_name = "want_close_all_fds"
     ; other_param_tys = ["bool"] }
-  ; {ret_ty = "char *"; func_name = "config_file_name"; other_param_tys = []}
+  ; {ret_ty = "char *"; fun_name = "config_file_name"; other_param_tys = []}
   ; { ret_ty = "bool"
-    ; func_name = "wait"
+    ; fun_name = "wait"
     ; other_param_tys = ["const char *"; "int"] }
   ; { ret_ty = "bool"
-    ; func_name = "set_config_item"
+    ; fun_name = "set_config_item"
     ; other_param_tys = ["const char *"; "const char *"] }
-  ; {ret_ty = "bool"; func_name = "destroy"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "destroy"; other_param_tys = []}
   ; { ret_ty = "bool"
-    ; func_name = "save_config"
+    ; fun_name = "save_config"
     ; other_param_tys = ["const char *"] }
-  ; {ret_ty = "bool"; func_name = "rename"; other_param_tys = ["const char *"]}
-  ; {ret_ty = "bool"; func_name = "reboot"; other_param_tys = []}
-  ; {ret_ty = "bool"; func_name = "shutdown"; other_param_tys = ["int"]}
-  ; {ret_ty = "void"; func_name = "clear_config"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "rename"; other_param_tys = ["const char *"]}
+  ; {ret_ty = "bool"; fun_name = "reboot"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "shutdown"; other_param_tys = ["int"]}
+  ; {ret_ty = "void"; fun_name = "clear_config"; other_param_tys = []}
   ; { ret_ty = "bool"
-    ; func_name = "clear_config_item"
+    ; fun_name = "clear_config_item"
     ; other_param_tys = ["const char *"] }
   ; { ret_ty = "int"
-    ; func_name = "get_config_item"
+    ; fun_name = "get_config_item"
     ; other_param_tys = ["const char *"; "char *"; "int"] }
   ; { ret_ty = "char *"
-    ; func_name = "get_running_config_item"
+    ; fun_name = "get_running_config_item"
     ; other_param_tys = ["const char *"] }
   ; { ret_ty = "int"
-    ; func_name = "get_keys"
+    ; fun_name = "get_keys"
     ; other_param_tys = ["const char *"; "char *"; "int"] }
-  ; {ret_ty = "char **"; func_name = "get_interfaces"; other_param_tys = []}
+  ; {ret_ty = "char **"; fun_name = "get_interfaces"; other_param_tys = []}
   ; { ret_ty = "char **"
-    ; func_name = "get_ips"
+    ; fun_name = "get_ips"
     ; other_param_tys = ["const char *"; "const char *"; "int"] }
   ; { ret_ty = "int"
-    ; func_name = "get_cgroup_item"
+    ; fun_name = "get_cgroup_item"
     ; other_param_tys = ["const char *"; "char *"; "int"] }
   ; { ret_ty = "bool"
-    ; func_name = "set_cgroup_item"
+    ; fun_name = "set_cgroup_item"
     ; other_param_tys = ["const char *"; "const char *"] }
   ; { ret_ty = "const char *"
-    ; func_name = "get_config_path"
+    ; fun_name = "get_config_path"
     ; other_param_tys = [] }
   ; { ret_ty = "bool"
-    ; func_name = "set_config_path"
+    ; fun_name = "set_config_path"
     ; other_param_tys = ["const char *"] }
   ; { ret_ty = "struct lxc_container *"
-    ; func_name = "clone"
+    ; fun_name = "clone"
     ; other_param_tys =
         [ "const char *"
         ; "const char *"
@@ -179,61 +179,61 @@ let funptr_records =
         ; "uint64_t"
         ; "char **" ] }
   ; { ret_ty = "int"
-    ; func_name = "console_getfd"
+    ; fun_name = "console_getfd"
     ; other_param_tys = ["int *"; "int *"] }
   ; { ret_ty = "int"
-    ; func_name = "console"
+    ; fun_name = "console"
     ; other_param_tys = ["int"; "int"; "int"; "int"; "int"] }
   ; { ret_ty = "int"
-    ; func_name = "attach_run_wait"
+    ; fun_name = "attach_run_wait"
     ; other_param_tys =
         [ "lxc_attach_options_t *"
         ; "const char *"
         ; "const char *"
         ; "const char * const []" ] }
-  ; {ret_ty = "int"; func_name = "snapshot"; other_param_tys = ["const char *"]}
+  ; {ret_ty = "int"; fun_name = "snapshot"; other_param_tys = ["const char *"]}
   ; { ret_ty = "int"
-    ; func_name = "snapshot_list"
+    ; fun_name = "snapshot_list"
     ; other_param_tys = ["struct lxc_snapshot **"] }
   ; { ret_ty = "bool"
-    ; func_name = "snapshot_restore"
+    ; fun_name = "snapshot_restore"
     ; other_param_tys = ["const char *"; "const char *"] }
   ; { ret_ty = "bool"
-    ; func_name = "snapshot_destroy"
+    ; fun_name = "snapshot_destroy"
     ; other_param_tys = ["const char *"] }
-  ; {ret_ty = "bool"; func_name = "may_control"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "may_control"; other_param_tys = []}
   ; { ret_ty = "bool"
-    ; func_name = "add_device_node"
+    ; fun_name = "add_device_node"
     ; other_param_tys = ["const char *"; "const char *"] }
   ; { ret_ty = "bool"
-    ; func_name = "remove_device_node"
+    ; fun_name = "remove_device_node"
     ; other_param_tys = ["const char *"; "const char *"] }
   ; { ret_ty = "bool"
-    ; func_name = "attach_interface"
+    ; fun_name = "attach_interface"
     ; other_param_tys = ["const char *"; "const char *"] }
   ; { ret_ty = "bool"
-    ; func_name = "detach_interface"
+    ; fun_name = "detach_interface"
     ; other_param_tys = ["const char *"; "const char *"] }
   ; { ret_ty = "bool"
-    ; func_name = "checkpoint"
+    ; fun_name = "checkpoint"
     ; other_param_tys = ["char *"; "bool"; "bool"] }
   ; { ret_ty = "bool"
-    ; func_name = "restore"
+    ; fun_name = "restore"
     ; other_param_tys = ["char *"; "bool"] }
   ; { ret_ty = "bool"
-    ; func_name = "destroy_with_snapshots"
+    ; fun_name = "destroy_with_snapshots"
     ; other_param_tys = [] }
-  ; {ret_ty = "bool"; func_name = "snapshot_destroy_all"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "snapshot_destroy_all"; other_param_tys = []}
   ; { ret_ty = "int"
-    ; func_name = "migrate"
+    ; fun_name = "migrate"
     ; other_param_tys =
         ["unsigned int"; "struct migrate_opts *"; "unsigned int"] }
   ; { ret_ty = "int"
-    ; func_name = "console_log"
+    ; fun_name = "console_log"
     ; other_param_tys = ["struct lxc_console_log *"] }
-  ; {ret_ty = "bool"; func_name = "reboot2"; other_param_tys = ["int"]}
+  ; {ret_ty = "bool"; fun_name = "reboot2"; other_param_tys = ["int"]}
   ; { ret_ty = "int"
-    ; func_name = "mount"
+    ; fun_name = "mount"
     ; other_param_tys =
         [ "struct lxc_container *"
         ; "const char *"
@@ -243,17 +243,17 @@ let funptr_records =
         ; "const void *"
         ; "struct lxc_mount *" ] }
   ; { ret_ty = "int"
-    ; func_name = "umount"
+    ; fun_name = "umount"
     ; other_param_tys =
         [ "struct lxc_container *"
         ; "const char *"
         ; "unsigned long"
         ; "struct lxc_mount *" ] }
-  ; {ret_ty = "int"; func_name = "seccomp_notify_fd"; other_param_tys = []}
+  ; {ret_ty = "int"; fun_name = "seccomp_notify_fd"; other_param_tys = []}
     (* dummy *) ]
 
-let func_name_suffix = "_glue"
+let fun_name_suffix = "_glue"
 
 (* let () = *)
-(* List.iter (gen_lxc_container_funptr_field_c_glue ~func_name_suffix) funptr_records *)
+(* List.iter (gen_lxc_container_funptr_field_c_glue ~fun_name_suffix) funptr_records *)
 (* List.iter gen_lxc_container_funptr_field funptr_records *)
