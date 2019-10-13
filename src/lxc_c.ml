@@ -1,10 +1,10 @@
 open Ctypes
-module Stubs = Ffi_bindings.Stubs (Ml_stubs)
+module Type_stubs = Ffi_types.Types_stubs (Ffi_types_ml_stubs)
 
 exception Unexpected_value
 
 module Migrate_cmd = struct
-  open Stubs.Migrate_cmd
+  open Type_stubs.Migrate_cmd
 
   type t =
     | Migrate_pre_dump
@@ -75,12 +75,6 @@ module State = struct
     | _ ->
       raise Unexpected_value
 end
-
-let create_glue =
-  Foreign.foreign "create_glue"
-    ( ptr Stubs.lxc_container @-> string @-> string
-      @-> ptr_opt Stubs.Bdev_specs_glue.t
-      @-> int @-> ptr_opt string @-> returning bool )
 
 let lxc_container_new =
   Foreign.foreign "lxc_container_new"

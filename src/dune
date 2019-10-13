@@ -7,6 +7,11 @@
             posix-types))
 
 (rule
+ (targets types.ml)
+ (deps    ../code_gen/types.ml)
+ (action  (copy %{deps} %{targets})))
+
+(rule
  (targets ffi_bindings.ml)
  (deps    ../code_gen/ffi_bindings.ml)
  (action  (copy %{deps} %{targets})))
@@ -17,21 +22,21 @@
  (action  (copy %{deps} %{targets})))
 
 (rule
- (targets ml_stubs_gen.c)
- (deps    (:gen ../code_gen/c_stubs_gen.exe))
- (action  (with-stdout-to %{targets} (run %{gen}))))
+ (targets ffi_types_ml_stubs_gen.c)
+ (deps    (:gen ../code_gen/stub_gen.exe))
+ (action  (run %{gen})))
 
 (rule
- (targets ml_stubs_gen.o)
- (deps    ml_stubs_gen.c)
+ (targets ffi_types_ml_stubs_gen.o)
+ (deps    ffi_types_ml_stubs_gen.c)
  (action  (run ocamlfind ocamlc -package ctypes,ctypes.foreign -ccopt -llxc %{deps})))
 
 (rule
- (targets ml_stubs_gen.exe)
- (deps    ml_stubs_gen.o)
+ (targets ffi_types_ml_stubs_gen.exe)
+ (deps    ffi_types_ml_stubs_gen.o)
  (action  (run %{cc} -o %{targets} %{deps})))
 
 (rule
- (targets ml_stubs.ml)
- (deps    ml_stubs_gen.exe)
+ (targets ffi_types_ml_stubs.ml)
+ (deps    ffi_types_ml_stubs_gen.exe)
  (action  (with-stdout-to %{targets} (run %{deps}))))

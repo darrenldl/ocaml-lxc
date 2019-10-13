@@ -17,24 +17,48 @@ let strip_char char s =
 let strip_chars chars s =
   Seq.fold_left (fun s c -> strip_char c s) s (String.to_seq chars)
 
-let gen_lxc_container_funptr_c_glue {func_name; param_tys; ret_ty} =
+let gen_lxc_container_funptr_c_glue ~func_name_suffix
+    {func_name; param_tys; ret_ty} =
+  let gen_func_arg_field param_and_ty_list =
+    String.concat ", "
+      (List.map
+         (fun (name, ty) -> Printf.sprintf "%s %s" ty name)
+         param_and_ty_list)
+  in
+  let gen_names param_and_ty_list =
+    String.concat ", " (List.map (fun (name, _) -> name) param_and_ty_list)
+  in
   assert (List.hd param_tys = "struct lxc_container *");
   let func_name = strip_chars "*()" func_name in
-  let container_param =
-    Printf.sprintf "%s c" (List.hd param_tys)
+  let container_param_and_ty = ("c", List.hd param_tys) in
+  let other_param_and_ty =
+    List.tl param_tys |> List.mapi (fun i ty -> (Printf.sprintf "a%d" i, ty))
   in
-  let other_params =
-    List.tl param_tys |> List.mapi (fun i ty -> Printf.sprintf "%s a%d" ty i)
-  in
-  let params = container_param :: other_params in
-  Printf.printf "%s %s(%s) {" ret_ty func_name (String.concat ", " params);
+  let params = container_param_and_ty :: other_param_and_ty in
+  Printf.printf "%s %s%s(%s) {\n" ret_ty func_name func_name_suffix
+    (gen_func_arg_field params);
+  Printf.printf "  return c->%s(%s);\n" func_name (gen_names params);
   print_endline "}";
   print_newline ()
+
+let gen_lxc_container_funptr_ml_glue
+    {func_name; param_tys; ret_ty} =
+  let gen_func_arg_field param_and_ty_list =
+    String.concat ", "
+      (List.map
+         (fun (name, ty) -> Printf.sprintf "%s %s" ty name)
+         param_and_ty_list)
+  in
+  let gen_names param_and_ty_list =
+    String.concat ", " (List.map (fun (name, _) -> name) param_and_ty_list)
+  in
 
 let funptr_records =
   [ { ret_ty = "bool"
     ; func_name = "*load_config"
-    ; param_tys = ["struct lxc_container *"; "const char *"] }
-  ; ]
+    ; param_tys = ["struct lxc_container *"; "const char *"] } ]
 
-let () = List.iter gen_lxc_container_funptr_c_glue funptr_records
+let func_name_suffix = "_glue"
+
+let () =
+  List.iter (gen_lxc_container_funptr_c_glue ~func_name_suffix) funptr_records

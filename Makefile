@@ -1,5 +1,7 @@
 SRCFILES = src/*.ml* code_gen/*.ml*
 
+C_FILES = code_gen/*.c
+
 CINAPSFILES = code_gen/*.cinaps
 
 OCAMLFORMAT = ocamlformat \
@@ -29,6 +31,7 @@ format :
 .PHONY: cinaps
 cinaps :
 	cinaps -i $(SRCFILES)
+	cinaps -i $(C_FILES)
 	$(OCAMLFORMAT)
 	$(OCPINDENT)
 
