@@ -140,8 +140,7 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
   let attach_run_wait__glue =
     foreign "attach_run_wait__glue"
       ( ptr lxc_container @-> ptr Lxc_attach_options_t.t @-> string
-        @-> ptr (ptr char)
-        @-> returning int )
+        @-> ptr string @-> returning int )
 
   let snapshot__glue =
     foreign "snapshot__glue" (ptr lxc_container @-> string @-> returning int)
