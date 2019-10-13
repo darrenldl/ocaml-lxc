@@ -255,10 +255,6 @@ let funptr_records =
     }
   ; {ret_ty = "int"; fun_name = "seccomp_notify_fd"; other_param_tys = []} ]
 
-(* let () = *)
-(* List.iter (gen_lxc_container_funptr_field_c_glue ~fun_name_suffix) funptr_records *)
-(* List.iter gen_lxc_container_funptr_field funptr_records *)
-
 let gen_lxc_container_funptr_field_all () =
   List.iter gen_lxc_container_funptr_field funptr_records
 
