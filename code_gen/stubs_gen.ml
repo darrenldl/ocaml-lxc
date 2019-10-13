@@ -10,15 +10,13 @@
  *          done
  *        with End_of_file -> ()) *)
 
-let headers = [
-  (* "#include <lxc/lxccontainer.h>"; *)
-  (* "#include <lxc/attach_options.h>"; *)
-  "#include \"lxc_glue.h\"";
-]
+let headers =
+  [ (* "#include <lxc/lxccontainer.h>"; *)
+    (* "#include <lxc/attach_options.h>"; *)
+    "#include \"lxc_glue.h\"" ]
 
 let write_headers c_out =
   List.iter (fun s -> output_string c_out s; output_string c_out "\n") headers
-
 
 let gen_ffi_types_stubs () =
   let c_out = open_out "ffi_types_ml_stubs_gen.c" in
