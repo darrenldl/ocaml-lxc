@@ -252,39 +252,23 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     field lxc_container "is_running"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let is_running =
-    field lxc_container "is_running"
+  let freeze =
+    field lxc_container "freeze"
       (static_funptr (ptr lxc_container @-> returning bool))
+
+  let unfreeze =
+    field lxc_container "unfreeze"
+      (static_funptr (ptr lxc_container @-> returning bool))
+
+  let init_pid =
+    field lxc_container "init_pid"
+      (static_funptr (ptr lxc_container @-> returning Posix.pid_t))
 
   let load_config =
     field lxc_container "load_config"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
 
     (*$*)
-
-let state =
-  field lxc_container "state"
-    (static_funptr (ptr lxc_container @-> returning string))
-
-let is_running =
-  field lxc_container "is_running"
-    (static_funptr (ptr lxc_container @-> returning bool))
-
-let freeze =
-  field lxc_container "freeze"
-    (static_funptr (ptr lxc_container @-> returning bool))
-
-let unfreeze =
-  field lxc_container "unfreeze"
-    (static_funptr (ptr lxc_container @-> returning bool))
-
-let init_pid =
-  field lxc_container "init_pid"
-    (static_funptr (ptr lxc_container @-> returning Posix.pid_t))
-
-let load_config =
-  field lxc_container "load_config"
-    (static_funptr (ptr lxc_container @-> string_opt @-> returning bool))
 
 let start =
   field lxc_container "start"

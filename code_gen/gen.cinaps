@@ -52,6 +52,8 @@ let c_type_to_ocaml_type s =
     "ptr lxc_container"
   | "struct lxc_mount *" ->
     "ptr Lxc_mount.t"
+  | "pid_t" ->
+    "Posix.pid_t"
   | _ ->
     let re = Str.regexp_string "*" in
     let splits = Str.full_split re s in
@@ -89,7 +91,9 @@ let funptr_records =
   [ {ret_ty = "bool"; func_name = "is_defined"; other_param_tys = []}
   ; {ret_ty = "const char *"; func_name = "state"; other_param_tys = []}
   ; {ret_ty = "bool"; func_name = "is_running"; other_param_tys = []}
-  ; {ret_ty = "bool"; func_name = "is_running"; other_param_tys = []}
+  ; {ret_ty = "bool"; func_name = "freeze"; other_param_tys = []}
+  ; {ret_ty = "bool"; func_name = "unfreeze"; other_param_tys = []}
+  ; {ret_ty = "pid_t"; func_name = "init_pid"; other_param_tys = []}
   ; { ret_ty = "bool"
     ; func_name = "load_config"
     ; other_param_tys = ["const char *"] } ]
