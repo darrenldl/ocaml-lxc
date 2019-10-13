@@ -27,8 +27,3 @@ bool create__glue(struct lxc_container *c, const char *t, const char *bdevtype,
 
   return c->create(c, t, bdevtype, &specs, flags, argv);
 }
-
-/*$ #use "code_gen/gen.cinaps";;
-
-  (* gen_lxc_container_funptr_field_c_glue_code_all () *)
-*//*$*/
