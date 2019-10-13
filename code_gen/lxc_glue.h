@@ -97,7 +97,7 @@ int console_getfd__glue(struct lxc_container * c, int * a0, int * a1);
 
 int console__glue(struct lxc_container * c, int a0, int a1, int a2, int a3, int a4);
 
-int attach_run_wait__glue(struct lxc_container * c, lxc_attach_options_t * a0, const char * a1, const char * const * a2);
+int attach_run_wait__glue(struct lxc_container * c, lxc_attach_options_t * a0, const char * a1, char * const * a2);
 
 int snapshot__glue(struct lxc_container * c, const char * a0);
 

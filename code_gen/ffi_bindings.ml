@@ -38,7 +38,7 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
 
   let start__glue =
     foreign "start__glue"
-      (ptr lxc_container @-> int @-> ptr string @-> returning bool)
+      (ptr lxc_container @-> int @-> ptr (ptr char) @-> returning bool)
 
   let stop__glue = foreign "stop__glue" (ptr lxc_container @-> returning bool)
 
@@ -140,7 +140,8 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
   let attach_run_wait__glue =
     foreign "attach_run_wait__glue"
       ( ptr lxc_container @-> ptr Lxc_attach_options_t.t @-> string
-        @-> ptr string @-> returning int )
+        @-> ptr (ptr char)
+        @-> returning int )
 
   let snapshot__glue =
     foreign "snapshot__glue" (ptr lxc_container @-> string @-> returning int)

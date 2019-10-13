@@ -78,8 +78,10 @@ let c_type_to_ocaml_type s =
   | "pid_t" ->
     "Posix_types.pid_t"
   | "char * const *" ->
-    "ptr string"
+    "ptr (ptr char)"
   | "const char * const *" ->
+    "ptr string"
+  | "const char **" ->
     "ptr string"
   | "unsigned int" ->
     "uint"
@@ -208,7 +210,7 @@ let funptr_records =
   ; { ret_ty = "int"
     ; fun_name = "attach_run_wait"
     ; other_param_tys =
-        ["lxc_attach_options_t *"; "const char *"; "const char * const *"] }
+        ["lxc_attach_options_t *"; "const char *"; "char * const *"] }
   ; {ret_ty = "int"; fun_name = "snapshot"; other_param_tys = ["const char *"]}
   ; { ret_ty = "int"
     ; fun_name = "snapshot_list"

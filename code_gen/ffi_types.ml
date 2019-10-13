@@ -271,7 +271,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   let start =
     field lxc_container "start"
       (static_funptr
-         (ptr lxc_container @-> int @-> ptr string @-> returning bool))
+         (ptr lxc_container @-> int @-> ptr (ptr char) @-> returning bool))
 
   let stop =
     field lxc_container "stop"
@@ -391,7 +391,8 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     field lxc_container "attach_run_wait"
       (static_funptr
          ( ptr lxc_container @-> ptr Lxc_attach_options_t.t @-> string
-           @-> ptr string @-> returning int ))
+           @-> ptr (ptr char)
+           @-> returning int ))
 
   let snapshot =
     field lxc_container "snapshot"
