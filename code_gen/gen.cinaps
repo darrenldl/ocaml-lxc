@@ -27,6 +27,8 @@ let patch_c_type s =
     "char **"
   | "const char **" ->
     "char **"
+  | "const char *" ->
+    "char *"
   | _ ->
     s
 
@@ -49,7 +51,8 @@ let gen_lxc_container_funptr_field_c_glue_header
     other_param_tys |> List.mapi (fun i ty -> (Printf.sprintf "a%d" i, ty))
   in
   let params = container_param_and_ty :: other_param_and_ty in
-  Printf.printf "%s %s%s(%s);\n" ret_ty fun_name glue_fun_name_suffix
+  Printf.printf "%s %s%s(%s);\n" (patch_c_type ret_ty) fun_name
+    glue_fun_name_suffix
     (gen_c_func_arg_field params);
   print_newline ()
 
@@ -60,9 +63,11 @@ let gen_lxc_container_funptr_field_c_glue_code
     other_param_tys |> List.mapi (fun i ty -> (Printf.sprintf "a%d" i, ty))
   in
   let params = container_param_and_ty :: other_param_and_ty in
-  Printf.printf "%s %s%s(%s) {\n" ret_ty fun_name glue_fun_name_suffix
+  Printf.printf "%s %s%s(%s) {\n" (patch_c_type ret_ty) fun_name
+    glue_fun_name_suffix
     (gen_c_func_arg_field params);
-  Printf.printf "  return c->%s(%s);\n" fun_name (gen_c_func_arg_names params);
+  Printf.printf "  return (%s)c->%s(%s);\n" (patch_c_type ret_ty) fun_name
+    (gen_c_func_arg_names params);
   print_endline "}";
   print_newline ()
 
