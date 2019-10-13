@@ -240,15 +240,15 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
        List.iter gen_lxc_container_funptr_field funptr_records
   *)
 
+  let is_defined =
+    field lxc_container "is_defined"
+      (static_funptr (ptr lxc_container @-> returning bool))
+
   let load_config =
     field lxc_container "load_config"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
 
     (*$*)
-
-let is_defined =
-  field lxc_container "is_defined"
-    (static_funptr (ptr lxc_container @-> returning bool))
 
 let state =
   field lxc_container "state"

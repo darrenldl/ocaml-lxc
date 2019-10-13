@@ -88,6 +88,9 @@ let gen_lxc_container_funptr_field {func_name; param_tys; ret_ty} =
 
 let funptr_records =
   [ { ret_ty = "bool"
+    ; func_name = "is_defined"
+    ; param_tys = ["struct lxc_container *"] }
+  ; { ret_ty = "bool"
     ; func_name = "load_config"
     ; param_tys = ["struct lxc_container *"; "const char *"] } ]
 
