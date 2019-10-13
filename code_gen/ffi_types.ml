@@ -237,7 +237,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
   (*$ #use "code_gen/gen.cinaps";;
 
-      gen_lxc_container_funptr_field_all ()
+       gen_lxc_container_funptr_field_all ()
   *)
 
   let is_defined =
@@ -279,7 +279,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
   let want_daemonize =
     field lxc_container "want_daemonize"
-      (static_funptr (ptr lxc_container @-> returning bool))
+      (static_funptr (ptr lxc_container @-> bool @-> returning bool))
 
   let want_close_all_fds =
     field lxc_container "want_close_all_fds"
@@ -391,7 +391,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     field lxc_container "attach_run_wait"
       (static_funptr
          ( ptr lxc_container @-> ptr Lxc_attach_options_t.t @-> string
-           @-> string @-> ptr string @-> returning int ))
+           @-> ptr string @-> returning int ))
 
   let snapshot =
     field lxc_container "snapshot"
@@ -471,15 +471,14 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   let mount =
     field lxc_container "mount"
       (static_funptr
-         ( ptr lxc_container @-> ptr lxc_container @-> string @-> string
-           @-> string @-> ulong @-> ptr void @-> ptr Lxc_mount.t
-           @-> returning int ))
+         ( ptr lxc_container @-> string @-> string @-> string @-> ulong
+           @-> ptr void @-> ptr Lxc_mount.t @-> returning int ))
 
   let umount =
     field lxc_container "umount"
       (static_funptr
-         ( ptr lxc_container @-> ptr lxc_container @-> string @-> ulong
-           @-> ptr Lxc_mount.t @-> returning int ))
+         ( ptr lxc_container @-> string @-> ulong @-> ptr Lxc_mount.t
+           @-> returning int ))
 
   let seccomp_notify_fd =
     field lxc_container "seccomp_notify_fd"

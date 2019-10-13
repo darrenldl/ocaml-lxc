@@ -65,9 +65,9 @@ let c_type_to_ocaml_type s =
     "ptr Lxc_console_log.t"
   | "pid_t" ->
     "Posix.pid_t"
-  | "char * const []" ->
+  | "char * const *" ->
     "ptr string"
-  | "const char * const []" ->
+  | "const char * const *" ->
     "ptr string"
   | "unsigned int" ->
     "uint"
@@ -120,9 +120,9 @@ let funptr_records =
     ; other_param_tys = ["const char *"] }
   ; { ret_ty = "bool"
     ; fun_name = "start"
-    ; other_param_tys = ["int"; "char * const []"] }
+    ; other_param_tys = ["int"; "char * const *"] }
   ; {ret_ty = "bool"; fun_name = "stop"; other_param_tys = []}
-  ; {ret_ty = "bool"; fun_name = "want_daemonize"; other_param_tys = []}
+  ; {ret_ty = "bool"; fun_name = "want_daemonize"; other_param_tys = ["bool"]}
   ; { ret_ty = "bool"
     ; fun_name = "want_close_all_fds"
     ; other_param_tys = ["bool"] }
@@ -188,10 +188,7 @@ let funptr_records =
   ; { ret_ty = "int"
     ; fun_name = "attach_run_wait"
     ; other_param_tys =
-        [ "lxc_attach_options_t *"
-        ; "const char *"
-        ; "const char *"
-        ; "const char * const []" ] }
+        ["lxc_attach_options_t *"; "const char *"; "const char * const *"] }
   ; {ret_ty = "int"; fun_name = "snapshot"; other_param_tys = ["const char *"]}
   ; { ret_ty = "int"
     ; fun_name = "snapshot_list"
@@ -234,8 +231,7 @@ let funptr_records =
   ; { ret_ty = "int"
     ; fun_name = "mount"
     ; other_param_tys =
-        [ "struct lxc_container *"
-        ; "const char *"
+        [ "const char *"
         ; "const char *"
         ; "const char *"
         ; "unsigned long"
@@ -243,13 +239,9 @@ let funptr_records =
         ; "struct lxc_mount *" ] }
   ; { ret_ty = "int"
     ; fun_name = "umount"
-    ; other_param_tys =
-        [ "struct lxc_container *"
-        ; "const char *"
-        ; "unsigned long"
-        ; "struct lxc_mount *" ] }
-  ; {ret_ty = "int"; fun_name = "seccomp_notify_fd"; other_param_tys = []}
-    (* dummy *) ]
+    ; other_param_tys = ["const char *"; "unsigned long"; "struct lxc_mount *"]
+    }
+  ; {ret_ty = "int"; fun_name = "seccomp_notify_fd"; other_param_tys = []} ]
 
 (* let () = *)
 (* List.iter (gen_lxc_container_funptr_field_c_glue ~fun_name_suffix) funptr_records *)
@@ -258,5 +250,5 @@ let funptr_records =
 let gen_lxc_container_funptr_field_all () =
   List.iter gen_lxc_container_funptr_field funptr_records
 
-let gen_lxc_container_funptr_field_c_glue_all =
+let gen_lxc_container_funptr_field_c_glue_all () =
   List.iter gen_lxc_container_funptr_field_c_glue funptr_records

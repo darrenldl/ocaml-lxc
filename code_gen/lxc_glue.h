@@ -29,8 +29,4 @@ bool create_glu(struct lxc_container *c, const char *t, const char *bdevtype,
                 struct bdev_specs_glue *specs_glue, int flags, char *const argv[]);
 
 
-/*$ #use "gen.cinaps";;
-
-    gen_lxc_container_funptr_field_c_glue_all ()
- *//*$*/
 #endif
