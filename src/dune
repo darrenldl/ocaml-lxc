@@ -12,6 +12,11 @@
  (action  (copy %{deps} %{targets})))
 
 (rule
+ (targets ffi_types.ml)
+ (deps    ../code_gen/ffi_types.ml)
+ (action  (copy %{deps} %{targets})))
+
+(rule
  (targets ffi_bindings.ml)
  (deps    ../code_gen/ffi_bindings.ml)
  (action  (copy %{deps} %{targets})))
@@ -23,7 +28,7 @@
 
 (rule
  (targets ffi_types_ml_stubs_gen.c)
- (deps    (:gen ../code_gen/stub_gen.exe))
+ (deps    (:gen ../code_gen/stubs_gen.exe))
  (action  (run %{gen})))
 
 (rule

@@ -78,15 +78,15 @@ end
 
 let lxc_container_new =
   Foreign.foreign "lxc_container_new"
-    (string @-> string @-> returning (ptr_opt Stubs.lxc_container))
+    (string @-> string @-> returning (ptr_opt Types.lxc_container))
 
 let lxc_container_get =
   Foreign.foreign "lxc_container_get"
-    (ptr Stubs.lxc_container @-> returning int)
+    (ptr Types.lxc_container @-> returning int)
 
 let lxc_container_put =
   Foreign.foreign "lxc_container_put"
-    (ptr Stubs.lxc_container @-> returning int)
+    (ptr Types.lxc_container @-> returning int)
 
 let lxc_get_wait_states =
   Foreign.foreign "lxc_get_wait_states" (ptr string @-> returning int)
@@ -101,27 +101,27 @@ let list_defined_containers =
   Foreign.foreign "list_defined_containers"
     ( string
       @-> ptr (ptr (ptr char))
-      @-> ptr (ptr (ptr Stubs.lxc_container))
+      @-> ptr (ptr (ptr Types.lxc_container))
       @-> returning int )
 
 let list_active_containers =
   Foreign.foreign "list_active_containers"
     ( string
       @-> ptr (ptr (ptr char))
-      @-> ptr (ptr (ptr Stubs.lxc_container))
+      @-> ptr (ptr (ptr Types.lxc_container))
       @-> returning int )
 
 let list_all_containers =
   Foreign.foreign "list_all_containers"
     ( string
       @-> ptr (ptr (ptr char))
-      @-> ptr (ptr (ptr Stubs.lxc_container))
+      @-> ptr (ptr (ptr Types.lxc_container))
       @-> returning int )
 
-let lxc_log_init =
-  Foreign.foreign "lxc_log_init" (ptr Stubs.Lxc_log.t @-> returning int)
-
-let lxc_log_close = Foreign.foreign "lxc_log_close" (void @-> returning void)
+(* let lxc_log_init =
+ *   Foreign.foreign "lxc_log_init" (ptr Types.Lxc_log.t @-> returning int)
+ * 
+ * let lxc_log_close = Foreign.foreign "lxc_log_close" (void @-> returning void) *)
 
 let lxc_config_item_is_supported =
   Foreign.foreign "lxc_config_item_is_supported" (string @-> returning bool)

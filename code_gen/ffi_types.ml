@@ -261,8 +261,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     let quiet = field t "quiet" bool
   end
 
-  type lxc_container
+  type lxc_container = Types.lxc_container
 
-  let lxc_container : lxc_container Ctypes.structure typ =
-    structure "lxc_container"
+  let lxc_container = lift_typ Types.lxc_container
 end

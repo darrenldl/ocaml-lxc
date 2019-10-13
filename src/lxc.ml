@@ -1,7 +1,7 @@
 open Misc_utils
 open Ctypes
 
-type t = {lxc_container : Lxc_c.Stubs.lxc_container Ctypes.structure Ctypes.ptr}
+type t = {lxc_container : Types.lxc_container Ctypes.structure Ctypes.ptr}
 
 let new_container ~name ~config_path =
   match Lxc_c.lxc_container_new name config_path with
