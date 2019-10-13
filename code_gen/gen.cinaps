@@ -3,7 +3,7 @@ type funptr_record =
   ; other_param_tys : string list
   ; ret_ty : string }
 
-let glue_fun_name_suffix = "_glu"
+let glue_fun_name_suffix = "__glue"
 
 let contains_substring s ~substr =
   let re = Str.regexp_string substr in

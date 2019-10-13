@@ -4,8 +4,8 @@ open Types
 module Fun_stubs (F : Cstubs.FOREIGN) = struct
   open F
 
-  let create_glu =
-    foreign "create_glu"
+  let create__glue =
+    foreign "create__glue"
       ( ptr lxc_container @-> string @-> string @-> ptr_opt Bdev_specs_glue.t
         @-> int @-> ptr_opt string @-> returning bool )
 
