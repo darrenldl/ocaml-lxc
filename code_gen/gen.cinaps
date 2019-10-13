@@ -98,14 +98,17 @@ let c_type_to_ocaml_type s =
     in
     aux (strip_chars "*" s) pointer_count
 
-let gen_lxc_container_funptr_field {fun_name; other_param_tys; ret_ty} =
+let gen_lxc_container_funptr_field_ml {fun_name; other_param_tys; ret_ty} =
   Printf.printf "let %s =\n" fun_name;
   Printf.printf "  field lxc_container \"%s\"\n" fun_name;
   Printf.printf "    (static_funptr\n";
   Printf.printf "       (%s\n"
     (String.concat " @-> "
        ("ptr lxc_container" :: List.map c_type_to_ocaml_type other_param_tys));
-  Printf.printf "        @-> returning (%s)))\n" (c_type_to_ocaml_type ret_ty);
+  Printf.printf "        @-> returning (%s)))\n" (c_type_to_ocaml_type ret_ty)
+
+let gen_lxc_container_funptr_field_ml_glue {fun_name; other_param_tys; ret_ty}
+  =
   ()
 
 (* let gen_lxc_container_funptr_field_ml_glue
@@ -255,8 +258,8 @@ let funptr_records =
     }
   ; {ret_ty = "int"; fun_name = "seccomp_notify_fd"; other_param_tys = []} ]
 
-let gen_lxc_container_funptr_field_all () =
-  List.iter gen_lxc_container_funptr_field funptr_records
+let gen_lxc_container_funptr_field_ml_all () =
+  List.iter gen_lxc_container_funptr_field_ml funptr_records
 
 let gen_lxc_container_funptr_field_c_glue_header_all () =
   List.iter gen_lxc_container_funptr_field_c_glue_header funptr_records
