@@ -23,7 +23,7 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
     foreign "lxc_get_wait_states" (ptr string @-> returning int)
 
   let lxc_get_global_config_item =
-    foreign "lxc_get_global_item" (string @-> returning string)
+    foreign "lxc_get_global_config_item" (string @-> returning string)
 
   let lxc_get_version = foreign "lxc_get_version" (void @-> returning string)
 
@@ -47,4 +47,8 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
         @-> ptr (ptr (ptr char))
         @-> ptr (ptr (ptr Types.lxc_container))
         @-> returning int )
+
+  let lxc_log_init =
+    foreign "lxc_log_init"
+      ( ptr Types.Lxc_log.t @-> returning int)
 end
