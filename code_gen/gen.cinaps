@@ -300,7 +300,7 @@ module For_lxc_c_dot_ml = struct
     Printf.printf "    (Foreign.funptr (%s\n"
       (String.concat " @-> "
          ("ptr lxc_container" :: List.map c_type_to_ocaml_type other_param_tys));
-    Printf.printf "     @-> returning (%s))\n" (c_type_to_ocaml_type ret_ty);
+    Printf.printf "     @-> returning (%s)))\n" (c_type_to_ocaml_type ret_ty);
     Printf.printf "    c_field";
     Printf.printf "  in";
     Printf.printf "  f c"
