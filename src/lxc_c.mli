@@ -8,7 +8,7 @@ module Migrate_cmd : sig
     | Migrate_restore
     | Migrate_feature_check
 
-  val to_c_int : t -> int64 Ffi_types_ml_stubs.const
+  val to_c_int : t -> int64
 end
 
 module State : sig
