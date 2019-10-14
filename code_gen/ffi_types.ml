@@ -240,135 +240,135 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
        gen_lxc_container_funptr_field_ml_all ()
   *)
 
-  let is_defined =
+  let is_defined__raw =
     field lxc_container "is_defined"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let state =
+  let state__raw =
     field lxc_container "state"
       (static_funptr (ptr lxc_container @-> returning string))
 
-  let is_running =
+  let is_running__raw =
     field lxc_container "is_running"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let freeze =
+  let freeze__raw =
     field lxc_container "freeze"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let unfreeze =
+  let unfreeze__raw =
     field lxc_container "unfreeze"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let init_pid =
+  let init_pid__raw =
     field lxc_container "init_pid"
       (static_funptr (ptr lxc_container @-> returning Posix_types.pid_t))
 
-  let load_config =
+  let load_config__raw =
     field lxc_container "load_config"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
 
-  let start =
+  let start__raw =
     field lxc_container "start"
       (static_funptr
          (ptr lxc_container @-> int @-> ptr (ptr char) @-> returning bool))
 
-  let stop =
+  let stop__raw =
     field lxc_container "stop"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let want_daemonize =
+  let want_daemonize__raw =
     field lxc_container "want_daemonize"
       (static_funptr (ptr lxc_container @-> bool @-> returning bool))
 
-  let want_close_all_fds =
+  let want_close_all_fds__raw =
     field lxc_container "want_close_all_fds"
       (static_funptr (ptr lxc_container @-> bool @-> returning bool))
 
-  let config_file_name =
+  let config_file_name__raw =
     field lxc_container "config_file_name"
       (static_funptr (ptr lxc_container @-> returning (ptr char)))
 
-  let wait =
+  let wait__raw =
     field lxc_container "wait"
       (static_funptr (ptr lxc_container @-> string @-> int @-> returning bool))
 
-  let set_config_item =
+  let set_config_item__raw =
     field lxc_container "set_config_item"
       (static_funptr
          (ptr lxc_container @-> string @-> string @-> returning bool))
 
-  let destroy =
+  let destroy__raw =
     field lxc_container "destroy"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let save_config =
+  let save_config__raw =
     field lxc_container "save_config"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
 
-  let rename =
+  let rename__raw =
     field lxc_container "rename"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
 
-  let reboot =
+  let reboot__raw =
     field lxc_container "reboot"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let shutdown =
+  let shutdown__raw =
     field lxc_container "shutdown"
       (static_funptr (ptr lxc_container @-> int @-> returning bool))
 
-  let clear_config =
+  let clear_config__raw =
     field lxc_container "clear_config"
       (static_funptr (ptr lxc_container @-> returning void))
 
-  let clear_config_item =
+  let clear_config_item__raw =
     field lxc_container "clear_config_item"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
 
-  let get_config_item =
+  let get_config_item__raw =
     field lxc_container "get_config_item"
       (static_funptr
          (ptr lxc_container @-> string @-> ptr char @-> int @-> returning int))
 
-  let get_running_config_item =
+  let get_running_config_item__raw =
     field lxc_container "get_running_config_item"
       (static_funptr (ptr lxc_container @-> string @-> returning (ptr char)))
 
-  let get_keys =
+  let get_keys__raw =
     field lxc_container "get_keys"
       (static_funptr
          (ptr lxc_container @-> string @-> ptr char @-> int @-> returning int))
 
-  let get_interfaces =
+  let get_interfaces__raw =
     field lxc_container "get_interfaces"
       (static_funptr (ptr lxc_container @-> returning (ptr (ptr char))))
 
-  let get_ips =
+  let get_ips__raw =
     field lxc_container "get_ips"
       (static_funptr
          ( ptr lxc_container @-> string @-> string @-> int
            @-> returning (ptr (ptr char)) ))
 
-  let get_cgroup_item =
+  let get_cgroup_item__raw =
     field lxc_container "get_cgroup_item"
       (static_funptr
          (ptr lxc_container @-> string @-> ptr char @-> int @-> returning int))
 
-  let set_cgroup_item =
+  let set_cgroup_item__raw =
     field lxc_container "set_cgroup_item"
       (static_funptr
          (ptr lxc_container @-> string @-> string @-> returning bool))
 
-  let get_config_path =
+  let get_config_path__raw =
     field lxc_container "get_config_path"
       (static_funptr (ptr lxc_container @-> returning string))
 
-  let set_config_path =
+  let set_config_path__raw =
     field lxc_container "set_config_path"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
 
-  let clone =
+  let clone__raw =
     field lxc_container "clone"
       (static_funptr
          ( ptr lxc_container @-> string @-> string @-> int @-> string @-> string
@@ -376,111 +376,111 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
            @-> ptr (ptr char)
            @-> returning (ptr lxc_container) ))
 
-  let console_getfd =
+  let console_getfd__raw =
     field lxc_container "console_getfd"
       (static_funptr
          (ptr lxc_container @-> ptr int @-> ptr int @-> returning int))
 
-  let console =
+  let console__raw =
     field lxc_container "console"
       (static_funptr
          ( ptr lxc_container @-> int @-> int @-> int @-> int @-> int
            @-> returning int ))
 
-  let attach_run_wait =
+  let attach_run_wait__raw =
     field lxc_container "attach_run_wait"
       (static_funptr
          ( ptr lxc_container @-> ptr Lxc_attach_options_t.t @-> string
            @-> ptr string @-> returning int ))
 
-  let snapshot =
+  let snapshot__raw =
     field lxc_container "snapshot"
       (static_funptr (ptr lxc_container @-> string @-> returning int))
 
-  let snapshot_list =
+  let snapshot_list__raw =
     field lxc_container "snapshot_list"
       (static_funptr
          (ptr lxc_container @-> ptr (ptr Lxc_snapshot.t) @-> returning int))
 
-  let snapshot_restore =
+  let snapshot_restore__raw =
     field lxc_container "snapshot_restore"
       (static_funptr
          (ptr lxc_container @-> string @-> string @-> returning bool))
 
-  let snapshot_destroy =
+  let snapshot_destroy__raw =
     field lxc_container "snapshot_destroy"
       (static_funptr (ptr lxc_container @-> string @-> returning bool))
 
-  let may_control =
+  let may_control__raw =
     field lxc_container "may_control"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let add_device_node =
+  let add_device_node__raw =
     field lxc_container "add_device_node"
       (static_funptr
          (ptr lxc_container @-> string @-> string @-> returning bool))
 
-  let remove_device_node =
+  let remove_device_node__raw =
     field lxc_container "remove_device_node"
       (static_funptr
          (ptr lxc_container @-> string @-> string @-> returning bool))
 
-  let attach_interface =
+  let attach_interface__raw =
     field lxc_container "attach_interface"
       (static_funptr
          (ptr lxc_container @-> string @-> string @-> returning bool))
 
-  let detach_interface =
+  let detach_interface__raw =
     field lxc_container "detach_interface"
       (static_funptr
          (ptr lxc_container @-> string @-> string @-> returning bool))
 
-  let checkpoint =
+  let checkpoint__raw =
     field lxc_container "checkpoint"
       (static_funptr
          (ptr lxc_container @-> ptr char @-> bool @-> bool @-> returning bool))
 
-  let restore =
+  let restore__raw =
     field lxc_container "restore"
       (static_funptr
          (ptr lxc_container @-> ptr char @-> bool @-> returning bool))
 
-  let destroy_with_snapshots =
+  let destroy_with_snapshots__raw =
     field lxc_container "destroy_with_snapshots"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let snapshot_destroy_all =
+  let snapshot_destroy_all__raw =
     field lxc_container "snapshot_destroy_all"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let migrate =
+  let migrate__raw =
     field lxc_container "migrate"
       (static_funptr
          ( ptr lxc_container @-> uint @-> ptr Migrate_opts.t @-> uint
            @-> returning int ))
 
-  let console_log =
+  let console_log__raw =
     field lxc_container "console_log"
       (static_funptr
          (ptr lxc_container @-> ptr Lxc_console_log.t @-> returning int))
 
-  let reboot2 =
+  let reboot2__raw =
     field lxc_container "reboot2"
       (static_funptr (ptr lxc_container @-> int @-> returning bool))
 
-  let mount =
+  let mount__raw =
     field lxc_container "mount"
       (static_funptr
          ( ptr lxc_container @-> string @-> string @-> string @-> ulong
            @-> ptr void @-> ptr Lxc_mount.t @-> returning int ))
 
-  let umount =
+  let umount__raw =
     field lxc_container "umount"
       (static_funptr
          ( ptr lxc_container @-> string @-> ulong @-> ptr Lxc_mount.t
            @-> returning int ))
 
-  let seccomp_notify_fd =
+  let seccomp_notify_fd__raw =
     field lxc_container "seccomp_notify_fd"
       (static_funptr (ptr lxc_container @-> returning int))
 

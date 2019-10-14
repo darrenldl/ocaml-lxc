@@ -5,6 +5,8 @@ type funptr_record =
 
 let glue_fun_name_suffix = "__glue"
 
+let funptr_field_ml_raw_suffix = "__raw"
+
 let contains_substring s ~substr =
   let re = Str.regexp_string substr in
   try
@@ -120,7 +122,7 @@ let c_type_to_ocaml_type s =
     aux (strip_chars "*" s) pointer_count
 
 let gen_lxc_container_funptr_field_ml {fun_name; other_param_tys; ret_ty} =
-  Printf.printf "let %s =\n" fun_name;
+  Printf.printf "let %s%s =\n" fun_name funptr_field_ml_raw_suffix;
   Printf.printf "  field lxc_container \"%s\"\n" fun_name;
   Printf.printf "    (static_funptr\n";
   Printf.printf "       (%s\n"
@@ -136,6 +138,9 @@ let gen_lxc_container_funptr_field_ml_glue {fun_name; other_param_tys; ret_ty}
     (String.concat " @-> "
        ("ptr lxc_container" :: List.map c_type_to_ocaml_type other_param_tys));
   Printf.printf "     @-> returning (%s))\n" (c_type_to_ocaml_type ret_ty)
+
+(* let gen_lxc_container_funptr_field_wrapper {fun_name; other_param_tys; ret_ty} =
+ *   Printf.printf "let %s = \n" fun_name; *)
 
 let funptr_records =
   [ {ret_ty = "bool"; fun_name = "is_defined"; other_param_tys = []}
