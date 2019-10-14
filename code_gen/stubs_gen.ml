@@ -26,7 +26,7 @@ let gen_ffi_types_stubs () =
     (fun () ->
        write_headers c_out;
        (* write_glue_c c_out; *)
-       Cstubs.Types.write_c c_fmt (module Ffi_types.Types_stubs))
+       Cstubs_structs.write_c c_fmt (module Ffi_types.Types_stubs))
 
 let gen_ffi_binding_stubs () =
   (let c_out = open_out "ffi_bindings_c_stubs.c" in
