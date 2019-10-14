@@ -250,11 +250,17 @@ let c_type_to_ocaml_type_sig s =
   | "const char **" ->
     "string ptr"
   | "unsigned int" ->
-    "uint"
+    "int"
   | "unsigned long" ->
-    "ulong"
+    "Ctypes_types.Unsigned.ulong"
+  | "uint64_t" ->
+    "Ctypes_types.Unsigned.uint64"
   | "const void *" ->
-    "void ptr"
+    "unit ptr"
+  | "void *" ->
+    "unit ptr"
+  | "void" ->
+    "unit"
   | _ ->
     let re = Str.regexp_string "*" in
     let splits = Str.full_split re s in
