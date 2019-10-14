@@ -1,6 +1,8 @@
 open Ctypes
 open Types
 
+val lxc_container_new : string -> string -> lxc_container structure ptr option
+
 (*$ #use "code_gen/gen.cinaps";;
 
      For_lxc_c_dot_mli.gen_lxc_container_funptr_field_ml_wrapper_sig_all ()
@@ -80,9 +82,9 @@ val clone :
   -> int
   -> string
   -> string
-  -> Ctypes_types.Unsigned.uint64
+  -> Unsigned.uint64
   -> char ptr ptr
-  -> lxc_container ptr
+  -> lxc_container structure ptr
 
 val console_getfd :
   Types.lxc_container structure ptr -> int ptr -> int ptr -> int
@@ -92,7 +94,7 @@ val console :
 
 val attach_run_wait :
   Types.lxc_container structure ptr
-  -> Lxc_attach_options_t.t ptr
+  -> Lxc_attach_options_t.t structure ptr
   -> string
   -> string ptr
   -> int
@@ -100,7 +102,7 @@ val attach_run_wait :
 val snapshot : Types.lxc_container structure ptr -> string -> int
 
 val snapshot_list :
-  Types.lxc_container structure ptr -> ptr Lxc_snapshot.t ptr -> int
+  Types.lxc_container structure ptr -> Lxc_snapshot.t ptr ptr -> int
 
 val snapshot_restore :
   Types.lxc_container structure ptr -> string -> string -> bool
@@ -131,7 +133,11 @@ val destroy_with_snapshots : Types.lxc_container structure ptr -> bool
 val snapshot_destroy_all : Types.lxc_container structure ptr -> bool
 
 val migrate :
-  Types.lxc_container structure ptr -> int -> Migrate_opts.t ptr -> int -> int
+  Types.lxc_container structure ptr
+  -> Unsigned.uint
+  -> Migrate_opts.t structure ptr
+  -> Unsigned.uint
+  -> int
 
 val console_log :
   Types.lxc_container structure ptr -> Lxc_console_log.t ptr -> int
@@ -143,7 +149,7 @@ val mount :
   -> string
   -> string
   -> string
-  -> Ctypes_types.Unsigned.ulong
+  -> Unsigned.ulong
   -> unit ptr
   -> Lxc_mount.t ptr
   -> int
@@ -151,7 +157,7 @@ val mount :
 val umount :
   Types.lxc_container structure ptr
   -> string
-  -> Ctypes_types.Unsigned.ulong
+  -> Unsigned.ulong
   -> Lxc_mount.t ptr
   -> int
 

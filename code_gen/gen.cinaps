@@ -228,19 +228,19 @@ let c_type_to_ocaml_type_sig s =
   | "const char *" ->
     "string"
   | "struct lxc_container *" ->
-    "lxc_container ptr"
+    "lxc_container structure ptr"
   | "struct lxc_mount *" ->
-    "Lxc_mount.t ptr"
+    "Lxc_mount.t structure ptr"
   | "lxc_attach_options_t *" ->
-    "Lxc_attach_options_t.t ptr"
+    "Lxc_attach_options_t.t structure ptr"
   | "struct lxc_snapshot **" ->
-    "(ptr Lxc_snapshot.t) ptr"
+    "(Lxc_snapshot.t structure ptr) ptr"
   | "struct lxc_snapshot *" ->
-    "Lxc_snapshot.t ptr"
+    "Lxc_snapshot.t structure ptr"
   | "struct migrate_opts *" ->
-    "Migrate_opts.t ptr"
+    "Migrate_opts.t structure ptr"
   | "struct lxc_console_log *" ->
-    "Lxc_console_log.t ptr"
+    "Lxc_console_log.t structure ptr"
   | "pid_t" ->
     "Posix_types.pid_t"
   | "char * const *" ->
@@ -250,11 +250,11 @@ let c_type_to_ocaml_type_sig s =
   | "const char **" ->
     "string ptr"
   | "unsigned int" ->
-    "int"
+    "Unsigned.uint"
   | "unsigned long" ->
-    "Ctypes_types.Unsigned.ulong"
+    "Unsigned.ulong"
   | "uint64_t" ->
-    "Ctypes_types.Unsigned.uint64"
+    "Unsigned.uint64"
   | "const void *" ->
     "unit ptr"
   | "void *" ->
