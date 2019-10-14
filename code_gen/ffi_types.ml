@@ -95,17 +95,17 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     let () = seal t
   end
 
-  module Bdev_specs_glue = struct
-    module Zfs_glue = struct
-      let t = lift_typ Types.Bdev_specs_glue.Zfs_glue.t
+  module Bdev_specs__glue = struct
+    module Zfs__glue = struct
+      let t = lift_typ Types.Bdev_specs__glue.Zfs__glue.t
 
       let zfsroot = field t "zfsroot" string
 
       let () = seal t
     end
 
-    module Lvm_glue = struct
-      let t = lift_typ Types.Bdev_specs_glue.Lvm_glue.t
+    module Lvm__glue = struct
+      let t = lift_typ Types.Bdev_specs__glue.Lvm__glue.t
 
       let vg = field t "vg" string
 
@@ -116,8 +116,8 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
       let () = seal t
     end
 
-    module Rbd_glue = struct
-      let t = lift_typ Types.Bdev_specs_glue.Rbd_glue.t
+    module Rbd__glue = struct
+      let t = lift_typ Types.Bdev_specs__glue.Rbd__glue.t
 
       let rbdname = field t "rbdname" string
 
@@ -126,19 +126,19 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
       let () = seal t
     end
 
-    let t = lift_typ Types.Bdev_specs_glue.t
+    let t = lift_typ Types.Bdev_specs__glue.t
 
     let fstype = field t "fstype" string
 
     let fssize = field t "fssize" uint64_t
 
-    let zfs = field t "zfs" Zfs_glue.t
+    let zfs = field t "zfs" Zfs__glue.t
 
-    let lvm = field t "lvm" Lvm_glue.t
+    let lvm = field t "lvm" Lvm__glue.t
 
     let dir = field t "dir" string
 
-    let rbd = field t "rbd" Rbd_glue.t
+    let rbd = field t "rbd" Rbd__glue.t
 
     let () = seal t
   end

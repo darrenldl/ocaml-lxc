@@ -12,28 +12,28 @@ module Lxc_snapshot = struct
   let t : t structure typ = structure "lxc_snapshot"
 end
 
-module Bdev_specs_glue = struct
-  module Zfs_glue = struct
+module Bdev_specs__glue = struct
+  module Zfs__glue = struct
     type t
 
-    let t : t structure typ = structure "zfs_glue"
+    let t : t structure typ = structure "zfs__glue"
   end
 
-  module Lvm_glue = struct
+  module Lvm__glue = struct
     type t
 
-    let t : t structure typ = structure "lvm_glue"
+    let t : t structure typ = structure "lvm__glue"
   end
 
-  module Rbd_glue = struct
+  module Rbd__glue = struct
     type t
 
-    let t : t structure typ = structure "rbd_glue"
+    let t : t structure typ = structure "rbd__glue"
   end
 
   type t
 
-  let t : t structure typ = structure "bdev_specs_glue"
+  let t : t structure typ = structure "bdev_specs__glue"
 end
 
 module Migrate_opts = struct
