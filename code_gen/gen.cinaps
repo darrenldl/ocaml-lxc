@@ -218,6 +218,54 @@ module For_lxc_dot_c = struct
     List.iter gen_lxc_container_funptr_field_c_glue_code funptr_records
 end
 
+let c_type_to_ocaml_type_sig s =
+  let rec aux acc count =
+    if count = 0 then acc else aux (Printf.sprintf "(%s) ptr" acc) (pred count)
+  in
+  match s with
+  | "char *" ->
+    "char ptr"
+  | "const char *" ->
+    "string"
+  | "struct lxc_container *" ->
+    "lxc_container ptr"
+  | "struct lxc_mount *" ->
+    "Lxc_mount.t ptr"
+  | "lxc_attach_options_t *" ->
+    "Lxc_attach_options_t.t ptr"
+  | "struct lxc_snapshot **" ->
+    "(ptr Lxc_snapshot.t) ptr"
+  | "struct lxc_snapshot *" ->
+    "Lxc_snapshot.t ptr"
+  | "struct migrate_opts *" ->
+    "Migrate_opts.t ptr"
+  | "struct lxc_console_log *" ->
+    "Lxc_console_log.t ptr"
+  | "pid_t" ->
+    "Posix_types.pid_t"
+  | "char * const *" ->
+    "(char ptr) ptr"
+  | "const char * const *" ->
+    "string ptr"
+  | "const char **" ->
+    "string ptr"
+  | "unsigned int" ->
+    "uint"
+  | "unsigned long" ->
+    "ulong"
+  | "const void *" ->
+    "void ptr"
+  | _ ->
+    let re = Str.regexp_string "*" in
+    let splits = Str.full_split re s in
+    let pointer_count =
+      splits
+      |> List.filter (fun s ->
+          match s with Str.Delim _ -> true | _ -> false)
+      |> List.length
+    in
+    aux (strip_chars "*" s) pointer_count
+
 let c_type_to_ocaml_type s =
   let rec aux acc count =
     if count = 0 then acc else aux (Printf.sprintf "ptr (%s)" acc) (pred count)
@@ -318,8 +366,13 @@ module For_lxc_c_dot_ml = struct
 end
 
 module For_lxc_c_dot_mli = struct
-  (* let gen_lxc_container_funptr_field_ml_wrapper_sig
-   *     {fun_name; other_param_tys; ret_ty} =
-   *   Printf.printf "val %s : Types.lxc_container structure ptr -> " fun_name *)
+  let gen_lxc_container_funptr_field_ml_wrapper_sig
+      {fun_name; other_param_tys; ret_ty} =
+    Printf.printf "val %s : Types.lxc_container structure ptr -> %s\n" fun_name
+      (String.concat " -> "
+         ( List.map c_type_to_ocaml_type_sig other_param_tys
+           @ [c_type_to_ocaml_type_sig ret_ty] ))
 
+  let gen_lxc_container_funptr_field_ml_wrapper_sig_all () =
+    List.iter gen_lxc_container_funptr_field_ml_wrapper_sig funptr_records
 end
