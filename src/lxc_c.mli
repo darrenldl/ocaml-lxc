@@ -37,6 +37,21 @@ val lxc_container_get : lxc_container structure ptr -> int
 
 val lxc_container_put : lxc_container structure ptr -> int
 
+val lxc_get_wait_states : string ptr -> int
+
+val lxc_get_global_config_item : string -> string
+
+val lxc_get_version : unit -> string
+
+val list_defined_containers :
+  string -> char ptr ptr ptr -> lxc_container structure ptr ptr ptr -> int
+
+val list_active_containers :
+  string -> char ptr ptr ptr -> lxc_container structure ptr ptr ptr -> int
+
+val list_all_containers :
+  string -> char ptr ptr ptr -> lxc_container structure ptr ptr ptr -> int
+
 (*$ #use "code_gen/gen.cinaps";;
 
      For_lxc_c_dot_mli.gen_lxc_container_funptr_field_ml_wrapper_sig_all ()
