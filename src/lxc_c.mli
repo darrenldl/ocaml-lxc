@@ -1,6 +1,10 @@
 open Ctypes
 open Types
 
+exception Unexpected_value_from_C
+
+exception Unexpected_value_from_ML
+
 module Migrate_cmd : sig
   type t =
     | Migrate_pre_dump
@@ -27,15 +31,26 @@ module State : sig
   val of_string : string -> t
 end
 
-exception Unexpected_value_from_C
-
-exception Unexpected_value_from_ML
-
 val lxc_container_new : string -> string -> lxc_container structure ptr option
 
 val lxc_container_get : lxc_container structure ptr -> int
 
 val lxc_container_put : lxc_container structure ptr -> int
+
+val lxc_get_wait_states : string ptr -> int
+
+val lxc_get_global_config_item : string -> string
+
+val lxc_get_version : unit -> string
+
+val list_defined_containers :
+  string -> char ptr ptr ptr -> lxc_container structure ptr ptr ptr -> int
+
+val list_active_containers :
+  string -> char ptr ptr ptr -> lxc_container structure ptr ptr ptr -> int
+
+val list_all_containers :
+  string -> char ptr ptr ptr -> lxc_container structure ptr ptr ptr -> int
 
 (*$ #use "code_gen/gen.cinaps";;
 

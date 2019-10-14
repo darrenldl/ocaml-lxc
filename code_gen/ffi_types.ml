@@ -221,6 +221,8 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     let prefix = field t "prefix" string
 
     let quiet = field t "quiet" bool
+
+    let () = seal t
   end
 
   type lxc_container = Types.lxc_container
