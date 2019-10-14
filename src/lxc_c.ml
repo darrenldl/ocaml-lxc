@@ -132,16 +132,6 @@ let lxc_config_item_is_supported =
 let lxc_has_api_extension =
   Foreign.foreign "lxc_has_api_extension" (string @-> returning bool)
 
-let is_defined (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.is_defined__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.is_defined__raw)
-      (Foreign.funptr (ptr Types.lxc_container @-> returning bool))
-      c_field
-  in
-  f c
-
 (*$ #use "code_gen/gen.cinaps";;
 
      For_lxc_c_dot_ml.gen_lxc_container_funptr_field_ml_wrapper_all ()
