@@ -1,7 +1,41 @@
 open Ctypes
 open Types
 
+module Migrate_cmd : sig
+  type t =
+    | Migrate_pre_dump
+    | Migrate_dump
+    | Migrate_restore
+    | Migrate_feature_check
+
+  val to_c_int : t -> int64 Ffi_types_ml_stubs.const
+end
+
+module State : sig
+  type t =
+    | Stopped
+    | Starting
+    | Running
+    | Stopping
+    | Aborting
+    | Freezing
+    | Frozen
+    | Thawed
+
+  val to_string : t -> string
+
+  val of_string : string -> t
+end
+
+exception Unexpected_value_from_C
+
+exception Unexpected_value_from_ML
+
 val lxc_container_new : string -> string -> lxc_container structure ptr option
+
+val lxc_container_get : lxc_container structure ptr -> int
+
+val lxc_container_put : lxc_container structure ptr -> int
 
 (*$ #use "code_gen/gen.cinaps";;
 
@@ -102,7 +136,7 @@ val attach_run_wait :
 val snapshot : Types.lxc_container structure ptr -> string -> int
 
 val snapshot_list :
-  Types.lxc_container structure ptr -> Lxc_snapshot.t ptr ptr -> int
+  Types.lxc_container structure ptr -> Lxc_snapshot.t structure ptr ptr -> int
 
 val snapshot_restore :
   Types.lxc_container structure ptr -> string -> string -> bool
@@ -140,7 +174,7 @@ val migrate :
   -> int
 
 val console_log :
-  Types.lxc_container structure ptr -> Lxc_console_log.t ptr -> int
+  Types.lxc_container structure ptr -> Lxc_console_log.t structure ptr -> int
 
 val reboot2 : Types.lxc_container structure ptr -> int -> bool
 
@@ -151,14 +185,14 @@ val mount :
   -> string
   -> Unsigned.ulong
   -> unit ptr
-  -> Lxc_mount.t ptr
+  -> Lxc_mount.t structure ptr
   -> int
 
 val umount :
   Types.lxc_container structure ptr
   -> string
   -> Unsigned.ulong
-  -> Lxc_mount.t ptr
+  -> Lxc_mount.t structure ptr
   -> int
 
 val seccomp_notify_fd : Types.lxc_container structure ptr -> int

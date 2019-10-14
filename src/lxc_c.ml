@@ -1,9 +1,10 @@
 open Ctypes
 open Types
-module Type_stubs = Ffi_types.Types_stubs (Ffi_types_ml_stubs)
-module Fun_stubs = Ffi_bindings.Fun_stubs (Ffi_bindings_ml_stubs)
+open Stubs
 
-exception Unexpected_value
+exception Unexpected_value_from_C
+
+exception Unexpected_value_from_ML
 
 module Migrate_cmd = struct
   open Type_stubs.Migrate_cmd
@@ -75,7 +76,7 @@ module State = struct
     | "THAWED" ->
       Thawed
     | _ ->
-      raise Unexpected_value
+      raise Unexpected_value_from_C
 end
 
 let lxc_container_new =
