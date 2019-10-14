@@ -79,58 +79,39 @@ module State = struct
       raise Unexpected_value_from_C
 end
 
-let lxc_container_new =
-  Foreign.foreign "lxc_container_new"
-    (string @-> string @-> returning (ptr_opt Types.lxc_container))
+(*$
+     List.iter
+       (fun s -> Printf.printf "let %s = Fun_stubs.%s\n" s s)
+       [ "lxc_container_new"
+       ; "lxc_container_get"
+       ; "lxc_container_put"
+       ; "lxc_get_wait_states"
+       ; "lxc_get_global_config_item"
+       ; "lxc_get_version"
+       ; "list_defined_containers"
+       ; "list_active_containers"
+       ; "list_all_containers" ]
+*)
 
-let lxc_container_get =
-  Foreign.foreign "lxc_container_get"
-    (ptr Types.lxc_container @-> returning int)
+let lxc_container_new = Fun_stubs.lxc_container_new
 
-let lxc_container_put =
-  Foreign.foreign "lxc_container_put"
-    (ptr Types.lxc_container @-> returning int)
+let lxc_container_get = Fun_stubs.lxc_container_get
 
-let lxc_get_wait_states =
-  Foreign.foreign "lxc_get_wait_states" (ptr string @-> returning int)
+let lxc_container_put = Fun_stubs.lxc_container_put
 
-let lxc_get_global_config_item =
-  Foreign.foreign "lxc_get_global_item" (string @-> returning string)
+let lxc_get_wait_states = Fun_stubs.lxc_get_wait_states
 
-let lxc_get_version =
-  Foreign.foreign "lxc_get_version" (void @-> returning string)
+let lxc_get_global_config_item = Fun_stubs.lxc_get_global_config_item
 
-let list_defined_containers =
-  Foreign.foreign "list_defined_containers"
-    ( string
-      @-> ptr (ptr (ptr char))
-      @-> ptr (ptr (ptr Types.lxc_container))
-      @-> returning int )
+let lxc_get_version = Fun_stubs.lxc_get_version
 
-let list_active_containers =
-  Foreign.foreign "list_active_containers"
-    ( string
-      @-> ptr (ptr (ptr char))
-      @-> ptr (ptr (ptr Types.lxc_container))
-      @-> returning int )
+let list_defined_containers = Fun_stubs.list_defined_containers
 
-let list_all_containers =
-  Foreign.foreign "list_all_containers"
-    ( string
-      @-> ptr (ptr (ptr char))
-      @-> ptr (ptr (ptr Types.lxc_container))
-      @-> returning int )
+let list_active_containers = Fun_stubs.list_active_containers
 
-(* let lxc_log_init =
- *   Foreign.foreign "lxc_log_init" (ptr Types.Lxc_log.t @-> returning int)
- * 
- * let lxc_log_close = Foreign.foreign "lxc_log_close" (void @-> returning void) *)
+let list_all_containers = Fun_stubs.list_all_containers
 
-let lxc_config_item_is_supported =
-  Foreign.foreign "lxc_config_item_is_supported" (string @-> returning bool)
-
-let lxc_has_api_extension =
-  Foreign.foreign "lxc_has_api_extension" (string @-> returning bool)
+                          (*$*)
 
 (*$ #use "code_gen/gen.cinaps";;
 
