@@ -49,6 +49,13 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
         @-> returning int )
 
   let lxc_log_init =
-    foreign "lxc_log_init"
-      ( ptr Types.Lxc_log.t @-> returning int)
+    foreign "lxc_log_init" (ptr Types.Lxc_log.t @-> returning int)
+
+  let lxc_log_close = foreign "lxc_log_close" (void @-> returning void)
+
+  let lxc_config_item_is_supported =
+    foreign "lxc_config_item_is_supported" (string @-> returning bool)
+
+  let lxc_has_api_extension =
+    foreign "lxc_has_api_extension" (string @-> returning bool)
 end
