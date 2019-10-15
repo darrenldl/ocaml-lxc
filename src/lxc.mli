@@ -1,5 +1,6 @@
-type t
+type container
 
-val new_container : name:string -> config_path:string -> (t, unit) result
+val new_container :
+  name:string -> config_path:string -> (container, unit) result
 
-val release : t -> (unit, unit) result
+val release : container -> (unit, unit) result
