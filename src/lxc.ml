@@ -10,6 +10,14 @@ let strlen ptr =
   let len = Stubs.Fun_stubs.strlen ptr in
   coerce long int len
 
+let string_from_null_term_ptr ptr =
+  let length = strlen ptr in
+  string_from_ptr ptr ~length
+
+let bigstring_from_null_term_ptr ptr : Bigstring.t =
+  let length = strlen ptr in
+  bigarray_of_ptr array1 length Bigarray.Char ptr
+
 let new_container ~name ~config_path =
   match Lxc_c.lxc_container_new name config_path with
   | None ->
@@ -25,8 +33,7 @@ let release t =
 
 let get_global_config_item ~key =
   let ret_ptr = Lxc_c.lxc_get_global_config_item key in
-  let length = strlen ret_ptr in
-  let str = string_from_ptr ret_ptr ~length in
+  let str = string_from_null_term_ptr in
   free ret_ptr; str
 
 let get_version () = Lxc_c.lxc_get_version ()
