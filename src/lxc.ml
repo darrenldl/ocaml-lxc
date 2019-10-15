@@ -2,7 +2,8 @@ open Misc_utils
 open Ctypes
 module Bigstring = Core.Bigstring
 
-type t = {lxc_container : Types.lxc_container Ctypes.structure Ctypes.ptr}
+type container =
+  {lxc_container : Types.lxc_container Ctypes.structure Ctypes.ptr}
 
 let free = Stubs.Fun_stubs.free
 
@@ -37,5 +38,17 @@ let get_global_config_item ~key =
   free ret_ptr; str
 
 let get_version () = Lxc_c.lxc_get_version ()
+
+let list_defined_containers ~(lxcpath : string) =
+  let name_arr_ptr_typ = ptr (ptr char) in
+  let name_arr_ptr_init = coerce (ptr void) name_arr_ptr_typ null in
+  let name_arr_ptr = allocate name_arr_ptr_typ name_arr_ptr_init in
+  let struct_arr_ptr_typ = ptr (ptr Types.lxc_container) in
+  let struct_arr_ptr_null = coerce (ptr void) (ptr struct_arr_ptr_typ) null in
+  let count =
+    Lxc_c.list_defined_containers lxcpath name_arr_ptr struct_arr_ptr_null
+  in
+  let name_ptr_list = CArray.from_ptr name_arr_ptr count |> CArray.to_list in
+  name_ptr_list |> List.map (fun ptr -> string_from_null_term_ptr !@ptr)
 
 module Container = struct end
