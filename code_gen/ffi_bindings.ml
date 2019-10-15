@@ -4,6 +4,10 @@ open Types
 module Fun_stubs (F : Cstubs.FOREIGN) = struct
   open F
 
+  let free = foreign "free" (ptr char @-> returning void)
+
+  let strlen = foreign "strlen" (ptr char @-> returning long)
+
   let create__glue =
     foreign "create__glue"
       ( ptr lxc_container @-> string @-> string @-> ptr_opt Bdev_specs__glue.t
@@ -23,7 +27,7 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
     foreign "lxc_get_wait_states" (ptr string @-> returning int)
 
   let lxc_get_global_config_item =
-    foreign "lxc_get_global_config_item" (string @-> returning string)
+    foreign "lxc_get_global_config_item" (string @-> returning (ptr char))
 
   let lxc_get_version = foreign "lxc_get_version" (void @-> returning string)
 

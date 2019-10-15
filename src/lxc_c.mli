@@ -39,7 +39,7 @@ val lxc_container_put : lxc_container structure ptr -> int
 
 val lxc_get_wait_states : string ptr -> int
 
-val lxc_get_global_config_item : string -> string
+val lxc_get_global_config_item : string -> char ptr
 
 val lxc_get_version : unit -> string
 

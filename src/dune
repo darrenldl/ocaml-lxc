@@ -5,7 +5,8 @@
  (c_names   lxc_glue
             ffi_bindings_c_stubs)
  (libraries ctypes
-            posix-types))
+            posix-types
+            core))
 
 (rule
  (targets types.ml)

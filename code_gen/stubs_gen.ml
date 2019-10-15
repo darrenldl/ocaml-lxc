@@ -13,7 +13,8 @@
 let headers =
   [ (* "#include <lxc/lxccontainer.h>"; *)
     (* "#include <lxc/attach_options.h>"; *)
-    "#include \"lxc_glue.h\"" ]
+    "#include <string.h>"
+  ; "#include \"lxc_glue.h\"" ]
 
 let write_headers c_out =
   List.iter (fun s -> output_string c_out s; output_string c_out "\n") headers
