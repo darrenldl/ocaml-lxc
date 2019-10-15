@@ -39,5 +39,8 @@ The low level internal API follows the C API closely
     - `stubs.ml`
         - Central module for importing of FFI stubs
 
+## Acknowledgement
+I'd like to thank [Stéphane Graber](https://github.com/stgraber) for answering my questions w.r.t. binding and design of go-lxc
+
 ## License
 LGPL v2.1 as specified in the LICENSE file
