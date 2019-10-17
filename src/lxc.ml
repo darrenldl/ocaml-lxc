@@ -5,19 +5,21 @@ module Bigstring = Core.Bigstring
 type container =
   {lxc_container : Types.lxc_container Ctypes.structure Ctypes.ptr}
 
-let free = Stubs.Fun_stubs.free
+module Helpers = struct
+  let free = Stubs.Fun_stubs.free
 
-let strlen ptr =
-  let len = Stubs.Fun_stubs.strlen ptr in
-  coerce long int len
+  let strlen ptr =
+    let len = Stubs.Fun_stubs.strlen ptr in
+    coerce long int len
 
-let string_from_null_term_ptr ptr =
-  let length = strlen ptr in
-  string_from_ptr ptr ~length
+  let string_from_null_term_ptr ptr =
+    let length = strlen ptr in
+    string_from_ptr ptr ~length
 
-let bigstring_from_null_term_ptr ptr : Bigstring.t =
-  let length = strlen ptr in
-  bigarray_of_ptr array1 length Bigarray.Char ptr
+  let bigstring_from_null_term_ptr ptr : Bigstring.t =
+    let length = strlen ptr in
+    bigarray_of_ptr array1 length Bigarray.Char ptr
+end
 
 let new_container ~name ~config_path =
   match Lxc_c.lxc_container_new name config_path with
@@ -34,8 +36,8 @@ let release t =
 
 let get_global_config_item ~key =
   let ret_ptr = Lxc_c.lxc_get_global_config_item key in
-  let str = string_from_null_term_ptr in
-  free ret_ptr; str
+  let str = Helpers.string_from_null_term_ptr in
+  Helpers.free ret_ptr; str
 
 let get_version () = Lxc_c.lxc_get_version ()
 
@@ -75,7 +77,8 @@ let list_defined_container_names ~(lxcpath : string) =
     Lxc_c.list_defined_containers lxcpath name_arr_ptr struct_arr_ptr_null
   in
   let name_ptr_list = CArray.from_ptr name_arr_ptr count |> CArray.to_list in
-  name_ptr_list |> List.map (fun ptr -> string_from_null_term_ptr !@ptr)
+  name_ptr_list
+  |> List.map (fun ptr -> Helpers.string_from_null_term_ptr !@ptr)
 
 let list_active_container_names ~(lxcpath : string) =
   let name_arr_ptr_typ = ptr (ptr char) in
@@ -87,7 +90,8 @@ let list_active_container_names ~(lxcpath : string) =
     Lxc_c.list_active_containers lxcpath name_arr_ptr struct_arr_ptr_null
   in
   let name_ptr_list = CArray.from_ptr name_arr_ptr count |> CArray.to_list in
-  name_ptr_list |> List.map (fun ptr -> string_from_null_term_ptr !@ptr)
+  name_ptr_list
+  |> List.map (fun ptr -> Helpers.string_from_null_term_ptr !@ptr)
 
 let list_all_container_names ~(lxcpath : string) =
   let name_arr_ptr_typ = ptr (ptr char) in
@@ -99,7 +103,8 @@ let list_all_container_names ~(lxcpath : string) =
     Lxc_c.list_all_containers lxcpath name_arr_ptr struct_arr_ptr_null
   in
   let name_ptr_list = CArray.from_ptr name_arr_ptr count |> CArray.to_list in
-  name_ptr_list |> List.map (fun ptr -> string_from_null_term_ptr !@ptr)
+  name_ptr_list
+  |> List.map (fun ptr -> Helpers.string_from_null_term_ptr !@ptr)
 
-                   (*$*)
+     (*$*)
 module Container = struct end
