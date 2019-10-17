@@ -36,8 +36,8 @@ module Helpers = struct
   let allocate_ptr_init_to_null typ = allocate typ (make_null_ptr typ)
 end
 
-let new_container ~name ~lxcpath =
-  match C.lxc_container_new name lxcpath with
+let new_container ?config_path ~name =
+  match C.lxc_container_new name config_path with
   | None ->
     Error ()
   | Some lxc_container ->
@@ -126,6 +126,6 @@ let list_all_container_names ~(lxcpath : string option) =
 
 let list_defined_containers ~lxcpath =
   let names = list_defined_container_names ~lxcpath in
-  List.map (fun name -> new_container ~name ~lxcpath) names
+  List.map (fun name -> new_container ~name) names
 
 module Container = struct end
