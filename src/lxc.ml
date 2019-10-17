@@ -6,6 +6,12 @@ module C = Lxc_c
 type container =
   {lxc_container : Types.lxc_container Ctypes.structure Ctypes.ptr}
 
+type getfd_result =
+  {ttynum : int;
+   masterfd : int;
+   tty_fd : int;
+  }
+
 module Helpers = struct
   let free_ptr (typ : 'a ptr typ) ret_ptr =
     let ret_ptr = coerce typ (ptr char) ret_ptr in
@@ -370,7 +376,14 @@ module Container = struct
   let console_getfd c ~(ttynum : int option) =
     let ttynum_ptr_init = Option.value ~default:(-1) ttynum in
     let ttynum_ptr = allocate int ttynum_ptr_init in
-    let masterfd = allocate int 0 in
-    C.console_getfd c.lxc_container ttynum_ptr masterfd
+    let masterfd_ptr = allocate int 0 in
+    let tty_fd = C.console_getfd c.lxc_container ttynum_ptr masterfd_ptr in
+    if tty_fd = -1 then
+      Error ()
+    else
+      Ok { ttynum = !@ttynum_ptr;
+        masterfd = !@masterfd_ptr;
+        tty_fd;
+      }
 
 end
