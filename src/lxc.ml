@@ -145,12 +145,6 @@ let config_item_is_supported s = C.lxc_config_item_is_supported s
 let has_api_extension s = C.lxc_has_api_extension s
 
 module Container = struct
-  (*$ #use "code_gen/gen.cinaps";;
-
-       List.iter For_lxc_dot_ml.gen_container_is_single_param
-         ["is_defined"; "state"; "is_running"; "freeze"; "unfreeze"; "init_pid"]
-  *)
-
   let is_defined c = C.is_defined c.lxc_container
 
   let state c = C.state c.lxc_container
@@ -163,7 +157,5 @@ module Container = struct
 
   let init_pid c = C.init_pid c.lxc_container
 
-                   (*$*)
-
-let load_config c ?alt_file = C.load_config
+  let load_config ?alt_file c = C.load_config c.lxc_container alt_file
 end
