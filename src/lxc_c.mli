@@ -62,6 +62,14 @@ val list_all_containers :
   -> lxc_container structure ptr ptr ptr
   -> int
 
+val lxc_log_init : Lxc_log.t structure ptr -> int
+
+val lxc_log_close : unit -> unit
+
+val lxc_config_item_is_supported : string -> bool
+
+val lxc_has_api_extension : string -> bool
+
 (*$ #use "code_gen/gen.cinaps";;
 
      For_lxc_c_dot_mli.gen_lxc_container_funptr_field_ml_wrapper_sig_all ()

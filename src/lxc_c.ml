@@ -90,7 +90,11 @@ end
        ; "lxc_get_version"
        ; "list_defined_containers"
        ; "list_active_containers"
-       ; "list_all_containers" ]
+       ; "list_all_containers"
+       ; "lxc_log_init"
+       ; "lxc_log_close"
+       ; "lxc_config_item_is_supported"
+       ; "lxc_has_api_extension" ]
 *)
 
 let lxc_container_new = Fun_stubs.lxc_container_new
@@ -111,7 +115,15 @@ let list_active_containers = Fun_stubs.list_active_containers
 
 let list_all_containers = Fun_stubs.list_all_containers
 
-                          (*$*)
+let lxc_log_init = Fun_stubs.lxc_log_init
+
+let lxc_log_close = Fun_stubs.lxc_log_close
+
+let lxc_config_item_is_supported = Fun_stubs.lxc_config_item_is_supported
+
+let lxc_has_api_extension = Fun_stubs.lxc_has_api_extension
+
+                            (*$*)
 
 (*$ #use "code_gen/gen.cinaps";;
 
