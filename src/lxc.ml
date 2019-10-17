@@ -142,6 +142,8 @@ let list_all_containers ?(lxcpath : string option) () =
 
   (*$*)
 
-let config_item_is_supported key = C.lxc_config_item_is_supported key
+let config_item_is_supported s = C.lxc_config_item_is_supported s
+
+let has_api_extension s = C.lxc_has_api_extension s
 
 module Container = struct end
