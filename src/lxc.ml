@@ -64,9 +64,9 @@ module Helpers = struct
     if free then free_ptr (ptr (ptr char)) p;
     ret
 
-  let make_null_ptr typ = coerce (ptr void) typ null
+  let make_null_ptr (typ : 'a ptr typ) : 'a ptr = coerce (ptr void) typ null
 
-  let allocate_ptr_init_to_null typ = allocate typ (make_null_ptr typ)
+  let allocate_ptr_init_to_null (typ : 'a ptr typ) : 'a ptr ptr = allocate typ (make_null_ptr typ)
 
   let string_carray_from_string_list l =
     l
@@ -366,4 +366,11 @@ module Container = struct
     let hook_args = Helpers.string_carray_from_string_list hook_args in
     C.clone c.lxc_container (Some new_name) (Some lxcpath) flags
       (Some bdevtype) (Some bdevdata) new_size (CArray.start hook_args)
+
+  let console_getfd c ~(ttynum : int option) =
+    let ttynum_ptr_init = Option.value ~default:(-1) ttynum in
+    let ttynum_ptr = allocate int ttynum_ptr_init in
+    let masterfd = allocate int 0 in
+    C.console_getfd c.lxc_container ttynum_ptr masterfd
+
 end
