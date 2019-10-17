@@ -65,77 +65,81 @@ let get_global_config_item ~key =
 
 let get_version () = C.lxc_get_version ()
 
+let list_container_names_internal f ~(lxcpath : string option) =
+  let name_arr_typ = ptr (ptr char) in
+  let name_arr_ptr = Helpers.allocate_ptr_init_to_null name_arr_typ in
+  let struct_ptr_arr_typ = ptr (ptr Types.lxc_container) in
+  let struct_ptr_arr_ptr_null =
+    Helpers.make_null_ptr (ptr struct_ptr_arr_typ)
+  in
+  let count = f lxcpath name_arr_ptr struct_ptr_arr_ptr_null in
+  let ret = Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~count in
+  Helpers.free (ptr name_arr_typ) name_arr_ptr;
+  ret
+
 (*$
      List.iter
-       (fun name ->
-          Printf.printf "let %s_names ~(lxcpath : string option) =\n" name;
-          Printf.printf "  let name_arr_typ = ptr (ptr char) in\n";
+       (fun tag ->
           Printf.printf
-            "  let name_arr_ptr = Helpers.allocate_ptr_init_to_null name_arr_typ in";
+            "let list_%s_container_names ?(lxcpath : string option) () =\n" tag;
           Printf.printf
-            "  let struct_ptr_arr_typ = ptr (ptr Types.lxc_container) in\n";
-          Printf.printf
-            "  let struct_ptr_arr_ptr_null = Helpers.make_null_ptr (ptr \
-             struct_ptr_arr_typ) in\n";
-          Printf.printf "  let count =\n";
-          Printf.printf
-            "    C.%ss lxcpath name_arr_ptr struct_ptr_arr_ptr_null in\n" name;
-          Printf.printf
-            "  let ret = Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr \
-             ~count in\n";
-          Printf.printf "  Helpers.free (ptr name_arr_typ) name_arr_ptr;\n";
-          Printf.printf "  ret\n")
-       ["list_defined_container"; "list_active_container"; "list_all_container"]
+            "  list_container_names_internal C.list_%s_containers ~lxcpath\n" tag)
+       ["defined"; "active"; "all"]
 *)
 
-let list_defined_container_names ~(lxcpath : string option) =
-  let name_arr_typ = ptr (ptr char) in
-  let name_arr_ptr = Helpers.allocate_ptr_init_to_null name_arr_typ in
-  let struct_ptr_arr_typ = ptr (ptr Types.lxc_container) in
-  let struct_ptr_arr_ptr_null =
-    Helpers.make_null_ptr (ptr struct_ptr_arr_typ)
-  in
-  let count =
-    C.list_defined_containers lxcpath name_arr_ptr struct_ptr_arr_ptr_null
-  in
-  let ret = Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~count in
-  Helpers.free (ptr name_arr_typ) name_arr_ptr;
-  ret
+let list_defined_container_names ?(lxcpath : string option) () =
+  list_container_names_internal C.list_defined_containers ~lxcpath
 
-let list_active_container_names ~(lxcpath : string option) =
-  let name_arr_typ = ptr (ptr char) in
-  let name_arr_ptr = Helpers.allocate_ptr_init_to_null name_arr_typ in
-  let struct_ptr_arr_typ = ptr (ptr Types.lxc_container) in
-  let struct_ptr_arr_ptr_null =
-    Helpers.make_null_ptr (ptr struct_ptr_arr_typ)
-  in
-  let count =
-    C.list_active_containers lxcpath name_arr_ptr struct_ptr_arr_ptr_null
-  in
-  let ret = Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~count in
-  Helpers.free (ptr name_arr_typ) name_arr_ptr;
-  ret
+let list_active_container_names ?(lxcpath : string option) () =
+  list_container_names_internal C.list_active_containers ~lxcpath
 
-let list_all_container_names ~(lxcpath : string option) =
-  let name_arr_typ = ptr (ptr char) in
-  let name_arr_ptr = Helpers.allocate_ptr_init_to_null name_arr_typ in
-  let struct_ptr_arr_typ = ptr (ptr Types.lxc_container) in
-  let struct_ptr_arr_ptr_null =
-    Helpers.make_null_ptr (ptr struct_ptr_arr_typ)
-  in
-  let count =
-    C.list_all_containers lxcpath name_arr_ptr struct_ptr_arr_ptr_null
-  in
-  let ret = Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~count in
-  Helpers.free (ptr name_arr_typ) name_arr_ptr;
-  ret
+let list_all_container_names ?(lxcpath : string option) () =
+  list_container_names_internal C.list_all_containers ~lxcpath
 
   (*$*)
 
-let list_defined_containers ?lxcpath () =
+let list_containers_internal f ~(lxcpath : string option) =
   let name_arr_typ = ptr (ptr char) in
   let name_arr_ptr = Helpers.allocate_ptr_init_to_null name_arr_typ in
-  let struct_arr_ptr_typ = ptr (ptr Types.lxc_container) in
-  C.list_defined_containers lxcpath name_arr_ptr
+  let struct_ptr_arr_typ = ptr (ptr Types.lxc_container) in
+  let struct_ptr_arr_ptr =
+    Helpers.allocate_ptr_init_to_null struct_ptr_arr_typ
+  in
+  let count =
+    C.list_defined_containers lxcpath name_arr_ptr struct_ptr_arr_ptr
+  in
+  let names =
+    Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~count
+  in
+  let struct_ptr_list =
+    CArray.from_ptr struct_ptr_arr_ptr count |> CArray.to_list
+  in
+  let containers =
+    List.map (fun ptr -> {lxc_container = !@ptr}) struct_ptr_list
+  in
+  Helpers.free (ptr name_arr_typ) name_arr_ptr;
+  Helpers.free (ptr struct_ptr_arr_typ) struct_ptr_arr_ptr;
+  List.combine names containers
+
+(*$
+     List.iter
+       (fun tag ->
+          Printf.printf "let list_%s_containers ?(lxcpath : string option) () =\n"
+            tag;
+          Printf.printf
+            "  list_containers_internal C.list_%s_containers ~lxcpath\n" tag)
+       ["defined"; "active"; "all"]
+*)
+
+let list_defined_containers ?(lxcpath : string option) () =
+  list_containers_internal C.list_defined_containers ~lxcpath
+
+let list_active_containers ?(lxcpath : string option) () =
+  list_containers_internal C.list_active_containers ~lxcpath
+
+let list_all_containers ?(lxcpath : string option) () =
+  list_containers_internal C.list_all_containers ~lxcpath
+
+  (*$*)
 
 module Container = struct end
