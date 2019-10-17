@@ -31,6 +31,15 @@ module State : sig
   val of_string : string -> t
 end
 
+val create__glue :
+  lxc_container structure ptr
+  -> string
+  -> string option
+  -> Bdev_specs__glue.t structure ptr option
+  -> int
+  -> char ptr ptr
+  -> bool
+
 val lxc_container_new :
   string -> string option -> lxc_container structure ptr option
 

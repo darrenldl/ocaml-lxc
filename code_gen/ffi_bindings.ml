@@ -10,8 +10,10 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
 
   let create__glue =
     foreign "create__glue"
-      ( ptr lxc_container @-> string @-> string @-> ptr_opt Bdev_specs__glue.t
-        @-> int @-> ptr_opt string @-> returning bool )
+      ( ptr lxc_container @-> string @-> string_opt
+        @-> ptr_opt Bdev_specs__glue.t @-> int
+        @-> ptr (ptr char)
+        @-> returning bool )
 
   let lxc_container_new =
     foreign "lxc_container_new"

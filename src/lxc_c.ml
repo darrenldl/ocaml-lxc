@@ -82,7 +82,8 @@ end
 (*$
      List.iter
        (fun s -> Printf.printf "let %s = Fun_stubs.%s\n" s s)
-       [ "lxc_container_new"
+       [ "create__glue"
+       ; "lxc_container_new"
        ; "lxc_container_get"
        ; "lxc_container_put"
        ; "lxc_get_wait_states"
@@ -96,6 +97,8 @@ end
        ; "lxc_config_item_is_supported"
        ; "lxc_has_api_extension" ]
 *)
+
+let create__glue = Fun_stubs.create__glue
 
 let lxc_container_new = Fun_stubs.lxc_container_new
 

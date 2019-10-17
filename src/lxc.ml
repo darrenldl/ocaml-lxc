@@ -17,9 +17,11 @@ module Helpers = struct
     let len = Stubs.Fun_stubs.strlen ptr in
     coerce long int len
 
-  let string_from_string_ptr (ptr : char ptr) =
+  let string_from_string_ptr ?(free = false) (ptr : char ptr) =
     let length = strlen ptr in
-    string_from_ptr ptr ~length
+    let ret = string_from_ptr ptr ~length in
+    if free then free_char_ptr ptr;
+    ret
 
   let bigstring_from_string_ptr ptr : Bigstring.t =
     let length = strlen ptr in
@@ -58,7 +60,8 @@ let new_container ?config_path ~name =
     Ok {lxc_container}
 
 let acquire t =
-  C.lxc_container_get t.lxc_container |> int_to_bool |> bool_to_unit_result
+  C.lxc_container_get t.lxc_container
+  |> int_to_bool |> bool_to_unit_result_true_is_ok
 
 let release t =
   match C.lxc_container_put t.lxc_container with
@@ -72,10 +75,7 @@ let release t =
     raise C.Unexpected_value_from_C
 
 let get_global_config_item ~key =
-  let ret_ptr = C.lxc_get_global_config_item key in
-  let str = Helpers.string_from_string_ptr ret_ptr in
-  Helpers.free_char_ptr ret_ptr;
-  str
+  C.lxc_get_global_config_item key |> Helpers.string_from_string_ptr ~free:true
 
 let get_version () = C.lxc_get_version ()
 
@@ -161,30 +161,53 @@ let has_api_extension s = C.lxc_has_api_extension s
 module Container = struct
   let is_defined c = C.is_defined c.lxc_container
 
-  let state c = C.state c.lxc_container
+  let state c = C.state c.lxc_container |> Option.get |> C.State.of_string
 
   let is_running c = C.is_running c.lxc_container
 
-  let freeze c = C.freeze c.lxc_container
+  let freeze c = C.freeze c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let unfreeze c = C.unfreeze c.lxc_container
+  let unfreeze c = C.unfreeze c.lxc_container |> bool_to_unit_result_true_is_ok
 
   let init_pid c = C.init_pid c.lxc_container
 
-  let load_config ?alt_file c = C.load_config c.lxc_container alt_file
+  let load_config ?alt_file c =
+    C.load_config c.lxc_container alt_file |> bool_to_unit_result_true_is_ok
 
   let start c ~useinit ~argv =
     C.start c.lxc_container (bool_to_int useinit)
       (Helpers.string_arr_ptr_from_string_arr argv)
+    |> bool_to_unit_result_true_is_ok
 
-  let stop c = C.stop c.lxc_container
+  let stop c = C.stop c.lxc_container |> bool_to_unit_result_true_is_ok
 
   let want_daemonize c (want : [`Yes | `No]) =
     C.want_daemonize c.lxc_container (want_to_bool want)
+    |> bool_to_unit_result_true_is_ok
 
   let want_close_all_fds c (want : [`Yes | `No]) =
     C.want_close_all_fds c.lxc_container (want_to_bool want)
+    |> bool_to_unit_result_true_is_ok
 
   let config_file_name c =
-    C.config_file_name c.lxc_container |> Helpers.string_from_string_ptr
+    let ret_ptr = C.config_file_name c.lxc_container in
+    let ret = Helpers.string_from_string_ptr ret_ptr in
+    Helpers.free_char_ptr ret_ptr;
+    ret
+
+  let wait c state =
+    let state = Some (C.State.to_string state) in
+    C.wait c.lxc_container state
+
+  let set_config_item c ~key ~value =
+    C.set_config_item c.lxc_container (Some key) (Some value)
+
+  let destroy c = C.destroy c.lxc_container
+
+  let save_config ~alt_file c = C.save_config c.lxc_container (Some alt_file)
+
+  let create c ?(template = "download") =
+    C.create__glue c.lxc_container template None None 0
+      (Helpers.make_null_ptr (ptr (ptr char)))
+    |> bool_to_unit_result_true_is_ok
 end
