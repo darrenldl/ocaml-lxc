@@ -77,7 +77,7 @@ val lxc_has_api_extension : string -> bool
 
 val is_defined : Types.lxc_container structure ptr -> bool
 
-val state : Types.lxc_container structure ptr -> string
+val state : Types.lxc_container structure ptr -> string option
 
 val is_running : Types.lxc_container structure ptr -> bool
 
@@ -87,7 +87,7 @@ val unfreeze : Types.lxc_container structure ptr -> bool
 
 val init_pid : Types.lxc_container structure ptr -> Posix_types.pid_t
 
-val load_config : Types.lxc_container structure ptr -> string -> bool
+val load_config : Types.lxc_container structure ptr -> string option -> bool
 
 val start : Types.lxc_container structure ptr -> int -> char ptr ptr -> bool
 
@@ -99,16 +99,16 @@ val want_close_all_fds : Types.lxc_container structure ptr -> bool -> bool
 
 val config_file_name : Types.lxc_container structure ptr -> char ptr
 
-val wait : Types.lxc_container structure ptr -> string -> int -> bool
+val wait : Types.lxc_container structure ptr -> string option -> int -> bool
 
 val set_config_item :
-  Types.lxc_container structure ptr -> string -> string -> bool
+  Types.lxc_container structure ptr -> string option -> string option -> bool
 
 val destroy : Types.lxc_container structure ptr -> bool
 
-val save_config : Types.lxc_container structure ptr -> string -> bool
+val save_config : Types.lxc_container structure ptr -> string option -> bool
 
-val rename : Types.lxc_container structure ptr -> string -> bool
+val rename : Types.lxc_container structure ptr -> string option -> bool
 
 val reboot : Types.lxc_container structure ptr -> bool
 
@@ -116,39 +116,45 @@ val shutdown : Types.lxc_container structure ptr -> int -> bool
 
 val clear_config : Types.lxc_container structure ptr -> unit
 
-val clear_config_item : Types.lxc_container structure ptr -> string -> bool
+val clear_config_item :
+  Types.lxc_container structure ptr -> string option -> bool
 
 val get_config_item :
-  Types.lxc_container structure ptr -> string -> char ptr -> int -> int
+  Types.lxc_container structure ptr -> string option -> char ptr -> int -> int
 
 val get_running_config_item :
-  Types.lxc_container structure ptr -> string -> char ptr
+  Types.lxc_container structure ptr -> string option -> char ptr
 
 val get_keys :
-  Types.lxc_container structure ptr -> string -> char ptr -> int -> int
+  Types.lxc_container structure ptr -> string option -> char ptr -> int -> int
 
 val get_interfaces : Types.lxc_container structure ptr -> char ptr ptr
 
 val get_ips :
-  Types.lxc_container structure ptr -> string -> string -> int -> char ptr ptr
+  Types.lxc_container structure ptr
+  -> string option
+  -> string option
+  -> int
+  -> char ptr ptr
 
 val get_cgroup_item :
-  Types.lxc_container structure ptr -> string -> char ptr -> int -> int
+  Types.lxc_container structure ptr -> string option -> char ptr -> int -> int
 
 val set_cgroup_item :
-  Types.lxc_container structure ptr -> string -> string -> bool
+  Types.lxc_container structure ptr -> string option -> string option -> bool
 
-val get_config_path : Types.lxc_container structure ptr -> string
+val get_config_path : Types.lxc_container structure ptr -> string option
 
-val set_config_path : Types.lxc_container structure ptr -> string -> bool
+val set_config_path :
+  Types.lxc_container structure ptr -> string option -> bool
 
 val clone :
   Types.lxc_container structure ptr
-  -> string
-  -> string
+  -> string option
+  -> string option
   -> int
-  -> string
-  -> string
+  -> string option
+  -> string option
   -> Unsigned.uint64
   -> char ptr ptr
   -> lxc_container structure ptr
@@ -162,33 +168,34 @@ val console :
 val attach_run_wait :
   Types.lxc_container structure ptr
   -> Lxc_attach_options_t.t structure ptr
-  -> string
+  -> string option
   -> string ptr
   -> int
 
-val snapshot : Types.lxc_container structure ptr -> string -> int
+val snapshot : Types.lxc_container structure ptr -> string option -> int
 
 val snapshot_list :
   Types.lxc_container structure ptr -> Lxc_snapshot.t structure ptr ptr -> int
 
 val snapshot_restore :
-  Types.lxc_container structure ptr -> string -> string -> bool
+  Types.lxc_container structure ptr -> string option -> string option -> bool
 
-val snapshot_destroy : Types.lxc_container structure ptr -> string -> bool
+val snapshot_destroy :
+  Types.lxc_container structure ptr -> string option -> bool
 
 val may_control : Types.lxc_container structure ptr -> bool
 
 val add_device_node :
-  Types.lxc_container structure ptr -> string -> string -> bool
+  Types.lxc_container structure ptr -> string option -> string option -> bool
 
 val remove_device_node :
-  Types.lxc_container structure ptr -> string -> string -> bool
+  Types.lxc_container structure ptr -> string option -> string option -> bool
 
 val attach_interface :
-  Types.lxc_container structure ptr -> string -> string -> bool
+  Types.lxc_container structure ptr -> string option -> string option -> bool
 
 val detach_interface :
-  Types.lxc_container structure ptr -> string -> string -> bool
+  Types.lxc_container structure ptr -> string option -> string option -> bool
 
 val checkpoint :
   Types.lxc_container structure ptr -> char ptr -> bool -> bool -> bool
@@ -213,9 +220,9 @@ val reboot2 : Types.lxc_container structure ptr -> int -> bool
 
 val mount :
   Types.lxc_container structure ptr
-  -> string
-  -> string
-  -> string
+  -> string option
+  -> string option
+  -> string option
   -> Unsigned.ulong
   -> unit ptr
   -> Lxc_mount.t structure ptr
@@ -223,7 +230,7 @@ val mount :
 
 val umount :
   Types.lxc_container structure ptr
-  -> string
+  -> string option
   -> Unsigned.ulong
   -> Lxc_mount.t structure ptr
   -> int

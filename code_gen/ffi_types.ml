@@ -248,7 +248,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
   let state__raw =
     field lxc_container "state"
-      (static_funptr (ptr lxc_container @-> returning string))
+      (static_funptr (ptr lxc_container @-> returning string_opt))
 
   let is_running__raw =
     field lxc_container "is_running"
@@ -268,7 +268,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
   let load_config__raw =
     field lxc_container "load_config"
-      (static_funptr (ptr lxc_container @-> string @-> returning bool))
+      (static_funptr (ptr lxc_container @-> string_opt @-> returning bool))
 
   let start__raw =
     field lxc_container "start"
@@ -293,12 +293,13 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
   let wait__raw =
     field lxc_container "wait"
-      (static_funptr (ptr lxc_container @-> string @-> int @-> returning bool))
+      (static_funptr
+         (ptr lxc_container @-> string_opt @-> int @-> returning bool))
 
   let set_config_item__raw =
     field lxc_container "set_config_item"
       (static_funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
 
   let destroy__raw =
     field lxc_container "destroy"
@@ -306,11 +307,11 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
   let save_config__raw =
     field lxc_container "save_config"
-      (static_funptr (ptr lxc_container @-> string @-> returning bool))
+      (static_funptr (ptr lxc_container @-> string_opt @-> returning bool))
 
   let rename__raw =
     field lxc_container "rename"
-      (static_funptr (ptr lxc_container @-> string @-> returning bool))
+      (static_funptr (ptr lxc_container @-> string_opt @-> returning bool))
 
   let reboot__raw =
     field lxc_container "reboot"
@@ -326,21 +327,23 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
   let clear_config_item__raw =
     field lxc_container "clear_config_item"
-      (static_funptr (ptr lxc_container @-> string @-> returning bool))
+      (static_funptr (ptr lxc_container @-> string_opt @-> returning bool))
 
   let get_config_item__raw =
     field lxc_container "get_config_item"
       (static_funptr
-         (ptr lxc_container @-> string @-> ptr char @-> int @-> returning int))
+         ( ptr lxc_container @-> string_opt @-> ptr char @-> int
+           @-> returning int ))
 
   let get_running_config_item__raw =
     field lxc_container "get_running_config_item"
-      (static_funptr (ptr lxc_container @-> string @-> returning (ptr char)))
+      (static_funptr (ptr lxc_container @-> string_opt @-> returning (ptr char)))
 
   let get_keys__raw =
     field lxc_container "get_keys"
       (static_funptr
-         (ptr lxc_container @-> string @-> ptr char @-> int @-> returning int))
+         ( ptr lxc_container @-> string_opt @-> ptr char @-> int
+           @-> returning int ))
 
   let get_interfaces__raw =
     field lxc_container "get_interfaces"
@@ -349,32 +352,33 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   let get_ips__raw =
     field lxc_container "get_ips"
       (static_funptr
-         ( ptr lxc_container @-> string @-> string @-> int
+         ( ptr lxc_container @-> string_opt @-> string_opt @-> int
            @-> returning (ptr (ptr char)) ))
 
   let get_cgroup_item__raw =
     field lxc_container "get_cgroup_item"
       (static_funptr
-         (ptr lxc_container @-> string @-> ptr char @-> int @-> returning int))
+         ( ptr lxc_container @-> string_opt @-> ptr char @-> int
+           @-> returning int ))
 
   let set_cgroup_item__raw =
     field lxc_container "set_cgroup_item"
       (static_funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
 
   let get_config_path__raw =
     field lxc_container "get_config_path"
-      (static_funptr (ptr lxc_container @-> returning string))
+      (static_funptr (ptr lxc_container @-> returning string_opt))
 
   let set_config_path__raw =
     field lxc_container "set_config_path"
-      (static_funptr (ptr lxc_container @-> string @-> returning bool))
+      (static_funptr (ptr lxc_container @-> string_opt @-> returning bool))
 
   let clone__raw =
     field lxc_container "clone"
       (static_funptr
-         ( ptr lxc_container @-> string @-> string @-> int @-> string @-> string
-           @-> uint64_t
+         ( ptr lxc_container @-> string_opt @-> string_opt @-> int
+           @-> string_opt @-> string_opt @-> uint64_t
            @-> ptr (ptr char)
            @-> returning (ptr lxc_container) ))
 
@@ -392,12 +396,12 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   let attach_run_wait__raw =
     field lxc_container "attach_run_wait"
       (static_funptr
-         ( ptr lxc_container @-> ptr Lxc_attach_options_t.t @-> string
+         ( ptr lxc_container @-> ptr Lxc_attach_options_t.t @-> string_opt
            @-> ptr string @-> returning int ))
 
   let snapshot__raw =
     field lxc_container "snapshot"
-      (static_funptr (ptr lxc_container @-> string @-> returning int))
+      (static_funptr (ptr lxc_container @-> string_opt @-> returning int))
 
   let snapshot_list__raw =
     field lxc_container "snapshot_list"
@@ -407,11 +411,11 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   let snapshot_restore__raw =
     field lxc_container "snapshot_restore"
       (static_funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
 
   let snapshot_destroy__raw =
     field lxc_container "snapshot_destroy"
-      (static_funptr (ptr lxc_container @-> string @-> returning bool))
+      (static_funptr (ptr lxc_container @-> string_opt @-> returning bool))
 
   let may_control__raw =
     field lxc_container "may_control"
@@ -420,22 +424,22 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   let add_device_node__raw =
     field lxc_container "add_device_node"
       (static_funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
 
   let remove_device_node__raw =
     field lxc_container "remove_device_node"
       (static_funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
 
   let attach_interface__raw =
     field lxc_container "attach_interface"
       (static_funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
 
   let detach_interface__raw =
     field lxc_container "detach_interface"
       (static_funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
 
   let checkpoint__raw =
     field lxc_container "checkpoint"
@@ -473,13 +477,13 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   let mount__raw =
     field lxc_container "mount"
       (static_funptr
-         ( ptr lxc_container @-> string @-> string @-> string @-> ulong
-           @-> ptr void @-> ptr Lxc_mount.t @-> returning int ))
+         ( ptr lxc_container @-> string_opt @-> string_opt @-> string_opt
+           @-> ulong @-> ptr void @-> ptr Lxc_mount.t @-> returning int ))
 
   let umount__raw =
     field lxc_container "umount"
       (static_funptr
-         ( ptr lxc_container @-> string @-> ulong @-> ptr Lxc_mount.t
+         ( ptr lxc_container @-> string_opt @-> ulong @-> ptr Lxc_mount.t
            @-> returning int ))
 
   let seccomp_notify_fd__raw =

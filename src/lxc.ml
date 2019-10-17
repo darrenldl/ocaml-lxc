@@ -105,9 +105,7 @@ let list_containers_internal f ~(lxcpath : string option) =
   let struct_ptr_arr_ptr =
     Helpers.allocate_ptr_init_to_null struct_ptr_arr_typ
   in
-  let count =
-    C.list_defined_containers lxcpath name_arr_ptr struct_ptr_arr_ptr
-  in
+  let count = f lxcpath name_arr_ptr struct_ptr_arr_ptr in
   let names =
     Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~count
   in
@@ -146,4 +144,26 @@ let config_item_is_supported s = C.lxc_config_item_is_supported s
 
 let has_api_extension s = C.lxc_has_api_extension s
 
-module Container = struct end
+module Container = struct
+  (*$ #use "code_gen/gen.cinaps";;
+
+       List.iter For_lxc_dot_ml.gen_container_is_single_param
+         ["is_defined"; "state"; "is_running"; "freeze"; "unfreeze"; "init_pid"]
+  *)
+
+  let is_defined c = C.is_defined c.lxc_container
+
+  let state c = C.state c.lxc_container
+
+  let is_running c = C.is_running c.lxc_container
+
+  let freeze c = C.freeze c.lxc_container
+
+  let unfreeze c = C.unfreeze c.lxc_container
+
+  let init_pid c = C.init_pid c.lxc_container
+
+                   (*$*)
+
+let load_config c ?alt_file = C.load_config
+end
