@@ -31,7 +31,7 @@ module State : sig
   val of_string : string -> t
 end
 
-val lxc_container_new : string -> string -> lxc_container structure ptr option
+val lxc_container_new : string -> string option -> lxc_container structure ptr option
 
 val lxc_container_get : lxc_container structure ptr -> int
 

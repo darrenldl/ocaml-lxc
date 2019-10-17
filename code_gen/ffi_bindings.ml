@@ -15,7 +15,7 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
 
   let lxc_container_new =
     foreign "lxc_container_new"
-      (string @-> string @-> returning (ptr_opt Types.lxc_container))
+      (string @-> string_opt @-> returning (ptr_opt Types.lxc_container))
 
   let lxc_container_get =
     foreign "lxc_container_get" (ptr Types.lxc_container @-> returning int)

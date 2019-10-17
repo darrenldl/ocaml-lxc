@@ -46,7 +46,11 @@ let acquire t =
   Lxc_c.lxc_container_get t.lxc_container |> int_to_bool |> bool_to_unit_result
 
 let release t =
-  Lxc_c.lxc_container_put t.lxc_container |> int_to_bool |> bool_to_unit_result
+  match Lxc_c.lxc_container_put t.lxc_container with
+  | 0 -> Ok ()
+  | 1 -> Ok ()
+  | -1 -> Error ()
+  | _ -> raise Lxc_c.Unexpected_value_from_C
 
 let get_global_config_item ~key =
   let ret_ptr = Lxc_c.lxc_get_global_config_item key in
@@ -116,4 +120,12 @@ let list_all_container_names ~(lxcpath : string) =
   ret
 
   (*$*)
+
+let list_defined_containers ~(lxcpath : string) =
+  let names = list_defined_container_names ~lxcpath in
+  List.map (fun name ->
+      new_container ~name
+    )
+    names
+
 module Container = struct end
