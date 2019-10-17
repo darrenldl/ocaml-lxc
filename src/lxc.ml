@@ -34,6 +34,14 @@ module Helpers = struct
   let make_null_ptr typ = coerce (ptr void) typ null
 
   let allocate_ptr_init_to_null typ = allocate typ (make_null_ptr typ)
+
+  let string_carray_from_string_list l =
+    l
+    |> List.map (fun s -> s |> CArray.of_string |> CArray.start)
+    |> CArray.of_list (ptr char)
+
+  let string_arr_ptr_from_string_list l =
+    l |> string_carray_from_string_list |> CArray.start
 end
 
 let new_container ?config_path ~name =
@@ -158,4 +166,8 @@ module Container = struct
   let init_pid c = C.init_pid c.lxc_container
 
   let load_config ?alt_file c = C.load_config c.lxc_container alt_file
+
+  let start c ~useinit ~argv =
+    C.start c.lxc_container (bool_to_int useinit)
+      (Helpers.string_arr_ptr_from_string_list argv)
 end
