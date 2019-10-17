@@ -42,6 +42,12 @@ module Helpers = struct
 
   let string_arr_ptr_from_string_list l =
     l |> string_carray_from_string_list |> CArray.start
+
+  let string_carray_from_string_arr arr =
+    string_carray_from_string_list (Array.to_list arr)
+
+  let string_arr_ptr_from_string_arr arr =
+    string_arr_ptr_from_string_list (Array.to_list arr)
 end
 
 let new_container ?config_path ~name =
@@ -169,5 +175,16 @@ module Container = struct
 
   let start c ~useinit ~argv =
     C.start c.lxc_container (bool_to_int useinit)
-      (Helpers.string_arr_ptr_from_string_list argv)
+      (Helpers.string_arr_ptr_from_string_arr argv)
+
+  let stop c = C.stop c.lxc_container
+
+  let want_daemonize c (want : [`Yes | `No]) =
+    C.want_daemonize c.lxc_container (want_to_bool want)
+
+  let want_close_all_fds c (want : [`Yes | `No]) =
+    C.want_close_all_fds c.lxc_container (want_to_bool want)
+
+  let config_file_name c =
+    C.config_file_name c.lxc_container |> Helpers.string_from_string_ptr
 end
