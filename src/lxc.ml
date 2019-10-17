@@ -12,19 +12,19 @@ module Helpers = struct
     let len = Stubs.Fun_stubs.strlen ptr in
     coerce long int len
 
-  let string_from_null_term_char_arr ptr =
+  let string_from_string_ptr (ptr : char ptr) =
     let length = strlen ptr in
     string_from_ptr ptr ~length
 
-  let bigstring_from_null_term_ptr ptr : Bigstring.t =
+  let bigstring_from_string_ptr ptr : Bigstring.t =
     let length = strlen ptr in
     bigarray_of_ptr array1 length Bigarray.Char ptr
 
-  let string_list_from_null_term_ptr_arr_ptr (ptr : char ptr ptr ptr)
+  let string_list_from_string_ptr_arr_ptr (ptr : char ptr ptr ptr)
       ~(count : int) =
     assert (count >= 0);
     CArray.from_ptr ptr count |> CArray.to_list
-    |> List.map (fun ptr -> string_from_null_term_char_arr !@ptr)
+    |> List.map (fun ptr -> string_from_string_ptr !@ptr)
 end
 
 let new_container ~name ~config_path =
@@ -42,7 +42,7 @@ let release t =
 
 let get_global_config_item ~key =
   let ret_ptr = Lxc_c.lxc_get_global_config_item key in
-  let str = Helpers.string_from_null_term_char_arr ret_ptr in
+  let str = Helpers.string_from_string_ptr ret_ptr in
   Helpers.free ret_ptr; str
 
 let get_version () = Lxc_c.lxc_get_version ()
@@ -65,7 +65,7 @@ let get_version () = Lxc_c.lxc_get_version ()
           Printf.printf
             "    Lxc_c.%ss lxcpath name_arr_ptr struct_arr_ptr_null in\n" name;
           Printf.printf
-            "  Helpers.string_list_from_null_term_ptr_arr_ptr name_arr_ptr ~count\n")
+            "  Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~count\n")
        ["list_defined_container"; "list_active_container"; "list_all_container"]
 *)
 
@@ -78,7 +78,7 @@ let list_defined_container_names ~(lxcpath : string) =
   let count =
     Lxc_c.list_defined_containers lxcpath name_arr_ptr struct_arr_ptr_null
   in
-  Helpers.string_list_from_null_term_ptr_arr_ptr name_arr_ptr ~count
+  Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~count
 
 let list_active_container_names ~(lxcpath : string) =
   let name_arr_ptr_typ = ptr (ptr char) in
@@ -89,7 +89,7 @@ let list_active_container_names ~(lxcpath : string) =
   let count =
     Lxc_c.list_active_containers lxcpath name_arr_ptr struct_arr_ptr_null
   in
-  Helpers.string_list_from_null_term_ptr_arr_ptr name_arr_ptr ~count
+  Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~count
 
 let list_all_container_names ~(lxcpath : string) =
   let name_arr_ptr_typ = ptr (ptr char) in
@@ -100,7 +100,7 @@ let list_all_container_names ~(lxcpath : string) =
   let count =
     Lxc_c.list_all_containers lxcpath name_arr_ptr struct_arr_ptr_null
   in
-  Helpers.string_list_from_null_term_ptr_arr_ptr name_arr_ptr ~count
+  Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~count
 
   (*$*)
 module Container = struct end
