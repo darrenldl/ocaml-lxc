@@ -7,7 +7,9 @@ This library aims to provide 100% coverage of LXC C API
 Ctypes is used for stubs generation, and additional C "glue" code is used where necessary
 
 ## Design
-The high level exposed API follows the design of go-lxc and python-lxc roughly,
+The design of the high level exposed API is derived from
+[go-lxc](https://github.com/lxc/go-lxc)
+and [Haskell lxc](https://github.com/fizruk/),
 and utilise OCaml types extensively to make semantics of returned value clear and
 allow better error handling
 
