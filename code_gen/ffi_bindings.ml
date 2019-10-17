@@ -33,21 +33,21 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
 
   let list_defined_containers =
     foreign "list_defined_containers"
-      ( string
+      ( string_opt
         @-> ptr (ptr (ptr char))
         @-> ptr (ptr (ptr Types.lxc_container))
         @-> returning int )
 
   let list_active_containers =
     foreign "list_active_containers"
-      ( string
+      ( string_opt
         @-> ptr (ptr (ptr char))
         @-> ptr (ptr (ptr Types.lxc_container))
         @-> returning int )
 
   let list_all_containers =
     foreign "list_all_containers"
-      ( string
+      ( string_opt
         @-> ptr (ptr (ptr char))
         @-> ptr (ptr (ptr Types.lxc_container))
         @-> returning int )
