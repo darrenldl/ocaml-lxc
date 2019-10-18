@@ -97,7 +97,7 @@ module Lxc_attach_flags = Lxc_c.Lxc_attach_flags
 module Lxc_attach_options_t = struct
   module L = Stubs.Type_stubs.Lxc_attach_options_t
 
-  type t = { t : Types.Lxc_attach_options_t.t structure }
+  type t = {t : Types.Lxc_attach_options_t.t structure}
 
   let make ?(personality = -1L) ?initial_cwd ?(uid = -1) ?(gid = -1)
       (attach_flags : Lxc_attach_flags.t list)
@@ -117,7 +117,7 @@ module Lxc_attach_options_t = struct
     setf t L.stdout_fd stdout_fd;
     setf t L.stderr_fd stderr_fd;
     setf t L.log_fd log_fd;
-    { t }
+    {t}
 
   let default () =
     let t = Ctypes.make L.t in
@@ -136,45 +136,47 @@ module Lxc_attach_options_t = struct
     setf t L.stdout_fd 1;
     setf t L.stderr_fd 2;
     setf t L.log_fd (-Stubs.Type_stubs.Errno.ebadf);
-    { t }
+    {t}
 end
 
 module Bdev_specs__glue = struct
   module B = Stubs.Type_stubs.Bdev_specs__glue
   open B
 
-  type t = { t : Types.Bdev_specs__glue.t structure }
+  type t = {t : Types.Bdev_specs__glue.t structure}
 
   module Zfs__glue = struct
-    type t = { zfs : Types.Bdev_specs__glue.Zfs__glue.t structure }
+    type t = {zfs : Types.Bdev_specs__glue.Zfs__glue.t structure}
 
     let make ~zfsroot =
       let zfs = Ctypes.make Zfs__glue.t in
       setf zfs Zfs__glue.zfsroot zfsroot;
-      { zfs }
+      {zfs}
   end
 
   module Lvm__glue = struct
-    type t = { lvm : Types.Bdev_specs__glue.Lvm__glue.t structure }
+    type t = {lvm : Types.Bdev_specs__glue.Lvm__glue.t structure}
 
     let make ~vg ~lv ~thinpool =
       let lvm = Ctypes.make Lvm__glue.t in
       setf lvm Lvm__glue.vg vg;
       setf lvm Lvm__glue.lv lv;
       setf lvm Lvm__glue.thinpool thinpool;
-      { lvm }
+      {lvm}
   end
 
   module Rbd__glue = struct
-    type t = { rbd : Types.Bdev_specs__glue.Rbd__glue.t structure }
+    type t = {rbd : Types.Bdev_specs__glue.Rbd__glue.t structure}
+
     let make ~rbdname ~rbdpool =
       let rbd = Ctypes.make Rbd__glue.t in
       setf rbd Rbd__glue.rbdname rbdname;
       setf rbd Rbd__glue.rbdpool rbdpool;
-      { rbd }
+      {rbd}
   end
 
-  let make ~fstype ~(fssize : int64) ~dir ~(zfs : Zfs__glue.t) ~(lvm : Lvm__glue.t) ~(rbd : Rbd__glue.t) =
+  let make ~fstype ~(fssize : int64) ~dir ~(zfs : Zfs__glue.t)
+      ~(lvm : Lvm__glue.t) ~(rbd : Rbd__glue.t) =
     let t = Ctypes.make t in
     setf t B.fstype fstype;
     setf t B.fssize (Unsigned.UInt64.of_int64 fssize);
@@ -182,7 +184,7 @@ module Bdev_specs__glue = struct
     setf t B.zfs zfs.zfs;
     setf t B.lvm lvm.lvm;
     setf t B.rbd rbd.rbd;
-    { t }
+    {t}
 end
 
 module Migrate_cmd = Lxc_c.Migrate_cmd
@@ -547,8 +549,7 @@ module Container = struct
 
   let snapshot_destroy_all c = C.snapshot_destroy_all c.lxc_container
 
-  let migrate c (cmd : C.Migrate_cmd.t)
-      (opts : Migrate_opts.t) =
+  let migrate c (cmd : C.Migrate_cmd.t) (opts : Migrate_opts.t) =
     let cmd = C.Migrate_cmd.to_c_int cmd |> Unsigned.UInt.of_int64 in
     C.migrate c.lxc_container cmd (addr opts.t)
       (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
