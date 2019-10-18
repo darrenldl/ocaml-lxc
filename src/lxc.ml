@@ -96,13 +96,12 @@ module Lxc_attach_flags = Lxc_c.Lxc_attach_flags
 
 module Lxc_attach_options_t = struct
   module L = Stubs.Type_stubs.Lxc_attach_options_t
-  open L
 
   let make ?(personality = -1L) ?initial_cwd ?(uid = -1) ?(gid = -1)
       (attach_flags : Lxc_attach_flags.t list)
       (namespace_flags : Namespace_flags.t list) env_policy ~extra_env_vars
       ~extra_keep_env ~stdin_fd ~stdout_fd ~stderr_fd ~log_fd =
-    let t = make t in
+    let t = make L.t in
     setf t L.attach_flags (lor_flags C.Lxc_attach_flags.to_c_int attach_flags);
     setf t L.namespaces (lor_flags C.Namespace_flags.to_c_int namespace_flags);
     setf t L.personality (Signed.Long.of_int64 personality);
@@ -119,7 +118,7 @@ module Lxc_attach_options_t = struct
     t
 
   let default () =
-    let t = Ctypes.make t in
+    let t = Ctypes.make L.t in
     setf t L.attach_flags
       (lor_flags C.Lxc_attach_flags.to_c_int [Lxc_attach_flags.Attach_default]);
     setf t L.namespaces (-1);
@@ -459,7 +458,13 @@ module Container = struct
 
   let snapshot c ~comment_file = C.snapshot c.lxc_container (Some comment_file)
 
-  let snapshot_list _c = []
+  let snapshot_list c =
+    let snapshot_arr_ptr = Helpers.allocate_ptr_init_to_null ((ptr Types.Lxc_snapshot.t)) in
+    let count = C.snapshot_list c.lxc_container snapshot_arr_ptr in
+    let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
+    let ret = CArray.to_list snapshot_arr in
+    Helpers.free_ptr (ptr (ptr Types.Lxc_snapshot.t))snapshot_arr_ptr;
+    ret
 
   let snapshot_destroy c ~snap_name =
     C.snapshot_destroy c.lxc_container (Some snap_name)
