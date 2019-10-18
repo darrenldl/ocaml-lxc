@@ -339,7 +339,12 @@ module Container = struct
   let rename c ~new_name =
     C.rename c.lxc_container new_name |> bool_to_unit_result_true_is_ok
 
-  let reboot c = C.reboot c.lxc_container |> bool_to_unit_result_true_is_ok
+  let reboot ?timeout c =
+    match timeout with
+    | None ->
+      C.reboot c.lxc_container |> bool_to_unit_result_true_is_ok
+    | Some timeout ->
+      C.reboot2 c.lxc_container timeout |> bool_to_unit_result_true_is_ok
 
   let shutdown c ~timeout =
     C.shutdown c.lxc_container timeout |> bool_to_unit_result_true_is_ok
@@ -511,15 +516,4 @@ module Container = struct
     |> int_to_unit_result_zero_is_ok
 
   let console_log c log = C.console_log c.lxc_container log
-
-  let reboot2 c ~timeout = C.reboot2 c.lxc_container timeout
-
-  let mount c ~src ~target ~fstype ~mount_flags =
-    C.mount c.lxc_container (Some src) (Some target) (Some fstype) mount_flags
-      (Helpers.make_null_ptr (ptr void))
-      (Helpers.make_null_ptr (ptr Types.Lxc_mount.t))
-
-  let umount c ~target = C.umount c.lxc_container (Some target)
-
-  let seccomp_notify_fd c = C.seccomp_notify_fd c.lxc_container
 end
