@@ -1,0 +1,18 @@
+opam-version: "2.0"
+name: "lxc"
+version: "0.0.1"
+synopsis: "OCaml binding to LXC"
+description: """
+OCaml binding to LXC
+"""
+maintainer: "Darren Ldl <darrenldldev@gmail.com>"
+authors: "Darren Ldl <darrenldldev@gmail.com>"
+license: "LGPL 2.1"
+homepage: "https://github.com/darrenldl/ocaml-lxc"
+bug-reports: "https://github.com/darrenldl/ocaml-lxc/issues"
+dev-repo: "https://github.com/darrenldl/ocaml-lxc"
+depends: [ "ocaml" "ocamlfind" "ctypes" "ctypes-foreign" "posix-types" "core"]
+build: [
+  ["dune" "build" "@all"]
+]
+install: ["dune" "build" "@install"]
