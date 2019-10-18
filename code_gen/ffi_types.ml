@@ -77,6 +77,8 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     let stderr_fd = field t "stderr_fd" int
 
     let log_fd = field t "log_fd" int
+
+    let () = seal t
   end
 
   module Lxc_snapshot = struct
