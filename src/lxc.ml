@@ -301,7 +301,6 @@ let list_containers_internal f ~(lxcpath : string option) =
   let containers =
     List.map (fun ptr -> {lxc_container = !@ptr}) struct_ptr_list
   in
-  Helpers.free_ptr (ptr struct_ptr_arr_typ) struct_ptr_arr_ptr;
   List.combine names containers
 
 (*$
