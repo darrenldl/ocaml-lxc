@@ -137,5 +137,7 @@ module Container : sig
 
   (* val attach_run_wait *)
 
-  val snapshot : comment_file:string -> container -> (int, unit) result
+  val create_snapshot : comment_file:string -> container -> (int, unit) result
+
+  val list_snapshots : container -> (Snapshot.t list, unit) result
 end
