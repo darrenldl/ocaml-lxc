@@ -6,6 +6,73 @@ exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
 
+module Lxc_attach_flags = struct
+  open Type_stubs.Lxc_attach_flags
+
+  (*$
+       let l =
+         [ "move_to_cgroup"
+         ; "drop_capabilities"
+         ; "set_personality"
+         ; "lsm_exec"
+         ; "remount_proc_sys"
+         ; "lsm_now"
+         ; "no_new_privs"
+         ; "terminal"
+         ; "default"
+         ; "lsm" ]
+
+       ;;
+       print_endline "type t ="
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Attach_%s\n" s) l
+
+       ;;
+       print_endline "let to_c_int t = match t with"
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Attach_%s -> lxc_attach_%s\n" s s) l
+  *)
+
+  type t =
+    | Attach_move_to_cgroup
+    | Attach_drop_capabilities
+    | Attach_set_personality
+    | Attach_lsm_exec
+    | Attach_remount_proc_sys
+    | Attach_lsm_now
+    | Attach_no_new_privs
+    | Attach_terminal
+    | Attach_default
+    | Attach_lsm
+
+  let to_c_int t =
+    match t with
+    | Attach_move_to_cgroup ->
+      lxc_attach_move_to_cgroup
+    | Attach_drop_capabilities ->
+      lxc_attach_drop_capabilities
+    | Attach_set_personality ->
+      lxc_attach_set_personality
+    | Attach_lsm_exec ->
+      lxc_attach_lsm_exec
+    | Attach_remount_proc_sys ->
+      lxc_attach_remount_proc_sys
+    | Attach_lsm_now ->
+      lxc_attach_lsm_now
+    | Attach_no_new_privs ->
+      lxc_attach_no_new_privs
+    | Attach_terminal ->
+      lxc_attach_terminal
+    | Attach_default ->
+      lxc_attach_default
+    | Attach_lsm ->
+      lxc_attach_lsm
+
+      (*$*)
+end
+
 module Migrate_cmd = struct
   open Type_stubs.Migrate_cmd
 
