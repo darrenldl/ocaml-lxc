@@ -464,26 +464,28 @@ module Container = struct
       in
       Ok strings
 
-  let get_cgroup_item c ~subsys =
+  let get_cgroup_item ~subsys c =
     let len =
-      C.get_cgroup_item c.lxc_container subsys
+      C.get_cgroup_item c.lxc_container (Some subsys)
         (Helpers.make_null_ptr (ptr char))
         0
     in
-    let ret = CArray.make char len in
-    let new_len =
-      C.get_cgroup_item c.lxc_container subsys (CArray.start ret) len
-    in
-    if len <> new_len then raise C.Unexpected_value_from_C;
-    Helpers.string_from_carray ret
+    if len < 0 then Error ()
+    else
+      let ret = CArray.make char len in
+      let new_len =
+        C.get_cgroup_item c.lxc_container (Some subsys) (CArray.start ret) len
+      in
+      if len <> new_len then raise C.Unexpected_value_from_C;
+      Helpers.string_from_carray ret |> Result.ok
 
-  let set_cgroup_item c ~subsys ~value =
+  let set_cgroup_item ~subsys ~value c =
     C.set_cgroup_item c.lxc_container (Some subsys) (Some value)
     |> bool_to_unit_result_true_is_ok
 
   let get_config_path c = C.get_config_path c.lxc_container |> Option.get
 
-  let set_config_path c path =
+  let set_config_path ~path c =
     C.set_config_path c.lxc_container (Some path)
     |> bool_to_unit_result_true_is_ok
 
@@ -502,11 +504,11 @@ module Container = struct
     if tty_fd = -1 then Error ()
     else Ok {ttynum = !@ttynum_ptr; masterfd = !@masterfd_ptr; tty_fd}
 
-  let console ?(ttynum : int = -1) c ~stdinfd ~stdoutfd ~stderrfd
-      ~(escape_char : char) =
+  let console ?(ttynum : int = -1) ~stdin_fd ~stdout_fd ~stderr_fd
+      ~(escape_char : char) c =
     let escape = Char.code escape_char - Char.code 'a' in
     match
-      C.console c.lxc_container ttynum stdinfd stdoutfd stderrfd escape
+      C.console c.lxc_container ttynum stdin_fd stdout_fd stderr_fd escape
     with
     | 0 ->
       Ok ()
@@ -515,15 +517,20 @@ module Container = struct
     | _ ->
       raise C.Unexpected_value_from_C
 
-  let attach_run_wait c (options : Types.Lxc_attach_options_t.t structure)
-      ~program ~argv =
+  let attach_run_wait (options : Types.Lxc_attach_options_t.t structure)
+      ~program ~argv c =
     let options_ptr =
       allocate Stubs.Type_stubs.Lxc_attach_options_t.t options
     in
     C.attach_run_wait c.lxc_container options_ptr (Some program)
       (Helpers.string_arr_ptr_from_string_arr argv)
 
-  let snapshot c ~comment_file = C.snapshot c.lxc_container (Some comment_file)
+  let snapshot ~comment_file c =
+    match C.snapshot c.lxc_container (Some comment_file) with
+    | -1 ->
+      Error ()
+    | n ->
+      Ok n
 
   let snapshot_list c =
     let snapshot_arr_ptr =

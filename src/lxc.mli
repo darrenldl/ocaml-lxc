@@ -2,6 +2,11 @@ type container
 
 module State = Lxc_c.State
 
+type getfd_result =
+  { ttynum : int
+  ; masterfd : int
+  ; tty_fd : int }
+
 val new_container :
   ?config_path:string -> name:string -> unit -> (container, unit) result
 
@@ -93,4 +98,30 @@ module Container : sig
     -> scope:int
     -> container
     -> (string list, unit) result
+
+  val get_cgroup_item : subsys:string -> container -> (string, unit) result
+
+  val set_cgroup_item :
+    subsys:string -> value:string -> container -> (unit, unit) result
+
+  val get_config_path : container -> string
+
+  val set_config_path : path:string -> container -> (unit, unit) result
+
+  (* val clone  *)
+
+  val console_getfd : ?ttynum:int -> container -> (getfd_result, unit) result
+
+  val console :
+    ?ttynum:int
+    -> stdin_fd:int
+    -> stdout_fd:int
+    -> stderr_fd:int
+    -> escape_char:char
+    -> container
+    -> (unit, unit) result
+
+  (* val attach_run_wait *)
+
+  val snapshot : comment_file:string -> container -> (int, unit) result
 end
