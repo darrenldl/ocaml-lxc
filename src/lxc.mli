@@ -2,6 +2,20 @@ type container
 
 module State = Lxc_c.State
 
+module Snapshot : sig
+  type t
+
+  val get_name : t -> string
+
+  val get_comment_path_name : t -> string
+
+  val get_timestamp : t -> string
+
+  val get_lxcpath : t -> string
+
+  val free : t -> unit
+end
+
 type getfd_result =
   { ttynum : int
   ; masterfd : int
