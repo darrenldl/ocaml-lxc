@@ -402,21 +402,24 @@ module Container = struct
 
   let clear_config c = C.clear_config c.lxc_container
 
-  let clear_config_item c ~key =
-    C.clear_config_item c.lxc_container key |> bool_to_unit_result_true_is_ok
+  let clear_config_item ~key c =
+    C.clear_config_item c.lxc_container (Some key)
+    |> bool_to_unit_result_true_is_ok
 
-  let get_config_item c ~key =
+  let get_config_item ~key c =
     let len =
-      C.get_config_item c.lxc_container key
+      C.get_config_item c.lxc_container (Some key)
         (Helpers.make_null_ptr (ptr char))
         0
     in
-    let ret = CArray.make char len in
-    let new_len =
-      C.get_config_item c.lxc_container key (CArray.start ret) len
-    in
-    if len <> new_len then raise C.Unexpected_value_from_C;
-    Helpers.string_from_carray ret
+    if len < 0 then Error ()
+    else
+      let ret = CArray.make char len in
+      let new_len =
+        C.get_config_item c.lxc_container (Some key) (CArray.start ret) len
+      in
+      if len <> new_len then raise C.Unexpected_value_from_C;
+      Ok (Helpers.string_from_carray ret)
 
   let get_running_config_item c ~key =
     let ret_ptr = C.get_running_config_item c.lxc_container key in

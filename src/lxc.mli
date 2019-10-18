@@ -75,4 +75,8 @@ module Container : sig
   val shutdown : timeout:int -> container -> (unit, unit) result
 
   val clear_config : container -> unit
+
+  val clear_config_item : key:string -> container -> (unit, unit) result
+
+  val get_config_item : key:string -> container -> (string, unit) result
 end
