@@ -84,7 +84,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   module Lxc_snapshot = struct
     let t = lift_typ Types.Lxc_snapshot.t
 
-    let name = S.(field t "name" string)
+    let name = field t "name" string
 
     let comment_pathname = field t "comment_pathname" string
 
