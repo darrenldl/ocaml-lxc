@@ -178,7 +178,7 @@ val attach_run_wait :
   Types.lxc_container structure ptr
   -> Lxc_attach_options_t.t structure ptr
   -> string option
-  -> string ptr
+  -> char ptr ptr
   -> int
 
 val snapshot : Types.lxc_container structure ptr -> string option -> int

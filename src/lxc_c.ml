@@ -490,7 +490,8 @@ let attach_run_wait (c : Types.lxc_container structure ptr) a0 a1 a2 =
       (field_type Type_stubs.attach_run_wait__raw)
       (Foreign.funptr
          ( ptr lxc_container @-> ptr Lxc_attach_options_t.t @-> string_opt
-           @-> ptr string @-> returning int ))
+           @-> ptr (ptr char)
+           @-> returning int ))
       c_field
   in
   f c a0 a1 a2
