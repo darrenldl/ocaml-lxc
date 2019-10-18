@@ -7,6 +7,7 @@
  (c_names   lxc_glue
             ffi_bindings_c_stubs)
  (libraries ctypes
+            ctypes.foreign
             posix-types
             core))
 
