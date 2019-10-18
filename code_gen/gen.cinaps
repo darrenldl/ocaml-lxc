@@ -246,9 +246,9 @@ let c_type_to_ocaml_type_sig s =
   | "char * const *" ->
     "(char ptr) ptr"
   | "const char * const *" ->
-    "string ptr"
+    "(char ptr) ptr"
   | "const char **" ->
-    "string ptr"
+    "(char ptr) ptr"
   | "unsigned int" ->
     "Unsigned.uint"
   | "unsigned long" ->
@@ -300,9 +300,9 @@ let c_type_to_ocaml_type s =
   | "char * const *" ->
     "ptr (ptr char)"
   | "const char * const *" ->
-    "ptr string"
+    "ptr (ptr char)"
   | "const char **" ->
-    "ptr string"
+    "ptr (ptr char)"
   | "unsigned int" ->
     "uint"
   | "unsigned long" ->
