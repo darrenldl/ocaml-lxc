@@ -20,7 +20,7 @@ module Helpers = struct
 
   let strlen ptr =
     let len = Stubs.Fun_stubs.strlen ptr in
-    coerce long int len
+    Signed.Long.to_int len
 
   let elements_from_null_term_ptr (ptr : 'a ptr) : 'a list =
     let rec aux acc ptr =
