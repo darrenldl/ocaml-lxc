@@ -41,30 +41,33 @@ module Helpers = struct
     let length = strlen ptr in
     bigarray_of_ptr array1 length Bigarray.Char ptr
 
-  let string_list_from_string_ptr_arr_ptr (p : char ptr ptr ptr)
-      ?(free_each_ptr_in_arr = false) ~(count : int) =
+  let string_list_from_string_ptr_arr_ptr ?(free = false)
+      ?(free_each_ptr_in_arr = false) ~(count : int) (p : char ptr ptr ptr) =
     assert (count >= 0);
     let ret =
       CArray.from_ptr p count |> CArray.to_list
       |> List.map (fun ptr ->
           string_from_string_ptr ~free:free_each_ptr_in_arr !@ptr)
     in
+    if free then free_ptr (ptr (ptr (ptr char))) p;
     ret
 
   let string_list_from_string_ptr_null_term_arr_ptr ?(free = false)
-      (p : char ptr ptr ptr) =
+      ?(free_each_ptr_in_arr = false) (p : char ptr ptr ptr) =
     let ret =
       elements_from_null_term_ptr p
-      |> List.map (fun p -> string_from_string_ptr !@p)
+      |> List.map (fun p ->
+          string_from_string_ptr ~free:free_each_ptr_in_arr !@p)
     in
     if free then free_ptr (ptr (ptr (ptr char))) p;
     ret
 
   let string_list_from_string_null_term_arr_ptr ?(free = false)
-      (p : char ptr ptr) =
+      ?(free_each_ptr_in_arr = false) (p : char ptr ptr) =
     let ret =
       elements_from_null_term_ptr p
-      |> List.map (fun p -> string_from_string_ptr p)
+      |> List.map (fun p ->
+          string_from_string_ptr ~free:free_each_ptr_in_arr p)
     in
     if free then free_ptr (ptr (ptr char)) p;
     ret
@@ -435,7 +438,8 @@ module Container = struct
     if is_null ret_ptr then Error ()
     else
       let strings =
-        Helpers.string_list_from_string_null_term_arr_ptr ~free:true ret_ptr
+        Helpers.string_list_from_string_null_term_arr_ptr
+          ~free_each_ptr_in_arr:true ret_ptr
       in
       Ok strings
 
@@ -446,7 +450,8 @@ module Container = struct
     if is_null ret_ptr then Error ()
     else
       let strings =
-        Helpers.string_list_from_string_null_term_arr_ptr ~free:true ret_ptr
+        Helpers.string_list_from_string_null_term_arr_ptr
+          ~free_each_ptr_in_arr:true ret_ptr
       in
       Ok strings
 
