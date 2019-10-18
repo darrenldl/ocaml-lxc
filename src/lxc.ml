@@ -139,13 +139,13 @@ module Lxc_attach_options_t = struct
     {t}
 end
 
-module Bdev_specs__glue = struct
+module Bdev_specs = struct
   module B = Stubs.Type_stubs.Bdev_specs__glue
   open B
 
   type t = {t : Types.Bdev_specs__glue.t structure}
 
-  module Zfs__glue = struct
+  module Zfs = struct
     type t = {zfs : Types.Bdev_specs__glue.Zfs__glue.t structure}
 
     let make ~zfsroot =
@@ -154,7 +154,7 @@ module Bdev_specs__glue = struct
       {zfs}
   end
 
-  module Lvm__glue = struct
+  module Lvm = struct
     type t = {lvm : Types.Bdev_specs__glue.Lvm__glue.t structure}
 
     let make ~vg ~lv ~thinpool =
@@ -165,7 +165,7 @@ module Bdev_specs__glue = struct
       {lvm}
   end
 
-  module Rbd__glue = struct
+  module Rbd = struct
     type t = {rbd : Types.Bdev_specs__glue.Rbd__glue.t structure}
 
     let make ~rbdname ~rbdpool =
@@ -175,8 +175,8 @@ module Bdev_specs__glue = struct
       {rbd}
   end
 
-  let make ~fstype ~(fssize : int64) ~dir ~(zfs : Zfs__glue.t)
-      ~(lvm : Lvm__glue.t) ~(rbd : Rbd__glue.t) =
+  let make ~fstype ~(fssize : int64) ~dir ~(zfs : Zfs.t) ~(lvm : Lvm.t)
+      ~(rbd : Rbd.t) =
     let t = Ctypes.make t in
     setf t B.fstype fstype;
     setf t B.fssize (Unsigned.UInt64.of_int64 fssize);
@@ -372,9 +372,14 @@ module Container = struct
 
   let save_config ~alt_file c = C.save_config c.lxc_container (Some alt_file)
 
-  let create ?(template = "download") c =
-    C.create__glue c.lxc_container template None None 0
-      (Helpers.make_null_ptr (ptr (ptr char)))
+  let create ?(template = "download") ?bdev_type
+      ?(bdev_specs : Bdev_specs.t option) ?(flags = 0) c ~(argv : string array)
+    =
+    let bdev_specs =
+      Option.map (fun (x : Bdev_specs.t) -> addr x.t) bdev_specs
+    in
+    C.create__glue c.lxc_container template bdev_type bdev_specs flags
+      (Helpers.string_arr_ptr_from_string_arr argv)
     |> bool_to_unit_result_true_is_ok
 
   let rename c ~new_name =
