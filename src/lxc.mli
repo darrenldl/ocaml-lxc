@@ -16,6 +16,28 @@ module Snapshot : sig
   val free : t -> unit
 end
 
+module Feature_checks = Lxc_c.Feature_checks
+
+module Migrate_cmd = Lxc_c.Migrate_cmd
+
+module Migrate_opts : sig
+  type t
+
+  val make :
+    ?predump_dir:string ->
+    ?page_server_addr:string ->
+    ?page_server_port:string ->
+    ?action_script:string ->
+    ?disable_skip_in_flight:bool ->
+    ?ghost_limit:int64 ->
+    ?features_to_check:Feature_checks.t list ->
+    dir:string ->
+    verbose:bool ->
+    stop:bool ->
+    preserves_inodes:bool ->
+    t
+end
+
 type getfd_result =
   { ttynum : int
   ; masterfd : int
@@ -149,6 +171,8 @@ module Container : sig
 
   val destroy_snapshot : snap_name:string -> container -> (unit, unit) result
 
+  val destroy_all_snapshots : container -> (unit, unit) result
+
   val may_control : container -> bool
 
   val add_device_node :
@@ -164,4 +188,9 @@ module Container : sig
 
   val checkpoint :
     dir:string -> stop:bool -> verbose:bool -> container -> (unit, unit) result
+
+  val restore_from_checkpoint :
+    dir:string -> verbose:bool -> container -> (unit, unit) result
+
+  val destroy_with_snapshots : container -> (unit, unit) result
 end
