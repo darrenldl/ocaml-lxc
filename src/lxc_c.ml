@@ -6,6 +6,55 @@ exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
 
+module Namespace_flags = struct
+  open Type_stubs.Namespace_flags
+
+  (*$
+       let l =
+         ["newcgroup"; "newipc"; "newnet"; "newns"; "newpid"; "newuser"; "newuts"]
+
+       ;;
+       print_endline "type t ="
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Clone_%s\n" s) l
+
+       ;;
+       print_endline "let to_c_int t = match t with"
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Clone_%s -> clone_%s\n" s s) l
+  *)
+
+  type t =
+    | Clone_newcgroup
+    | Clone_newipc
+    | Clone_newnet
+    | Clone_newns
+    | Clone_newpid
+    | Clone_newuser
+    | Clone_newuts
+
+  let to_c_int t =
+    match t with
+    | Clone_newcgroup ->
+      clone_newcgroup
+    | Clone_newipc ->
+      clone_newipc
+    | Clone_newnet ->
+      clone_newnet
+    | Clone_newns ->
+      clone_newns
+    | Clone_newpid ->
+      clone_newpid
+    | Clone_newuser ->
+      clone_newuser
+    | Clone_newuts ->
+      clone_newuts
+
+      (*$*)
+end
+
 module Lxc_attach_flags = struct
   open Type_stubs.Lxc_attach_flags
 

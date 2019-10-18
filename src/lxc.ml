@@ -91,12 +91,14 @@ module Helpers = struct
   let string_ptr_from_string s = s |> CArray.of_string |> CArray.start
 end
 
-(* module Lxc_attach_options_t = struct
- *   module A = Stubs.Type_stubs.Lxc_attach_options_t
- *   open A
- * end *)
-
 module Lxc_attach_flags = Lxc_c.Lxc_attach_flags
+
+module Lxc_attach_options_t = struct
+  module L = Stubs.Type_stubs.Lxc_attach_options_t
+  open L
+
+  (* let make ~(attach_flags : Lxc_attach_flags.t list) namespaces  *)
+end
 
 module Bdev_specs__glue = struct
   module B = Stubs.Type_stubs.Bdev_specs__glue
@@ -134,6 +136,9 @@ module Bdev_specs__glue = struct
     setf t B.zfs zfs;
     setf t B.lvm lvm
 end
+
+module Migrate_cmd = Lxc_c.Migrate_cmd
+module State = Lxc_c.State
 
 let new_container ?config_path ~name =
   match C.lxc_container_new name config_path with
