@@ -361,9 +361,7 @@ module Container = struct
 
   let config_file_name c =
     let ret_ptr = C.config_file_name c.lxc_container in
-    let ret = Helpers.string_from_string_ptr ret_ptr in
-    Helpers.free_char_ptr ret_ptr;
-    ret
+    Helpers.string_from_string_ptr ~free:true ret_ptr
 
   let wait c state =
     let state = Some (C.State.to_string state) in
