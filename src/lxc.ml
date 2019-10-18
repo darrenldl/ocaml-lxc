@@ -365,18 +365,17 @@ module Container = struct
 
   let wait ?(timeout = -1) ~wait_for c =
     let state = Some (C.State.to_string wait_for) in
-    C.wait c.lxc_container state timeout
-    |> bool_to_unit_result_true_is_ok
+    C.wait c.lxc_container state timeout |> bool_to_unit_result_true_is_ok
 
   let set_config_item ~key ~value c =
     C.set_config_item c.lxc_container (Some key) (Some value)
     |> bool_to_unit_result_true_is_ok
 
-  let destroy c = C.destroy c.lxc_container
-                |> bool_to_unit_result_true_is_ok
+  let destroy c = C.destroy c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let save_config ~alt_file c = C.save_config c.lxc_container (Some alt_file)
-                              |> bool_to_unit_result_true_is_ok
+  let save_config ~alt_file c =
+    C.save_config c.lxc_container (Some alt_file)
+    |> bool_to_unit_result_true_is_ok
 
   let create ?(template = "download") ?bdev_type
       ?(bdev_specs : Bdev_specs.t option) ?(flags = 0) c ~(argv : string array)

@@ -47,18 +47,20 @@ module Container : sig
   val start :
     use_init:bool -> argv:string array -> container -> (unit, unit) result
 
-  val stop :
-    container -> (unit, unit) result
+  val stop : container -> (unit, unit) result
 
   val want_daemonize : want:[`Yes | `No] -> container -> (unit, unit) result
 
-  val want_close_all_fds : want:[`Yes | `No] -> container -> (unit, unit) result
+  val want_close_all_fds :
+    want:[`Yes | `No] -> container -> (unit, unit) result
 
   val config_file_name : container -> string
 
-  val wait : ?timeout:int -> wait_for:State.t -> container -> (unit, unit) result
+  val wait :
+    ?timeout:int -> wait_for:State.t -> container -> (unit, unit) result
 
-  val set_config_item : key:string -> value:string -> container -> (unit, unit) result
+  val set_config_item :
+    key:string -> value:string -> container -> (unit, unit) result
 
   val destroy : container -> (unit, unit) result
 
