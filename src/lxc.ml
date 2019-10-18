@@ -7,10 +7,9 @@ type container =
   {lxc_container : Types.lxc_container Ctypes.structure Ctypes.ptr}
 
 type getfd_result =
-  {ttynum : int;
-   masterfd : int;
-   tty_fd : int;
-  }
+  { ttynum : int
+  ; masterfd : int
+  ; tty_fd : int }
 
 module Helpers = struct
   let free_ptr (typ : 'a ptr typ) ret_ptr =
@@ -72,7 +71,8 @@ module Helpers = struct
 
   let make_null_ptr (typ : 'a ptr typ) : 'a ptr = coerce (ptr void) typ null
 
-  let allocate_ptr_init_to_null (typ : 'a ptr typ) : 'a ptr ptr = allocate typ (make_null_ptr typ)
+  let allocate_ptr_init_to_null (typ : 'a ptr typ) : 'a ptr ptr =
+    allocate typ (make_null_ptr typ)
 
   let string_carray_from_string_list l =
     l
@@ -121,6 +121,11 @@ module Bdev_specs__glue = struct
    *   let t = Ctypes.make t in
    *   setf t B.fstype fstype;
    *   setf t B.fssize (Unsigned.UInt64.of_int64 fssize); *)
+end
+
+module Lxc_attach_options_t = struct
+  module A = Stubs.Type_stubs.Lxc_attach_options_t
+  open A
 end
 
 let new_container ?config_path ~name =
@@ -277,7 +282,7 @@ module Container = struct
 
   let save_config ~alt_file c = C.save_config c.lxc_container (Some alt_file)
 
-  let create c ?(template = "download") =
+  let create ?(template = "download") c =
     C.create__glue c.lxc_container template None None 0
       (Helpers.make_null_ptr (ptr (ptr char)))
     |> bool_to_unit_result_true_is_ok
@@ -373,17 +378,34 @@ module Container = struct
     C.clone c.lxc_container (Some new_name) (Some lxcpath) flags
       (Some bdevtype) (Some bdevdata) new_size (CArray.start hook_args)
 
-  let console_getfd c ~(ttynum : int option) =
-    let ttynum_ptr_init = Option.value ~default:(-1) ttynum in
+  let console_getfd ?(ttynum : int = -1) c =
+    let ttynum_ptr_init = ttynum in
     let ttynum_ptr = allocate int ttynum_ptr_init in
     let masterfd_ptr = allocate int 0 in
     let tty_fd = C.console_getfd c.lxc_container ttynum_ptr masterfd_ptr in
-    if tty_fd = -1 then
-      Error ()
-    else
-      Ok { ttynum = !@ttynum_ptr;
-        masterfd = !@masterfd_ptr;
-        tty_fd;
-      }
+    if tty_fd = -1 then Error ()
+    else Ok {ttynum = !@ttynum_ptr; masterfd = !@masterfd_ptr; tty_fd}
 
-end
+  let console ?(ttynum : int = -1) c ~stdinfd ~stdoutfd ~stderrfd
+      ~(escape_char : char) =
+    let escape = Char.code escape_char - Char.code 'a' in
+    match
+      C.console c.lxc_container ttynum stdinfd stdoutfd stderrfd escape
+    with
+    | 0 ->
+      Ok ()
+    | -1 ->
+      Error ()
+    | _ ->
+      raise C.Unexpected_value_from_C
+
+  let attach_run_wait c (options : Types.Lxc_attach_options_t.t structure)
+      ~program ~argv =
+    let options_ptr =
+      allocate Stubs.Type_stubs.Lxc_attach_options_t.t options
+    in
+    C.attach_run_wait c.lxc_container options_ptr (Some program)
+      (Helpers.string_arr_ptr_from_string_arr argv)
+
+(* let snapshot  *)
+   end
