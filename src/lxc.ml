@@ -48,7 +48,7 @@ module Helpers = struct
       CArray.from_ptr p count |> CArray.to_list
       |> List.map (fun ptr -> string_from_string_ptr ~free:false !@ptr)
     in
-    if free then free_ptr (ptr (ptr (ptr char))) p;
+    (* if free then free_ptr (ptr (ptr (ptr char))) p; *)
     ret
 
   let string_list_from_string_ptr_null_term_arr_ptr ?(free = false)
