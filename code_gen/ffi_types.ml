@@ -1,6 +1,10 @@
 module Types_stubs (S : Cstubs_structs.TYPE) = struct
   open S
 
+  module Errno = struct
+    let ebadf = constant "EBADF" int
+  end
+
   module Posix_types = struct
     let pid_t = S.lift_typ Posix_types.pid_t
 
