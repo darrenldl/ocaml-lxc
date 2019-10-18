@@ -218,7 +218,7 @@ end
 
 module State = Lxc_c.State
 
-let new_container ?config_path ~name =
+let new_container ?config_path ~name () =
   match C.lxc_container_new name config_path with
   | None ->
     Error ()
@@ -320,9 +320,9 @@ let list_all_containers ?(lxcpath : string option) () =
 
   (*$*)
 
-let config_item_is_supported s = C.lxc_config_item_is_supported s
+let config_item_is_supported ~key = C.lxc_config_item_is_supported key
 
-let has_api_extension s = C.lxc_has_api_extension s
+let has_api_extension ~extension = C.lxc_has_api_extension extension
 
 module Container = struct
   let is_defined c = C.is_defined c.lxc_container
