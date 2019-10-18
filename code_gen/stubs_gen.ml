@@ -14,6 +14,7 @@ let headers =
   [ (* "#include <lxc/lxccontainer.h>"; *)
     (* "#include <lxc/attach_options.h>"; *)
     "#include <string.h>"
+  ; "#include <linux/sched.h>"
   ; "#include \"lxc_glue.h\"" ]
 
 let write_headers c_out =

@@ -29,6 +29,22 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     let lxc_mount_api_v1 = S.constant "LXC_MOUNT_API_V1" int
   end
 
+  module Namespace_flags = struct
+    let clone_newcgroup = S.constant "CLONE_NEWCGROUP" int
+
+    let clone_newipc = S.constant "CLONE_NEWIPC" int
+
+    let clone_newnet = S.constant "CLONE_NEWNET" int
+
+    let clone_newns = S.constant "CLONE_NEWNS" int
+
+    let clone_newpid = S.constant "CLONE_NEWPID" int
+
+    let clone_newuser = S.constant "CLONE_NEWUSER" int
+
+    let clone_newuts = S.constant "CLONE_NEWUTS" int
+  end
+
   module Lxc_attach_env_policy_t = struct
     let lxc_attach_keep_env = S.constant "LXC_ATTACH_KEEP_ENV" int64_t
 
