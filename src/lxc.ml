@@ -339,23 +339,23 @@ module Container = struct
 
   let unfreeze c = C.unfreeze c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let init_pid c = C.init_pid c.lxc_container
+  let init_pid c = C.init_pid c.lxc_container |> Posix_types.Pid.to_int
 
   let load_config ?alt_file c =
     C.load_config c.lxc_container alt_file |> bool_to_unit_result_true_is_ok
 
-  let start c ~use_init ~argv =
+  let start ~use_init ~argv c =
     C.start c.lxc_container (bool_to_int use_init)
       (Helpers.string_arr_ptr_from_string_arr argv)
     |> bool_to_unit_result_true_is_ok
 
   let stop c = C.stop c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let want_daemonize c (want : [`Yes | `No]) =
+  let want_daemonize ~(want : [`Yes | `No]) c =
     C.want_daemonize c.lxc_container (want_to_bool want)
     |> bool_to_unit_result_true_is_ok
 
-  let want_close_all_fds c (want : [`Yes | `No]) =
+  let want_close_all_fds ~(want : [`Yes | `No]) c =
     C.want_close_all_fds c.lxc_container (want_to_bool want)
     |> bool_to_unit_result_true_is_ok
 
@@ -363,16 +363,20 @@ module Container = struct
     let ret_ptr = C.config_file_name c.lxc_container in
     Helpers.string_from_string_ptr ~free:true ret_ptr
 
-  let wait c state =
-    let state = Some (C.State.to_string state) in
-    C.wait c.lxc_container state
+  let wait ?(timeout = -1) ~wait_for c =
+    let state = Some (C.State.to_string wait_for) in
+    C.wait c.lxc_container state timeout
+    |> bool_to_unit_result_true_is_ok
 
-  let set_config_item c ~key ~value =
+  let set_config_item ~key ~value c =
     C.set_config_item c.lxc_container (Some key) (Some value)
+    |> bool_to_unit_result_true_is_ok
 
   let destroy c = C.destroy c.lxc_container
+                |> bool_to_unit_result_true_is_ok
 
   let save_config ~alt_file c = C.save_config c.lxc_container (Some alt_file)
+                              |> bool_to_unit_result_true_is_ok
 
   let create ?(template = "download") ?bdev_type
       ?(bdev_specs : Bdev_specs.t option) ?(flags = 0) c ~(argv : string array)
@@ -384,8 +388,8 @@ module Container = struct
       (Helpers.string_arr_ptr_from_string_arr argv)
     |> bool_to_unit_result_true_is_ok
 
-  let rename c ~new_name =
-    C.rename c.lxc_container new_name |> bool_to_unit_result_true_is_ok
+  let rename ~new_name c =
+    C.rename c.lxc_container (Some new_name) |> bool_to_unit_result_true_is_ok
 
   let reboot ?timeout c =
     match timeout with
@@ -394,7 +398,7 @@ module Container = struct
     | Some timeout ->
       C.reboot2 c.lxc_container timeout |> bool_to_unit_result_true_is_ok
 
-  let shutdown c ~timeout =
+  let shutdown ~timeout c =
     C.shutdown c.lxc_container timeout |> bool_to_unit_result_true_is_ok
 
   let clear_config c = C.clear_config c.lxc_container
@@ -465,8 +469,8 @@ module Container = struct
     if len <> new_len then raise C.Unexpected_value_from_C;
     Helpers.string_from_carray ret
 
-  let set_config_item c ~subsys ~value =
-    C.set_config_item c.lxc_container (Some subsys) (Some value)
+  let set_cgroup_item c ~subsys ~value =
+    C.set_cgroup_item c.lxc_container (Some subsys) (Some value)
     |> bool_to_unit_result_true_is_ok
 
   let get_config_path c = C.get_config_path c.lxc_container |> Option.get
