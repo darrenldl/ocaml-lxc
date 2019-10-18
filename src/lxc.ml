@@ -134,7 +134,7 @@ module Lxc_attach_options_t = struct
     setf t L.stdin_fd 0;
     setf t L.stdout_fd 1;
     setf t L.stderr_fd 2;
-    setf t L.log_fd Stubs.Type_stubs.Errno.ebadf;
+    setf t L.log_fd (-Stubs.Type_stubs.Errno.ebadf);
     t
 end
 
