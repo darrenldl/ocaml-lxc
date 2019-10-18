@@ -92,9 +92,9 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
     let namespaces = field t "namespaces" int
 
-    let personality = field t "personality" int
+    let personality = field t "personality" long
 
-    let initial_cwd = field t "initial_cwd" (ptr char)
+    let initial_cwd = field t "initial_cwd" string_opt
 
     let uid = field t "uid" Posix_types.uid_t
 

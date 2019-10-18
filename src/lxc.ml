@@ -91,13 +91,30 @@ module Helpers = struct
   let string_ptr_from_string s = s |> CArray.of_string |> CArray.start
 end
 
+module Namespace_flags = Lxc_c.Namespace_flags
 module Lxc_attach_flags = Lxc_c.Lxc_attach_flags
 
 module Lxc_attach_options_t = struct
   module L = Stubs.Type_stubs.Lxc_attach_options_t
   open L
 
-  (* let make ~(attach_flags : Lxc_attach_flags.t list) namespaces  *)
+  let make ?(personality = -1L) ?initial_cwd ?(uid = -1) ?(gid = -1)
+      (attach_flags : Lxc_attach_flags.t list)
+      (namespace_flags : Namespace_flags.t list) env_policy ~extra_keep_env
+      ~stdin_fd ~stdout_fd ~stderr_fd ~log_fd =
+    let t = make t in
+    setf t L.attach_flags (lor_flags C.Lxc_attach_flags.to_c_int attach_flags);
+    setf t L.namespaces (lor_flags C.Namespace_flags.to_c_int namespace_flags);
+    setf t L.personality (Signed.Long.of_int64 personality);
+    setf t L.initial_cwd initial_cwd;
+    setf t L.uid (Posix_types.Uid.of_int uid);
+    setf t L.gid (Posix_types.Gid.of_int gid);
+    setf t L.env_policy env_policy;
+    setf t L.extra_env_vars extra_keep_env;
+    setf t L.stdin_fd stdin_fd;
+    setf t L.stdout_fd stdout_fd;
+    setf t L.stderr_fd stderr_fd;
+    setf t L.log_fd log_fd
 end
 
 module Bdev_specs__glue = struct

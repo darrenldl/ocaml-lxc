@@ -5,6 +5,19 @@ exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
 
+module Namespace_flags : sig
+  type t =
+    | Clone_newcgroup
+    | Clone_newipc
+    | Clone_newnet
+    | Clone_newns
+    | Clone_newpid
+    | Clone_newuser
+    | Clone_newuts
+
+  val to_c_int : t -> int
+end
+
 module Lxc_attach_flags : sig
   type t =
     | Attach_move_to_cgroup
