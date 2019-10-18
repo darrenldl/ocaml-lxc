@@ -215,8 +215,11 @@ module Bdev_specs = struct
     {t}
 end
 
-module Feature_checks = Lxc_c.Feature_checks
+module Console_log = struct
+  type t = {t : Types.Lxc_console_log.t structure}
+end
 
+module Feature_checks = Lxc_c.Feature_checks
 module Migrate_cmd = Lxc_c.Migrate_cmd
 
 module Migrate_opts = struct
@@ -614,11 +617,13 @@ module Container = struct
   let destroy_all_snapshots c =
     C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let migrate c (cmd : C.Migrate_cmd.t) (opts : Migrate_opts.t) =
+  let migrate (cmd : C.Migrate_cmd.t) (opts : Migrate_opts.t) c =
     let cmd = C.Migrate_cmd.to_c_int cmd |> Unsigned.UInt.of_int64 in
     C.migrate c.lxc_container cmd (addr opts.t)
       (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
     |> int_to_unit_result_zero_is_ok
 
-  let console_log c log = C.console_log c.lxc_container log
+  let console_log log c =
+    let open Console_log in
+    C.console_log c.lxc_container (addr log.t) |> int_to_unit_result_zero_is_ok
 end

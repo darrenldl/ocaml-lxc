@@ -2,6 +2,10 @@ type container
 
 module State = Lxc_c.State
 
+module Console_log : sig
+  type t
+end
+
 module Snapshot : sig
   type t
 
@@ -17,25 +21,24 @@ module Snapshot : sig
 end
 
 module Feature_checks = Lxc_c.Feature_checks
-
 module Migrate_cmd = Lxc_c.Migrate_cmd
 
 module Migrate_opts : sig
   type t
 
   val make :
-    ?predump_dir:string ->
-    ?page_server_addr:string ->
-    ?page_server_port:string ->
-    ?action_script:string ->
-    ?disable_skip_in_flight:bool ->
-    ?ghost_limit:int64 ->
-    ?features_to_check:Feature_checks.t list ->
-    dir:string ->
-    verbose:bool ->
-    stop:bool ->
-    preserves_inodes:bool ->
-    t
+    ?predump_dir:string
+    -> ?page_server_addr:string
+    -> ?page_server_port:string
+    -> ?action_script:string
+    -> ?disable_skip_in_flight:bool
+    -> ?ghost_limit:int64
+    -> ?features_to_check:Feature_checks.t list
+    -> dir:string
+    -> verbose:bool
+    -> stop:bool
+    -> preserves_inodes:bool
+    -> t
 end
 
 type getfd_result =
@@ -193,4 +196,9 @@ module Container : sig
     dir:string -> verbose:bool -> container -> (unit, unit) result
 
   val destroy_with_snapshots : container -> (unit, unit) result
+
+  val migrate :
+    Migrate_cmd.t -> Migrate_opts.t -> container -> (unit, unit) result
+
+  val console_log : Console_log.t -> container -> (unit, unit) result
 end
