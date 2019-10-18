@@ -87,6 +87,8 @@ module Helpers = struct
 
   let string_arr_ptr_from_string_arr arr =
     string_arr_ptr_from_string_list (Array.to_list arr)
+
+  let string_ptr_from_string s = s |> CArray.of_string |> CArray.start
 end
 
 module Bdev_specs__glue = struct
@@ -407,5 +409,54 @@ module Container = struct
     C.attach_run_wait c.lxc_container options_ptr (Some program)
       (Helpers.string_arr_ptr_from_string_arr argv)
 
-(* let snapshot  *)
-   end
+  let snapshot c ~comment_file = C.snapshot c.lxc_container (Some comment_file)
+
+  let snapshot_list _c = []
+
+  let snapshot_destroy c ~snap_name =
+    C.snapshot_destroy c.lxc_container (Some snap_name)
+    |> bool_to_unit_result_true_is_ok
+
+  let may_control c = C.may_control c.lxc_container
+
+  let add_device_node c ~src_path ~dst_path =
+    C.add_device_node c.lxc_container (Some src_path) (Some dst_path)
+
+  let remove_device_node c ~src_path ~dst_path =
+    C.remove_device_node c.lxc_container (Some src_path) (Some dst_path)
+
+  let attach_interface c ~dev ~dst_dev =
+    C.attach_interface c.lxc_container (Some dev) (Some dst_dev)
+    |> bool_to_unit_result_true_is_ok
+
+  let detach_interface c ~dev ~dst_dev =
+    C.detach_interface c.lxc_container (Some dev) (Some dst_dev)
+    |> bool_to_unit_result_true_is_ok
+
+  let checkpoint c ~dir ~stop ~verbose =
+    C.checkpoint c.lxc_container
+      (Helpers.string_ptr_from_string dir)
+      stop verbose
+    |> bool_to_unit_result_true_is_ok
+
+  let restore c ~dir ~verbose =
+    C.restore c.lxc_container (Helpers.string_ptr_from_string dir) verbose
+    |> bool_to_unit_result_true_is_ok
+
+  let destroy_with_snapshots c =
+    C.destroy_with_snapshots c.lxc_container |> bool_to_unit_result_true_is_ok
+
+  let snapshot_destroy_all c = C.snapshot_destroy_all c.lxc_container
+
+  let migrate _c = ()
+
+  let console_log _c = ()
+
+  let reboot2 _c = ()
+
+  let mount _c = ()
+
+  let umount _c = ()
+
+  let seccomp_notify_fd _c = ()
+end
