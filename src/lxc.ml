@@ -459,11 +459,13 @@ module Container = struct
   let snapshot c ~comment_file = C.snapshot c.lxc_container (Some comment_file)
 
   let snapshot_list c =
-    let snapshot_arr_ptr = Helpers.allocate_ptr_init_to_null ((ptr Types.Lxc_snapshot.t)) in
+    let snapshot_arr_ptr =
+      Helpers.allocate_ptr_init_to_null (ptr Types.Lxc_snapshot.t)
+    in
     let count = C.snapshot_list c.lxc_container snapshot_arr_ptr in
     let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
     let ret = CArray.to_list snapshot_arr in
-    Helpers.free_ptr (ptr (ptr Types.Lxc_snapshot.t))snapshot_arr_ptr;
+    Helpers.free_ptr (ptr (ptr Types.Lxc_snapshot.t)) snapshot_arr_ptr;
     ret
 
   let snapshot_destroy c ~snap_name =
@@ -501,15 +503,23 @@ module Container = struct
 
   let snapshot_destroy_all c = C.snapshot_destroy_all c.lxc_container
 
-  let migrate _c = ()
+  let migrate c (cmd : C.Migrate_cmd.t)
+      (opts : Types.Migrate_opts.t structure ptr) =
+    let cmd = C.Migrate_cmd.to_c_int cmd |> Unsigned.UInt.of_int64 in
+    C.migrate c.lxc_container cmd opts
+      (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
+    |> int_to_unit_result_zero_is_ok
 
-  let console_log _c = ()
+  let console_log c log = C.console_log c.lxc_container log
 
-  let reboot2 _c = ()
+  let reboot2 c ~timeout = C.reboot2 c.lxc_container timeout
 
-  let mount _c = ()
+  let mount c ~src ~target ~fstype ~mount_flags =
+    C.mount c.lxc_container (Some src) (Some target) (Some fstype) mount_flags
+      (Helpers.make_null_ptr (ptr void))
+      (Helpers.make_null_ptr (ptr Types.Lxc_mount.t))
 
-  let umount _c = ()
+  let umount c ~target = C.umount c.lxc_container (Some target)
 
-  let seccomp_notify_fd _c = ()
+  let seccomp_notify_fd c = C.seccomp_notify_fd c.lxc_container
 end
