@@ -4,14 +4,20 @@ open Types
 module Fun_stubs (F : Cstubs.FOREIGN) = struct
   open F
 
+  let free = foreign "free" (ptr char @-> returning void)
+
+  let strlen = foreign "strlen" (ptr char @-> returning long)
+
   let create__glue =
     foreign "create__glue"
-      ( ptr lxc_container @-> string @-> string @-> ptr_opt Bdev_specs__glue.t
-        @-> int @-> ptr_opt string @-> returning bool )
+      ( ptr lxc_container @-> string @-> string_opt
+        @-> ptr_opt Bdev_specs__glue.t @-> int
+        @-> ptr (ptr char)
+        @-> returning bool )
 
   let lxc_container_new =
     foreign "lxc_container_new"
-      (string @-> string @-> returning (ptr_opt Types.lxc_container))
+      (string @-> string_opt @-> returning (ptr_opt Types.lxc_container))
 
   let lxc_container_get =
     foreign "lxc_container_get" (ptr Types.lxc_container @-> returning int)
@@ -23,27 +29,27 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
     foreign "lxc_get_wait_states" (ptr string @-> returning int)
 
   let lxc_get_global_config_item =
-    foreign "lxc_get_global_config_item" (string @-> returning string)
+    foreign "lxc_get_global_config_item" (string @-> returning (ptr char))
 
   let lxc_get_version = foreign "lxc_get_version" (void @-> returning string)
 
   let list_defined_containers =
     foreign "list_defined_containers"
-      ( string
+      ( string_opt
         @-> ptr (ptr (ptr char))
         @-> ptr (ptr (ptr Types.lxc_container))
         @-> returning int )
 
   let list_active_containers =
     foreign "list_active_containers"
-      ( string
+      ( string_opt
         @-> ptr (ptr (ptr char))
         @-> ptr (ptr (ptr Types.lxc_container))
         @-> returning int )
 
   let list_all_containers =
     foreign "list_all_containers"
-      ( string
+      ( string_opt
         @-> ptr (ptr (ptr char))
         @-> ptr (ptr (ptr Types.lxc_container))
         @-> returning int )

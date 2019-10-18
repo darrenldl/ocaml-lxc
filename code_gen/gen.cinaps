@@ -226,7 +226,7 @@ let c_type_to_ocaml_type_sig s =
   | "char *" ->
     "char ptr"
   | "const char *" ->
-    "string"
+    "string option"
   | "struct lxc_container *" ->
     "lxc_container structure ptr"
   | "struct lxc_mount *" ->
@@ -246,9 +246,9 @@ let c_type_to_ocaml_type_sig s =
   | "char * const *" ->
     "(char ptr) ptr"
   | "const char * const *" ->
-    "string ptr"
+    "(char ptr) ptr"
   | "const char **" ->
-    "string ptr"
+    "(char ptr) ptr"
   | "unsigned int" ->
     "Unsigned.uint"
   | "unsigned long" ->
@@ -280,7 +280,7 @@ let c_type_to_ocaml_type s =
   | "char *" ->
     "ptr char"
   | "const char *" ->
-    "string"
+    "string_opt"
   | "struct lxc_container *" ->
     "ptr lxc_container"
   | "struct lxc_mount *" ->
@@ -300,9 +300,9 @@ let c_type_to_ocaml_type s =
   | "char * const *" ->
     "ptr (ptr char)"
   | "const char * const *" ->
-    "ptr string"
+    "ptr (ptr char)"
   | "const char **" ->
-    "ptr string"
+    "ptr (ptr char)"
   | "unsigned int" ->
     "uint"
   | "unsigned long" ->
@@ -381,4 +381,10 @@ module For_lxc_c_dot_mli = struct
 
   let gen_lxc_container_funptr_field_ml_wrapper_sig_all () =
     List.iter gen_lxc_container_funptr_field_ml_wrapper_sig funptr_records
+end
+
+module For_lxc_dot_ml = struct
+  let gen_container_is_single_param name =
+    Printf.printf "let %s c =\n" name;
+    Printf.printf "  C.%s c.lxc_container\n" name
 end

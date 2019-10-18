@@ -1,11 +1,15 @@
 (library
  (name      lxc)
+ (public_name lxc)
  (flags     (-w "+a-4-9-29-37-40-42-44-48-50-32"))
  (c_flags   (-llxc))
+ (c_library_flags (-llxc))
  (c_names   lxc_glue
             ffi_bindings_c_stubs)
  (libraries ctypes
-            posix-types))
+            ctypes.foreign
+            posix-types
+            core))
 
 (rule
  (targets types.ml)

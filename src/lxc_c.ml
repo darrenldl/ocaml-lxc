@@ -6,6 +6,122 @@ exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
 
+module Namespace_flags = struct
+  open Type_stubs.Namespace_flags
+
+  (*$
+       let l =
+         ["newcgroup"; "newipc"; "newnet"; "newns"; "newpid"; "newuser"; "newuts"]
+
+       ;;
+       print_endline "type t ="
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Clone_%s\n" s) l
+
+       ;;
+       print_endline "let to_c_int t = match t with"
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Clone_%s -> clone_%s\n" s s) l
+  *)
+
+  type t =
+    | Clone_newcgroup
+    | Clone_newipc
+    | Clone_newnet
+    | Clone_newns
+    | Clone_newpid
+    | Clone_newuser
+    | Clone_newuts
+
+  let to_c_int t =
+    match t with
+    | Clone_newcgroup ->
+      clone_newcgroup
+    | Clone_newipc ->
+      clone_newipc
+    | Clone_newnet ->
+      clone_newnet
+    | Clone_newns ->
+      clone_newns
+    | Clone_newpid ->
+      clone_newpid
+    | Clone_newuser ->
+      clone_newuser
+    | Clone_newuts ->
+      clone_newuts
+
+      (*$*)
+end
+
+module Lxc_attach_flags = struct
+  open Type_stubs.Lxc_attach_flags
+
+  (*$
+       let l =
+         [ "move_to_cgroup"
+         ; "drop_capabilities"
+         ; "set_personality"
+         ; "lsm_exec"
+         ; "remount_proc_sys"
+         ; "lsm_now"
+         ; "no_new_privs"
+         ; "terminal"
+         ; "default"
+         ; "lsm" ]
+
+       ;;
+       print_endline "type t ="
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Attach_%s\n" s) l
+
+       ;;
+       print_endline "let to_c_int t = match t with"
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Attach_%s -> lxc_attach_%s\n" s s) l
+  *)
+
+  type t =
+    | Attach_move_to_cgroup
+    | Attach_drop_capabilities
+    | Attach_set_personality
+    | Attach_lsm_exec
+    | Attach_remount_proc_sys
+    | Attach_lsm_now
+    | Attach_no_new_privs
+    | Attach_terminal
+    | Attach_default
+    | Attach_lsm
+
+  let to_c_int t =
+    match t with
+    | Attach_move_to_cgroup ->
+      lxc_attach_move_to_cgroup
+    | Attach_drop_capabilities ->
+      lxc_attach_drop_capabilities
+    | Attach_set_personality ->
+      lxc_attach_set_personality
+    | Attach_lsm_exec ->
+      lxc_attach_lsm_exec
+    | Attach_remount_proc_sys ->
+      lxc_attach_remount_proc_sys
+    | Attach_lsm_now ->
+      lxc_attach_lsm_now
+    | Attach_no_new_privs ->
+      lxc_attach_no_new_privs
+    | Attach_terminal ->
+      lxc_attach_terminal
+    | Attach_default ->
+      lxc_attach_default
+    | Attach_lsm ->
+      lxc_attach_lsm
+
+      (*$*)
+end
+
 module Migrate_cmd = struct
   open Type_stubs.Migrate_cmd
 
@@ -25,6 +141,21 @@ module Migrate_cmd = struct
       migrate_restore
     | Migrate_feature_check ->
       migrate_feature_check
+end
+
+module Feature_checks = struct
+  open Stubs.Type_stubs.Feature_checks
+
+  type t =
+    | Feature_mem_track
+    | Feature_lazy_pages
+
+  let to_c_int t =
+    match t with
+    | Feature_mem_track ->
+      feature_mem_track |> Unsigned.ULLong.to_int
+    | Feature_lazy_pages ->
+      feature_lazy_pages |> Unsigned.ULLong.to_int
 end
 
 module State = struct
@@ -82,7 +213,8 @@ end
 (*$
      List.iter
        (fun s -> Printf.printf "let %s = Fun_stubs.%s\n" s s)
-       [ "lxc_container_new"
+       [ "create__glue"
+       ; "lxc_container_new"
        ; "lxc_container_get"
        ; "lxc_container_put"
        ; "lxc_get_wait_states"
@@ -90,8 +222,14 @@ end
        ; "lxc_get_version"
        ; "list_defined_containers"
        ; "list_active_containers"
-       ; "list_all_containers" ]
+       ; "list_all_containers"
+       ; "lxc_log_init"
+       ; "lxc_log_close"
+       ; "lxc_config_item_is_supported"
+       ; "lxc_has_api_extension" ]
 *)
+
+let create__glue = Fun_stubs.create__glue
 
 let lxc_container_new = Fun_stubs.lxc_container_new
 
@@ -111,7 +249,15 @@ let list_active_containers = Fun_stubs.list_active_containers
 
 let list_all_containers = Fun_stubs.list_all_containers
 
-                          (*$*)
+let lxc_log_init = Fun_stubs.lxc_log_init
+
+let lxc_log_close = Fun_stubs.lxc_log_close
+
+let lxc_config_item_is_supported = Fun_stubs.lxc_config_item_is_supported
+
+let lxc_has_api_extension = Fun_stubs.lxc_has_api_extension
+
+                            (*$*)
 
 (*$ #use "code_gen/gen.cinaps";;
 
@@ -133,7 +279,7 @@ let state (c : Types.lxc_container structure ptr) =
   let f =
     coerce
       (field_type Type_stubs.state__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning string))
+      (Foreign.funptr (ptr lxc_container @-> returning string_opt))
       c_field
   in
   f c
@@ -183,7 +329,7 @@ let load_config (c : Types.lxc_container structure ptr) a0 =
   let f =
     coerce
       (field_type Type_stubs.load_config__raw)
-      (Foreign.funptr (ptr lxc_container @-> string @-> returning bool))
+      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
       c_field
   in
   f c a0
@@ -244,7 +390,8 @@ let wait (c : Types.lxc_container structure ptr) a0 a1 =
   let f =
     coerce
       (field_type Type_stubs.wait__raw)
-      (Foreign.funptr (ptr lxc_container @-> string @-> int @-> returning bool))
+      (Foreign.funptr
+         (ptr lxc_container @-> string_opt @-> int @-> returning bool))
       c_field
   in
   f c a0 a1
@@ -255,7 +402,7 @@ let set_config_item (c : Types.lxc_container structure ptr) a0 a1 =
     coerce
       (field_type Type_stubs.set_config_item__raw)
       (Foreign.funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
       c_field
   in
   f c a0 a1
@@ -275,7 +422,7 @@ let save_config (c : Types.lxc_container structure ptr) a0 =
   let f =
     coerce
       (field_type Type_stubs.save_config__raw)
-      (Foreign.funptr (ptr lxc_container @-> string @-> returning bool))
+      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
       c_field
   in
   f c a0
@@ -285,7 +432,7 @@ let rename (c : Types.lxc_container structure ptr) a0 =
   let f =
     coerce
       (field_type Type_stubs.rename__raw)
-      (Foreign.funptr (ptr lxc_container @-> string @-> returning bool))
+      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
       c_field
   in
   f c a0
@@ -325,7 +472,7 @@ let clear_config_item (c : Types.lxc_container structure ptr) a0 =
   let f =
     coerce
       (field_type Type_stubs.clear_config_item__raw)
-      (Foreign.funptr (ptr lxc_container @-> string @-> returning bool))
+      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
       c_field
   in
   f c a0
@@ -336,7 +483,8 @@ let get_config_item (c : Types.lxc_container structure ptr) a0 a1 a2 =
     coerce
       (field_type Type_stubs.get_config_item__raw)
       (Foreign.funptr
-         (ptr lxc_container @-> string @-> ptr char @-> int @-> returning int))
+         ( ptr lxc_container @-> string_opt @-> ptr char @-> int
+           @-> returning int ))
       c_field
   in
   f c a0 a1 a2
@@ -346,7 +494,8 @@ let get_running_config_item (c : Types.lxc_container structure ptr) a0 =
   let f =
     coerce
       (field_type Type_stubs.get_running_config_item__raw)
-      (Foreign.funptr (ptr lxc_container @-> string @-> returning (ptr char)))
+      (Foreign.funptr
+         (ptr lxc_container @-> string_opt @-> returning (ptr char)))
       c_field
   in
   f c a0
@@ -357,7 +506,8 @@ let get_keys (c : Types.lxc_container structure ptr) a0 a1 a2 =
     coerce
       (field_type Type_stubs.get_keys__raw)
       (Foreign.funptr
-         (ptr lxc_container @-> string @-> ptr char @-> int @-> returning int))
+         ( ptr lxc_container @-> string_opt @-> ptr char @-> int
+           @-> returning int ))
       c_field
   in
   f c a0 a1 a2
@@ -378,7 +528,7 @@ let get_ips (c : Types.lxc_container structure ptr) a0 a1 a2 =
     coerce
       (field_type Type_stubs.get_ips__raw)
       (Foreign.funptr
-         ( ptr lxc_container @-> string @-> string @-> int
+         ( ptr lxc_container @-> string_opt @-> string_opt @-> int
            @-> returning (ptr (ptr char)) ))
       c_field
   in
@@ -390,7 +540,8 @@ let get_cgroup_item (c : Types.lxc_container structure ptr) a0 a1 a2 =
     coerce
       (field_type Type_stubs.get_cgroup_item__raw)
       (Foreign.funptr
-         (ptr lxc_container @-> string @-> ptr char @-> int @-> returning int))
+         ( ptr lxc_container @-> string_opt @-> ptr char @-> int
+           @-> returning int ))
       c_field
   in
   f c a0 a1 a2
@@ -401,7 +552,7 @@ let set_cgroup_item (c : Types.lxc_container structure ptr) a0 a1 =
     coerce
       (field_type Type_stubs.set_cgroup_item__raw)
       (Foreign.funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
       c_field
   in
   f c a0 a1
@@ -411,7 +562,7 @@ let get_config_path (c : Types.lxc_container structure ptr) =
   let f =
     coerce
       (field_type Type_stubs.get_config_path__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning string))
+      (Foreign.funptr (ptr lxc_container @-> returning string_opt))
       c_field
   in
   f c
@@ -421,7 +572,7 @@ let set_config_path (c : Types.lxc_container structure ptr) a0 =
   let f =
     coerce
       (field_type Type_stubs.set_config_path__raw)
-      (Foreign.funptr (ptr lxc_container @-> string @-> returning bool))
+      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
       c_field
   in
   f c a0
@@ -432,8 +583,8 @@ let clone (c : Types.lxc_container structure ptr) a0 a1 a2 a3 a4 a5 a6 =
     coerce
       (field_type Type_stubs.clone__raw)
       (Foreign.funptr
-         ( ptr lxc_container @-> string @-> string @-> int @-> string @-> string
-           @-> uint64_t
+         ( ptr lxc_container @-> string_opt @-> string_opt @-> int
+           @-> string_opt @-> string_opt @-> uint64_t
            @-> ptr (ptr char)
            @-> returning (ptr lxc_container) ))
       c_field
@@ -469,8 +620,9 @@ let attach_run_wait (c : Types.lxc_container structure ptr) a0 a1 a2 =
     coerce
       (field_type Type_stubs.attach_run_wait__raw)
       (Foreign.funptr
-         ( ptr lxc_container @-> ptr Lxc_attach_options_t.t @-> string
-           @-> ptr string @-> returning int ))
+         ( ptr lxc_container @-> ptr Lxc_attach_options_t.t @-> string_opt
+           @-> ptr (ptr char)
+           @-> returning int ))
       c_field
   in
   f c a0 a1 a2
@@ -480,7 +632,7 @@ let snapshot (c : Types.lxc_container structure ptr) a0 =
   let f =
     coerce
       (field_type Type_stubs.snapshot__raw)
-      (Foreign.funptr (ptr lxc_container @-> string @-> returning int))
+      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning int))
       c_field
   in
   f c a0
@@ -502,7 +654,7 @@ let snapshot_restore (c : Types.lxc_container structure ptr) a0 a1 =
     coerce
       (field_type Type_stubs.snapshot_restore__raw)
       (Foreign.funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
       c_field
   in
   f c a0 a1
@@ -512,7 +664,7 @@ let snapshot_destroy (c : Types.lxc_container structure ptr) a0 =
   let f =
     coerce
       (field_type Type_stubs.snapshot_destroy__raw)
-      (Foreign.funptr (ptr lxc_container @-> string @-> returning bool))
+      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
       c_field
   in
   f c a0
@@ -533,7 +685,7 @@ let add_device_node (c : Types.lxc_container structure ptr) a0 a1 =
     coerce
       (field_type Type_stubs.add_device_node__raw)
       (Foreign.funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
       c_field
   in
   f c a0 a1
@@ -544,7 +696,7 @@ let remove_device_node (c : Types.lxc_container structure ptr) a0 a1 =
     coerce
       (field_type Type_stubs.remove_device_node__raw)
       (Foreign.funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
       c_field
   in
   f c a0 a1
@@ -555,7 +707,7 @@ let attach_interface (c : Types.lxc_container structure ptr) a0 a1 =
     coerce
       (field_type Type_stubs.attach_interface__raw)
       (Foreign.funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
       c_field
   in
   f c a0 a1
@@ -566,7 +718,7 @@ let detach_interface (c : Types.lxc_container structure ptr) a0 a1 =
     coerce
       (field_type Type_stubs.detach_interface__raw)
       (Foreign.funptr
-         (ptr lxc_container @-> string @-> string @-> returning bool))
+         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
       c_field
   in
   f c a0 a1
@@ -652,8 +804,8 @@ let mount (c : Types.lxc_container structure ptr) a0 a1 a2 a3 a4 a5 =
     coerce
       (field_type Type_stubs.mount__raw)
       (Foreign.funptr
-         ( ptr lxc_container @-> string @-> string @-> string @-> ulong
-           @-> ptr void @-> ptr Lxc_mount.t @-> returning int ))
+         ( ptr lxc_container @-> string_opt @-> string_opt @-> string_opt
+           @-> ulong @-> ptr void @-> ptr Lxc_mount.t @-> returning int ))
       c_field
   in
   f c a0 a1 a2 a3 a4 a5
@@ -664,7 +816,7 @@ let umount (c : Types.lxc_container structure ptr) a0 a1 a2 =
     coerce
       (field_type Type_stubs.umount__raw)
       (Foreign.funptr
-         ( ptr lxc_container @-> string @-> ulong @-> ptr Lxc_mount.t
+         ( ptr lxc_container @-> string_opt @-> ulong @-> ptr Lxc_mount.t
            @-> returning int ))
       c_field
   in
