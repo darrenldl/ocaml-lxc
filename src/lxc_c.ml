@@ -143,6 +143,21 @@ module Migrate_cmd = struct
       migrate_feature_check
 end
 
+module Feature_checks = struct
+  open Stubs.Type_stubs.Feature_checks
+
+  type t =
+    | Feature_mem_track
+    | Feature_lazy_pages
+
+  let to_c_int t =
+    match t with
+    | Feature_mem_track ->
+      feature_mem_track |> Unsigned.ULLong.to_int
+    | Feature_lazy_pages ->
+      feature_lazy_pages |> Unsigned.ULLong.to_int
+end
+
 module State = struct
   type t =
     | Stopped

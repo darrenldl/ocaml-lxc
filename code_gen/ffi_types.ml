@@ -204,27 +204,29 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   module Migrate_opts = struct
     let t = lift_typ Types.Migrate_opts.t
 
-    let directory = field t "directory" string
+    let directory = field t "directory" string_opt
 
     let verbose = field t "verbose" bool
 
     let stop = field t "stop" bool
 
-    let predump_dir = field t "predump_dir" string
+    let predump_dir = field t "predump_dir" string_opt
 
-    let pageserver_address = field t "pageserver_address" string
+    let pageserver_address = field t "pageserver_address" string_opt
 
-    let pageserver_port = field t "pageserver_port" string
+    let pageserver_port = field t "pageserver_port" string_opt
 
     let preserves_inodes = field t "preserves_inodes" bool
 
-    let action_script = field t "action_script" string
+    let action_script = field t "action_script" string_opt
 
     let disable_skip_in_flight = field t "disable_skip_in_flight" bool
 
     let ghost_limit = field t "ghost_limit" uint64_t
 
     let features_to_check = field t "features_to_check" uint64_t
+
+    let () = seal t
   end
 
   module Lxc_console_log = struct

@@ -44,6 +44,14 @@ module Migrate_cmd : sig
   val to_c_int : t -> int64
 end
 
+module Feature_checks : sig
+  type t =
+    | Feature_mem_track
+    | Feature_lazy_pages
+
+  val to_c_int : t -> int
+end
+
 module State : sig
   type t =
     | Stopped
