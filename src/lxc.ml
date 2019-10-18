@@ -42,13 +42,13 @@ module Helpers = struct
     bigarray_of_ptr array1 length Bigarray.Char ptr
 
   let string_list_from_string_ptr_arr_ptr (p : char ptr ptr ptr)
-      ?(free = false) ~(count : int) =
+      ?(free_each_ptr_in_arr = false) ~(count : int) =
     assert (count >= 0);
     let ret =
       CArray.from_ptr p count |> CArray.to_list
-      |> List.map (fun ptr -> string_from_string_ptr ~free !@ptr)
+      |> List.map (fun ptr ->
+          string_from_string_ptr ~free:free_each_ptr_in_arr !@ptr)
     in
-    (* if free then free_ptr (ptr (ptr (ptr char))) p; *)
     ret
 
   let string_list_from_string_ptr_null_term_arr_ptr ?(free = false)
@@ -254,7 +254,8 @@ let list_container_names_internal f ~(lxcpath : string option) =
   in
   let count = f lxcpath name_arr_ptr struct_ptr_arr_ptr_null in
   let ret =
-    Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~free:true ~count
+    Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr
+      ~free_each_ptr_in_arr:true ~count
   in
   ret
 
@@ -288,7 +289,8 @@ let list_containers_internal f ~(lxcpath : string option) =
   in
   let count = f lxcpath name_arr_ptr struct_ptr_arr_ptr in
   let names =
-    Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr ~free:true ~count
+    Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr
+      ~free_each_ptr_in_arr:true ~count
   in
   let struct_ptr_list =
     CArray.from_ptr struct_ptr_arr_ptr count |> CArray.to_list
