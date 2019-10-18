@@ -10,7 +10,7 @@ authors: "Darren Ldl <darrenldldev@gmail.com>"
 license: "LGPL 2.1"
 homepage: "https://github.com/darrenldl/ocaml-lxc"
 bug-reports: "https://github.com/darrenldl/ocaml-lxc/issues"
-dev-repo: "https://github.com/darrenldl/ocaml-lxc"
+dev-repo: "git+https://github.com/darrenldl/ocaml-lxc"
 depends: [ "ocaml" "ocamlfind" "ctypes" "ctypes-foreign" "posix-types" "core"]
 build: [
   ["dune" "build" "@all"]
