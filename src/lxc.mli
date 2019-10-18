@@ -79,4 +79,9 @@ module Container : sig
   val clear_config_item : key:string -> container -> (unit, unit) result
 
   val get_config_item : key:string -> container -> (string, unit) result
+
+  val get_running_config_item :
+    key:string -> container -> (string, unit) result
+
+  val get_keys : prefix:string -> container -> (string list, unit) result
 end

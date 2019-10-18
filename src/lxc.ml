@@ -421,20 +421,28 @@ module Container = struct
       if len <> new_len then raise C.Unexpected_value_from_C;
       Ok (Helpers.string_from_carray ret)
 
-  let get_running_config_item c ~key =
-    let ret_ptr = C.get_running_config_item c.lxc_container key in
-    Helpers.string_from_string_ptr ~free:true ret_ptr
+  let get_running_config_item ~key c =
+    let ret_ptr = C.get_running_config_item c.lxc_container (Some key) in
+    if is_null ret_ptr then Error ()
+    else Helpers.string_from_string_ptr ~free:true ret_ptr |> Result.ok
 
-  let get_keys c ~prefix =
+  let get_keys ~prefix c =
     let len =
-      C.get_keys c.lxc_container prefix (Helpers.make_null_ptr (ptr char)) 0
+      C.get_keys c.lxc_container (Some prefix)
+        (Helpers.make_null_ptr (ptr char))
+        0
     in
-    let ret = CArray.make char len in
-    let new_len = C.get_keys c.lxc_container prefix (CArray.start ret) len in
-    if len <> new_len then raise C.Unexpected_value_from_C;
-    Helpers.string_from_carray ret
-    |> String.split_on_char '\n'
-    |> List.filter (fun s -> s <> "")
+    if len < 0 then Error ()
+    else
+      let ret = CArray.make char len in
+      let new_len =
+        C.get_keys c.lxc_container (Some prefix) (CArray.start ret) len
+      in
+      if len <> new_len then raise C.Unexpected_value_from_C;
+      Helpers.string_from_carray ret
+      |> String.split_on_char '\n'
+      |> List.filter (fun s -> s <> "")
+      |> Result.ok
 
   let get_interfaces c =
     let ret_ptr = C.get_interfaces c.lxc_container in
