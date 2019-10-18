@@ -100,8 +100,8 @@ module Lxc_attach_options_t = struct
 
   let make ?(personality = -1L) ?initial_cwd ?(uid = -1) ?(gid = -1)
       (attach_flags : Lxc_attach_flags.t list)
-      (namespace_flags : Namespace_flags.t list) env_policy ~extra_env_vars ~extra_keep_env
-      ~stdin_fd ~stdout_fd ~stderr_fd ~log_fd =
+      (namespace_flags : Namespace_flags.t list) env_policy ~extra_env_vars
+      ~extra_keep_env ~stdin_fd ~stdout_fd ~stderr_fd ~log_fd =
     let t = make t in
     setf t L.attach_flags (lor_flags C.Lxc_attach_flags.to_c_int attach_flags);
     setf t L.namespaces (lor_flags C.Namespace_flags.to_c_int namespace_flags);
@@ -120,13 +120,15 @@ module Lxc_attach_options_t = struct
 
   let default () =
     let t = Ctypes.make t in
-    setf t L.attach_flags (lor_flags C.Lxc_attach_flags.to_c_int [Lxc_attach_flags.Attach_default]);
+    setf t L.attach_flags
+      (lor_flags C.Lxc_attach_flags.to_c_int [Lxc_attach_flags.Attach_default]);
     setf t L.namespaces (-1);
     setf t L.personality (Signed.Long.of_int (-1));
     setf t L.initial_cwd None;
     setf t L.uid (Posix_types.Uid.of_int (-1));
     setf t L.gid (Posix_types.Gid.of_int (-1));
-    setf t L.env_policy Stubs.Type_stubs.Lxc_attach_env_policy_t.Lxc_attach_keep_env;
+    setf t L.env_policy
+      Stubs.Type_stubs.Lxc_attach_env_policy_t.Lxc_attach_keep_env;
     setf t L.extra_env_vars (Helpers.make_null_ptr (ptr (ptr char)));
     setf t L.extra_keep_env (Helpers.make_null_ptr (ptr (ptr char)));
     setf t L.stdin_fd 0;
@@ -134,7 +136,6 @@ module Lxc_attach_options_t = struct
     setf t L.stderr_fd 2;
     setf t L.log_fd Stubs.Type_stubs.Errno.ebadf;
     t
-
 end
 
 module Bdev_specs__glue = struct
