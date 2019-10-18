@@ -537,9 +537,9 @@ module Container = struct
   let snapshot_destroy_all c = C.snapshot_destroy_all c.lxc_container
 
   let migrate c (cmd : C.Migrate_cmd.t)
-      (opts : Types.Migrate_opts.t structure ptr) =
+      (opts : Migrate_opts.t) =
     let cmd = C.Migrate_cmd.to_c_int cmd |> Unsigned.UInt.of_int64 in
-    C.migrate c.lxc_container cmd opts
+    C.migrate c.lxc_container cmd (addr opts.t)
       (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
     |> int_to_unit_result_zero_is_ok
 
