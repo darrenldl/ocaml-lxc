@@ -84,4 +84,13 @@ module Container : sig
     key:string -> container -> (string, unit) result
 
   val get_keys : prefix:string -> container -> (string list, unit) result
+
+  val get_interfaces : container -> (string list, unit) result
+
+  val get_ips :
+    interface:string
+    -> family:string
+    -> scope:int
+    -> container
+    -> (string list, unit) result
 end

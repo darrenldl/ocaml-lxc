@@ -448,13 +448,11 @@ module Container = struct
     let ret_ptr = C.get_interfaces c.lxc_container in
     if is_null ret_ptr then Error ()
     else
-      let strings =
-        Helpers.string_list_from_string_null_term_arr_ptr
-          ~free_each_ptr_in_arr:true ret_ptr
-      in
-      Ok strings
+      Helpers.string_list_from_string_null_term_arr_ptr
+        ~free_each_ptr_in_arr:true ret_ptr
+      |> Result.ok
 
-  let get_ips c ~interface ~family ~scope =
+  let get_ips ~interface ~family ~scope c =
     let ret_ptr =
       C.get_ips c.lxc_container (Some interface) (Some family) scope
     in
