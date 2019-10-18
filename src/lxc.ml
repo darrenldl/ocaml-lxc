@@ -91,6 +91,13 @@ module Helpers = struct
   let string_ptr_from_string s = s |> CArray.of_string |> CArray.start
 end
 
+(* module Lxc_attach_options_t = struct
+ *   module A = Stubs.Type_stubs.Lxc_attach_options_t
+ *   open A
+ * end *)
+
+module Lxc_attach_flags = Lxc_c.Lxc_attach_flags
+
 module Bdev_specs__glue = struct
   module B = Stubs.Type_stubs.Bdev_specs__glue
   open B
@@ -119,15 +126,13 @@ module Bdev_specs__glue = struct
       rbd
   end
 
-  (* let make ~fstype ~fssize ~zfs ~lvm ~dir =
-   *   let t = Ctypes.make t in
-   *   setf t B.fstype fstype;
-   *   setf t B.fssize (Unsigned.UInt64.of_int64 fssize); *)
-end
-
-module Lxc_attach_options_t = struct
-  module A = Stubs.Type_stubs.Lxc_attach_options_t
-  open A
+  let make ~fstype ~(fssize : int64) ~dir ~zfs ~lvm =
+    let t = Ctypes.make t in
+    setf t B.fstype fstype;
+    setf t B.fssize (Unsigned.UInt64.of_int64 fssize);
+    setf t B.dir dir;
+    setf t B.zfs zfs;
+    setf t B.lvm lvm
 end
 
 let new_container ?config_path ~name =

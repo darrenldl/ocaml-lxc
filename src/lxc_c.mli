@@ -5,6 +5,22 @@ exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
 
+module Lxc_attach_flags : sig
+  type t =
+    | Attach_move_to_cgroup
+    | Attach_drop_capabilities
+    | Attach_set_personality
+    | Attach_lsm_exec
+    | Attach_remount_proc_sys
+    | Attach_lsm_now
+    | Attach_no_new_privs
+    | Attach_terminal
+    | Attach_default
+    | Attach_lsm
+
+  val to_c_int : t -> int
+end
+
 module Migrate_cmd : sig
   type t =
     | Migrate_pre_dump

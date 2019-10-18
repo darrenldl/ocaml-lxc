@@ -99,7 +99,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     module Zfs__glue = struct
       let t = lift_typ Types.Bdev_specs__glue.Zfs__glue.t
 
-      let zfsroot = field t "zfsroot" string
+      let zfsroot = field t "zfsroot" string_opt
 
       let () = seal t
     end
@@ -107,11 +107,11 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     module Lvm__glue = struct
       let t = lift_typ Types.Bdev_specs__glue.Lvm__glue.t
 
-      let vg = field t "vg" string
+      let vg = field t "vg" string_opt
 
-      let lv = field t "lv" string
+      let lv = field t "lv" string_opt
 
-      let thinpool = field t "thinpool" string
+      let thinpool = field t "thinpool" string_opt
 
       let () = seal t
     end
@@ -119,16 +119,16 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     module Rbd__glue = struct
       let t = lift_typ Types.Bdev_specs__glue.Rbd__glue.t
 
-      let rbdname = field t "rbdname" string
+      let rbdname = field t "rbdname" string_opt
 
-      let rbdpool = field t "rbdpool" string
+      let rbdpool = field t "rbdpool" string_opt
 
       let () = seal t
     end
 
     let t = lift_typ Types.Bdev_specs__glue.t
 
-    let fstype = field t "fstype" string
+    let fstype = field t "fstype" string_opt
 
     let fssize = field t "fssize" uint64_t
 
@@ -136,7 +136,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
     let lvm = field t "lvm" Lvm__glue.t
 
-    let dir = field t "dir" string
+    let dir = field t "dir" string_opt
 
     let rbd = field t "rbd" Rbd__glue.t
 
