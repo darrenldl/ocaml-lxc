@@ -1,12 +1,9 @@
 # ocaml-lxc
 OCaml binding to LXC with idiomatic OCaml error handling
 
-## Description
-This library aims to provide 100% coverage of LXC C API
-
+## Technical description & design
 Ctypes is used for stubs generation, and additional C "glue" code is used where necessary
 
-## Design
 The design of the high level exposed API is derived from
 [go-lxc](https://github.com/lxc/go-lxc)
 and [Haskell lxc](https://github.com/fizruk/),
