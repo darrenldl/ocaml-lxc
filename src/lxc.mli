@@ -140,4 +140,28 @@ module Container : sig
   val create_snapshot : comment_file:string -> container -> (int, unit) result
 
   val list_snapshots : container -> (Snapshot.t list, unit) result
+
+  val restore_snapshot :
+    snap_name:string
+    -> new_container_name:string
+    -> container
+    -> (unit, unit) result
+
+  val destroy_snapshot : snap_name:string -> container -> (unit, unit) result
+
+  val may_control : container -> bool
+
+  val add_device_node :
+    src_path:string -> dst_path:string -> container -> (unit, unit) result
+
+  val remove_device_node :
+    src_path:string -> dst_path:string -> container -> (unit, unit) result
+
+  val attach_interface :
+    src_dev:string -> dst_dev:string -> container -> (unit, unit) result
+
+  val detach_interface : src_dev:string -> container -> (unit, unit) result
+
+  val checkpoint :
+    dir:string -> stop:bool -> verbose:bool -> container -> (unit, unit) result
 end

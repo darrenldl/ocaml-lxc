@@ -569,27 +569,34 @@ module Container = struct
       Helpers.free_ptr (ptr (ptr Types.Lxc_snapshot.t)) snapshot_arr_ptr;
       ret |> List.map (fun t -> Snapshot.{t}) |> Result.ok
 
-  let snapshot_destroy c ~snap_name =
+  let restore_snapshot ~snap_name ~new_container_name c =
+    C.snapshot_restore c.lxc_container (Some snap_name)
+      (Some new_container_name)
+    |> bool_to_unit_result_true_is_ok
+
+  let destroy_snapshot ~snap_name c =
     C.snapshot_destroy c.lxc_container (Some snap_name)
     |> bool_to_unit_result_true_is_ok
 
   let may_control c = C.may_control c.lxc_container
 
-  let add_device_node c ~src_path ~dst_path =
+  let add_device_node ~src_path ~dst_path c =
     C.add_device_node c.lxc_container (Some src_path) (Some dst_path)
+    |> bool_to_unit_result_true_is_ok
 
-  let remove_device_node c ~src_path ~dst_path =
+  let remove_device_node ~src_path ~dst_path c =
     C.remove_device_node c.lxc_container (Some src_path) (Some dst_path)
-
-  let attach_interface c ~dev ~dst_dev =
-    C.attach_interface c.lxc_container (Some dev) (Some dst_dev)
     |> bool_to_unit_result_true_is_ok
 
-  let detach_interface c ~dev ~dst_dev =
-    C.detach_interface c.lxc_container (Some dev) (Some dst_dev)
+  let attach_interface ~src_dev ~dst_dev c =
+    C.attach_interface c.lxc_container (Some src_dev) (Some dst_dev)
     |> bool_to_unit_result_true_is_ok
 
-  let checkpoint c ~dir ~stop ~verbose =
+  let detach_interface ~src_dev c =
+    C.detach_interface c.lxc_container (Some src_dev) None
+    |> bool_to_unit_result_true_is_ok
+
+  let checkpoint ~dir ~stop ~verbose c =
     C.checkpoint c.lxc_container
       (Helpers.string_ptr_from_string dir)
       stop verbose
