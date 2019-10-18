@@ -9,6 +9,26 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     let gid_t = S.lift_typ Posix_types.gid_t
   end
 
+  module Lxc_clone_flags = struct
+    let lxc_clone_keepname = S.constant "LXC_CLONE_KEEPNAME" int
+
+    let lxc_clone_keepmacaddr = S.constant "LXC_CLONE_KEEPMACADDR" int
+
+    let lxc_clone_keepbdevtype = S.constant "LXC_CLONE_SNAPSHOT" int
+
+    let lxc_clone_maybe_snapshot = S.constant "LXC_CLONE_MAYBE_SNAPSHOT" int
+
+    let lxc_clone_maxflags = S.constant "LXC_CLONE_MAXFLAGS" int
+
+    let lxc_clone_allow_running = S.constant "LXC_CLONE_ALLOW_RUNNING" int
+
+    let lxc_create_quiet = S.constant "LXC_CREATE_QUIET" int
+
+    let lxc_create_maxflags = S.constant "LXC_CREATE_MAXFLAGS" int
+
+    let lxc_mount_api_v1 = S.constant "LXC_MOUNT_API_V1" int
+  end
+
   module Lxc_attach_env_policy_t = struct
     let lxc_attach_keep_env = S.constant "LXC_ATTACH_KEEP_ENV" int64_t
 
