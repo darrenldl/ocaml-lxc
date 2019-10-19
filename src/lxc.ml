@@ -1,6 +1,5 @@
 open Misc_utils
 open Ctypes
-module Bigstring = Core.Bigstring
 module C = Lxc_c
 
 type container =
@@ -11,10 +10,10 @@ type getfd_result =
   ; masterfd : int
   ; tty_fd : int }
 
-module Namespace_flags = Lxc_c.Namespace_flags
-module Attach_flags = Lxc_c.Lxc_attach_flags
-module Feature_checks = Lxc_c.Feature_checks
-module State = Lxc_c.State
+module Namespace_flags = C.Namespace_flags
+module Attach_flags = C.Lxc_attach_flags
+module Feature_checks = C.Feature_checks
+module State = C.State
 
 let new_container ?config_path ~name () =
   match C.lxc_container_new name config_path with
