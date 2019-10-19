@@ -1,0 +1,4 @@
+(executable
+ (name start)
+ (libraries lxc
+ ))
