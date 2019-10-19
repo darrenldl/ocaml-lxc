@@ -201,8 +201,10 @@ module Container = struct
       Queue.to_seq queue |> Array.of_seq
     in
     let extra_args = Option.value ~default:[||] opts.extra_args in
+    let args = Array.append args extra_args in
     let argv =
-      Array.append args extra_args |> string_arr_ptr_from_string_arr
+      if Array.length args = 0 then make_null_ptr (ptr (ptr char))
+      else string_arr_ptr_from_string_arr args
     in
     C.create__glue c.lxc_container template backing_store_type
       backing_store_specs 0 argv
