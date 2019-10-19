@@ -15,34 +15,6 @@ module Namespace_flags = Lxc_c.Namespace_flags
 module Attach_flags = Lxc_c.Lxc_attach_flags
 module Feature_checks = Lxc_c.Feature_checks
 module Migrate_cmd = Lxc_c.Migrate_cmd
-
-module Migrate_opts = struct
-  module M = Stubs.Type_stubs.Migrate_opts
-
-  type t = {t : Types.Migrate_opts.t structure}
-
-  let make ?predump_dir ?page_server_addr ?page_server_port ?action_script
-      ?(disable_skip_in_flight = false) ?(ghost_limit = 0L)
-      ?(features_to_check = []) ~dir ~verbose ~stop ~preserves_inodes =
-    let t = Ctypes.make Stubs.Type_stubs.Migrate_opts.t in
-    setf t Stubs.Type_stubs.Migrate_opts.directory (Some dir);
-    setf t Stubs.Type_stubs.Migrate_opts.verbose verbose;
-    setf t Stubs.Type_stubs.Migrate_opts.stop stop;
-    setf t Stubs.Type_stubs.Migrate_opts.predump_dir predump_dir;
-    setf t Stubs.Type_stubs.Migrate_opts.pageserver_address page_server_addr;
-    setf t Stubs.Type_stubs.Migrate_opts.pageserver_port page_server_port;
-    setf t Stubs.Type_stubs.Migrate_opts.preserves_inodes preserves_inodes;
-    setf t Stubs.Type_stubs.Migrate_opts.action_script action_script;
-    setf t Stubs.Type_stubs.Migrate_opts.disable_skip_in_flight
-      disable_skip_in_flight;
-    setf t Stubs.Type_stubs.Migrate_opts.ghost_limit
-      (Unsigned.UInt64.of_int64 ghost_limit);
-    setf t Stubs.Type_stubs.Migrate_opts.features_to_check
-      ( lor_flags C.Feature_checks.to_c_int features_to_check
-        |> Unsigned.UInt64.of_int );
-    {t}
-end
-
 module State = Lxc_c.State
 
 let new_container ?config_path ~name () =
@@ -400,9 +372,10 @@ module Container = struct
   let destroy_all_snapshots c =
     C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let migrate (cmd : C.Migrate_cmd.t) (opts : Migrate_opts.t) c =
+  let migrate (cmd : C.Migrate_cmd.t) (opts : Migrate.Options.t) c =
     let cmd = C.Migrate_cmd.to_c_int cmd |> Unsigned.UInt.of_int64 in
-    C.migrate c.lxc_container cmd (addr opts.t)
+    C.migrate c.lxc_container cmd
+      (addr (Migrate.Options.c_struct_of_t opts))
       (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
     |> int_to_unit_result_zero_is_ok
 
