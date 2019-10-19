@@ -23,9 +23,13 @@ struct bdev_specs bdev_specs__glue_dissolve(struct bdev_specs__glue *src) {
 bool create__glue(struct lxc_container *c, const char *t, const char *bdevtype,
                   struct bdev_specs__glue *specs__glue, int flags,
                   char *const argv[]) {
-  struct bdev_specs specs = bdev_specs__glue_dissolve(specs__glue);
+  if (specs__glue == NULL) {
+    return c->create(c, t, bdevtype, NULL, flags, argv);
+  } else {
+    struct bdev_specs specs = bdev_specs__glue_dissolve(specs__glue);
 
-  return c->create(c, t, bdevtype, &specs, flags, argv);
+    return c->create(c, t, bdevtype, &specs, flags, argv);
+  }
 }
 
 /*$ #use "code_gen/gen.cinaps";;
