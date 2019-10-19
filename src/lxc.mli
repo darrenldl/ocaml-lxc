@@ -1,12 +1,12 @@
 type container
 
 module Namespace_flags = Lxc_c.Namespace_flags
-module Attach_flags = Lxc_c.Lxc_attach_flags
 module Feature_checks = Lxc_c.Feature_checks
 module State = Lxc_c.State
 module Migrate = Migrate
 module Console_log = Console_log
 module Bdev_specs = Bdev_specs
+module Attach = Attach
 
 type getfd_result =
   { ttynum : int

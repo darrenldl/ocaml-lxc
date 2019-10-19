@@ -11,12 +11,12 @@ type getfd_result =
   ; tty_fd : int }
 
 module Namespace_flags = C.Namespace_flags
-module Attach_flags = C.Lxc_attach_flags
 module Feature_checks = C.Feature_checks
 module State = C.State
 module Migrate = Migrate
 module Console_log = Console_log
 module Bdev_specs = Bdev_specs
+module Attach = Attach
 
 let new_container ?config_path ~name () =
   match C.lxc_container_new name config_path with
