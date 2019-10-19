@@ -79,5 +79,5 @@ module Options = struct
     setf c_struct L.stdout_fd t.stdout_fd;
     setf c_struct L.stderr_fd t.stderr_fd;
     setf c_struct L.log_fd t.log_fd;
-    t
+    c_struct
 end
