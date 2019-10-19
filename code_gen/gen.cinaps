@@ -198,7 +198,7 @@ module For_lxc_dot_h = struct
     List.iter gen_lxc_container_funptr_field_c_glue_header funptr_records
 end
 
-module For_lxc_dot_c = struct
+module For_lxc_glue_dot_c = struct
   let gen_lxc_container_funptr_field_c_glue_code
       {fun_name; other_param_tys; ret_ty} =
     let container_param_and_ty = ("c", "struct lxc_container *") in
