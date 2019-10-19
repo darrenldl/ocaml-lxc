@@ -363,7 +363,8 @@ module Container = struct
     | _ ->
       raise C.Unexpected_value_from_C
 
-  let attach_run_wait (options : Attach.Options.t) ~program ~argv c =
+  let attach_run_wait ?(options : Attach.Options.t = Attach.Options.default)
+      ~program ~argv c =
     let options_ptr =
       allocate Stubs.Type_stubs.Lxc_attach_options_t.t
         (Attach.Options.c_struct_of_t options)
