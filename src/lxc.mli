@@ -1,7 +1,9 @@
 type container
 
-module State = Lxc_c.State
+module Namespace_flags = Lxc_c.Namespace_flags
+module Attach_flags = Lxc_c.Lxc_attach_flags
 module Feature_checks = Lxc_c.Feature_checks
+module State = Lxc_c.State
 
 type getfd_result =
   { ttynum : int
