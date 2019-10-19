@@ -14,54 +14,6 @@ type getfd_result =
 module Namespace_flags = Lxc_c.Namespace_flags
 module Attach_flags = Lxc_c.Lxc_attach_flags
 
-module Bdev_specs = struct
-  module B = Stubs.Type_stubs.Bdev_specs__glue
-  open B
-
-  type t = {t : Types.Bdev_specs__glue.t structure}
-
-  module Zfs = struct
-    type t = {zfs : Types.Bdev_specs__glue.Zfs__glue.t structure}
-
-    let make ~zfsroot =
-      let zfs = Ctypes.make Zfs__glue.t in
-      setf zfs Zfs__glue.zfsroot zfsroot;
-      {zfs}
-  end
-
-  module Lvm = struct
-    type t = {lvm : Types.Bdev_specs__glue.Lvm__glue.t structure}
-
-    let make ~vg ~lv ~thinpool =
-      let lvm = Ctypes.make Lvm__glue.t in
-      setf lvm Lvm__glue.vg vg;
-      setf lvm Lvm__glue.lv lv;
-      setf lvm Lvm__glue.thinpool thinpool;
-      {lvm}
-  end
-
-  module Rbd = struct
-    type t = {rbd : Types.Bdev_specs__glue.Rbd__glue.t structure}
-
-    let make ~rbdname ~rbdpool =
-      let rbd = Ctypes.make Rbd__glue.t in
-      setf rbd Rbd__glue.rbdname rbdname;
-      setf rbd Rbd__glue.rbdpool rbdpool;
-      {rbd}
-  end
-
-  let make ~fstype ~(fssize : int64) ~dir ~(zfs : Zfs.t) ~(lvm : Lvm.t)
-      ~(rbd : Rbd.t) =
-    let t = Ctypes.make t in
-    setf t B.fstype fstype;
-    setf t B.fssize (Unsigned.UInt64.of_int64 fssize);
-    setf t B.dir dir;
-    setf t B.zfs zfs.zfs;
-    setf t B.lvm lvm.lvm;
-    setf t B.rbd rbd.rbd;
-    {t}
-end
-
 module Console_log = struct
   type t = {t : Types.Lxc_console_log.t structure}
 end
@@ -254,7 +206,7 @@ module Container = struct
       ?(bdev_specs : Bdev_specs.t option) ?(flags = 0) c ~(argv : string array)
     =
     let bdev_specs =
-      Option.map (fun (x : Bdev_specs.t) -> addr x.t) bdev_specs
+      Option.map (fun x -> addr (Bdev_specs.c_struct_of_t x)) bdev_specs
     in
     C.create__glue c.lxc_container template bdev_type bdev_specs flags
       (string_arr_ptr_from_string_arr argv)
