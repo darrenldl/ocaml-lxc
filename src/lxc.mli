@@ -6,20 +6,6 @@ module Console_log : sig
   type t
 end
 
-module Snapshot : sig
-  type t
-
-  val get_name : t -> string
-
-  val get_comment_path_name : t -> string
-
-  val get_timestamp : t -> string
-
-  val get_lxcpath : t -> string
-
-  val free : t -> unit
-end
-
 module Feature_checks = Lxc_c.Feature_checks
 module Migrate_cmd = Lxc_c.Migrate_cmd
 

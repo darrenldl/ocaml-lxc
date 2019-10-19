@@ -14,31 +14,6 @@ type getfd_result =
 module Namespace_flags = Lxc_c.Namespace_flags
 module Attach_flags = Lxc_c.Lxc_attach_flags
 
-module Snapshot = struct
-  module L = Stubs.Type_stubs.Lxc_snapshot
-  open L
-
-  type t = {t : Types.Lxc_snapshot.t structure ptr}
-
-  let get_name t = getf !@(t.t) L.name
-
-  let get_comment_path_name t = getf !@(t.t) L.comment_pathname
-
-  let get_timestamp t = getf !@(t.t) L.timestamp
-
-  let get_lxcpath t = getf !@(t.t) L.lxcpath
-
-  let free t =
-    let c_field = getf !@(t.t) L.free in
-    let f =
-      coerce
-        (static_funptr (ptr L.t @-> returning void))
-        (Foreign.funptr (ptr L.t @-> returning void))
-        c_field
-    in
-    f t.t
-end
-
 module Bdev_specs = struct
   module B = Stubs.Type_stubs.Bdev_specs__glue
   open B
@@ -435,7 +410,7 @@ module Container = struct
       let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
       let ret = CArray.to_list snapshot_arr in
       free_ptr (ptr (ptr Types.Lxc_snapshot.t)) snapshot_arr_ptr;
-      ret |> List.map (fun t -> Snapshot.{t}) |> Result.ok
+      ret |> List.map Snapshot.t_of_c_struct_ptr |> Result.ok
 
   let restore_snapshot ~snap_name ~new_container_name c =
     C.snapshot_restore c.lxc_container (Some snap_name)
