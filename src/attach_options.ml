@@ -47,20 +47,27 @@ type c_struct = Types.Lxc_attach_options_t.t structure
 let c_struct_of_t t =
   let c_struct = make L.t in
   setf c_struct L.attach_flags (lor_flags Attach_flags.to_c_int t.attach_flags);
-  setf c_struct L.namespaces (lor_flags Namespace_flags.to_c_int t.namespace_flags);
+  setf c_struct L.namespaces
+    (lor_flags Namespace_flags.to_c_int t.namespace_flags);
   setf c_struct L.personality (Signed.Long.of_int64 t.personality);
   setf c_struct L.initial_cwd t.initial_cwd;
   setf c_struct L.uid (Posix_types.Uid.of_int t.uid);
   setf c_struct L.gid (Posix_types.Gid.of_int t.gid);
   (* setf c_struct L.env_policy t.env_policy; *)
-  let extra_env_vars = match t.extra_env_vars with
-    | None -> make_null_ptr (ptr (ptr char))
-    | Some l -> string_arr_ptr_from_string_list l
+  let extra_env_vars =
+    match t.extra_env_vars with
+    | None ->
+      make_null_ptr (ptr (ptr char))
+    | Some l ->
+      string_arr_ptr_from_string_list l
   in
   setf c_struct L.extra_env_vars extra_env_vars;
-  let extra_keep_env = match t.extra_keep_env with
-    | None -> make_null_ptr (ptr (ptr char))
-    | Some l -> string_arr_ptr_from_string_list l
+  let extra_keep_env =
+    match t.extra_keep_env with
+    | None ->
+      make_null_ptr (ptr (ptr char))
+    | Some l ->
+      string_arr_ptr_from_string_list l
   in
   setf c_struct L.extra_keep_env extra_keep_env;
   setf c_struct L.stdin_fd t.stdin_fd;
