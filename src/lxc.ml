@@ -170,6 +170,16 @@ module Container = struct
     C.save_config c.lxc_container (Some alt_file)
     |> bool_to_unit_result_true_is_ok
 
+  let create (opts : Create_options.t) c =
+    let template = Option.value ~default:"download" opts.template in
+    let bdev_specs =
+      Option.map (fun x -> addr (Bdev_specs.c_struct_of_t x)) opts.bdev_specs
+    in
+    C.create__glue c.lxc_container
+      template
+      bdev_specs
+    ()
+
   let create ?(template = "download") ?bdev_type
       ?(bdev_specs : Bdev_specs.t option) ?(flags = 0) ~(argv : string array) c
     =
