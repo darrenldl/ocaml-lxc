@@ -10,13 +10,15 @@ type getfd_result =
   ; masterfd : int
   ; tty_fd : int }
 
+module Attach = Attach
+module Backing_store = Backing_store
+module Console_log = Console_log
+module Create_options = Create_options
 module Namespace_flags = C.Namespace_flags
 module Feature_checks = C.Feature_checks
 module State = C.State
 module Migrate = Migrate
-module Console_log = Console_log
-module Backing_store = Backing_store
-module Attach = Attach
+module Snapshot = Snapshot
 
 let new_container ?config_path name =
   match C.lxc_container_new name config_path with
