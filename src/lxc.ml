@@ -180,10 +180,29 @@ module Container = struct
         (fun x -> addr (Backing_store.Specs.c_struct_of_t x))
         opts.backing_store_specs
     in
+    let args =
+      let queue = Queue.create () in
+      let add s = Queue.push s queue in
+      if template = "download" then (
+        Option.iter (fun s -> add "--dist"; add s) opts.distro;
+        Option.iter (fun s -> add "--variant"; add s) opts.variant;
+        Option.iter (fun s -> add "--server"; add s) opts.server;
+        Option.iter (fun s -> add "--keyid"; add s) opts.key_id;
+        Option.iter (fun s -> add "--keyserver"; add s) opts.key_server;
+        Option.iter
+          (fun b -> if b then add "--no-validate")
+          opts.disable_gpg_validation;
+        Option.iter (fun b -> if b then add "--flush-cache") opts.flush_cache;
+        Option.iter (fun b -> if b then add "--force-cache") opts.force_cache )
+      else (
+        Option.iter (fun s -> add "--release"; add s) opts.release;
+        Option.iter (fun s -> add "--arch"; add s) opts.arch;
+        Option.iter (fun b -> if b then add "--flush-cache") opts.flush_cache );
+      Queue.to_seq queue |> Array.of_seq
+    in
+    let extra_args = Option.value ~default:[||] opts.extra_args in
     let argv =
-      opts.extra_args
-      |> Option.map string_arr_ptr_from_string_arr
-      |> Option.value ~default:(make_null_ptr (ptr (ptr char)))
+      Array.append args extra_args |> string_arr_ptr_from_string_arr
     in
     C.create__glue c.lxc_container template backing_store_type
       backing_store_specs 0 argv
