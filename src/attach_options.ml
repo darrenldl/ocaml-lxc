@@ -44,41 +44,27 @@ let default =
 
 type c_struct = Types.Lxc_attach_options_t.t structure
 
-let make ?(personality = -1L) ?initial_cwd ?(uid = -1) ?(gid = -1)
-    (attach_flags : Attach_flags.t list)
-    (namespace_flags : Namespace_flags.t list) env_policy ~extra_env_vars
-    ~extra_keep_env ~stdin_fd ~stdout_fd ~stderr_fd ~log_fd =
-  let t = make L.t in
-  setf t L.attach_flags (lor_flags Attach_flags.to_c_int attach_flags);
-  setf t L.namespaces (lor_flags Namespace_flags.to_c_int namespace_flags);
-  setf t L.personality (Signed.Long.of_int64 personality);
-  setf t L.initial_cwd initial_cwd;
-  setf t L.uid (Posix_types.Uid.of_int uid);
-  setf t L.gid (Posix_types.Gid.of_int gid);
-  setf t L.env_policy env_policy;
-  setf t L.extra_env_vars extra_env_vars;
-  setf t L.extra_keep_env extra_keep_env;
-  setf t L.stdin_fd stdin_fd;
-  setf t L.stdout_fd stdout_fd;
-  setf t L.stderr_fd stderr_fd;
-  setf t L.log_fd log_fd;
-  t
-
-let default () =
-  let t = Ctypes.make L.t in
-  setf t L.attach_flags
-    (lor_flags Attach_flags.to_c_int [Attach_flags.Attach_default]);
-  setf t L.namespaces (-1);
-  setf t L.personality (Signed.Long.of_int (-1));
-  setf t L.initial_cwd None;
-  setf t L.uid (Posix_types.Uid.of_int (-1));
-  setf t L.gid (Posix_types.Gid.of_int (-1));
-  setf t L.env_policy
-    Stubs.Type_stubs.Lxc_attach_env_policy_t.Lxc_attach_keep_env;
-  setf t L.extra_env_vars (make_null_ptr (ptr (ptr char)));
-  setf t L.extra_keep_env (make_null_ptr (ptr (ptr char)));
-  setf t L.stdin_fd 0;
-  setf t L.stdout_fd 1;
-  setf t L.stderr_fd 2;
-  setf t L.log_fd (-Stubs.Type_stubs.Errno.ebadf);
+let c_struct_of_t t =
+  let c_struct = make L.t in
+  setf c_struct L.attach_flags (lor_flags Attach_flags.to_c_int t.attach_flags);
+  setf c_struct L.namespaces (lor_flags Namespace_flags.to_c_int t.namespace_flags);
+  setf c_struct L.personality (Signed.Long.of_int64 t.personality);
+  setf c_struct L.initial_cwd t.initial_cwd;
+  setf c_struct L.uid (Posix_types.Uid.of_int t.uid);
+  setf c_struct L.gid (Posix_types.Gid.of_int t.gid);
+  (* setf c_struct L.env_policy t.env_policy; *)
+  let extra_env_vars = match t.extra_env_vars with
+    | None -> make_null_ptr (ptr (ptr char))
+    | Some l -> string_arr_ptr_from_string_list l
+  in
+  setf c_struct L.extra_env_vars extra_env_vars;
+  let extra_keep_env = match t.extra_keep_env with
+    | None -> make_null_ptr (ptr (ptr char))
+    | Some l -> string_arr_ptr_from_string_list l
+  in
+  setf c_struct L.extra_keep_env extra_keep_env;
+  setf c_struct L.stdin_fd t.stdin_fd;
+  setf c_struct L.stdout_fd t.stdout_fd;
+  setf c_struct L.stderr_fd t.stderr_fd;
+  setf c_struct L.log_fd t.log_fd;
   t
