@@ -277,12 +277,15 @@ module Container = struct
     C.set_config_path c.lxc_container (Some path)
     |> bool_to_unit_result_true_is_ok
 
-  let clone c ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size
-      ~hook_args =
+  let clone ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size ~hook_args
+      c =
     let new_size = Unsigned.UInt64.of_int64 new_size in
     let hook_args = string_carray_from_string_list hook_args in
-    C.clone c.lxc_container (Some new_name) (Some lxcpath) flags
-      (Some bdevtype) (Some bdevdata) new_size (CArray.start hook_args)
+    let ret_ptr =
+      C.clone c.lxc_container (Some new_name) (Some lxcpath) flags
+        (Some bdevtype) (Some bdevdata) new_size (CArray.start hook_args)
+    in
+    if is_null ret_ptr then Error () else Ok {lxc_container = ret_ptr}
 
   let console_getfd ?(ttynum : int = -1) c =
     let ttynum_ptr_init = ttynum in

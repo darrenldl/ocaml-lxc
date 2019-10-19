@@ -121,7 +121,16 @@ module Container : sig
 
   val set_config_path : path:string -> container -> (unit, unit) result
 
-  (* val clone  *)
+  val clone :
+    new_name:string
+    -> lxcpath:string
+    -> flags:int
+    -> bdevtype:string
+    -> bdevdata:string
+    -> new_size:int64
+    -> hook_args:string list
+    -> container
+    -> (container, unit) result
 
   val console_getfd : ?ttynum:int -> container -> (getfd_result, unit) result
 
