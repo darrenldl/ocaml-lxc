@@ -1,5 +1,4 @@
 open Ctypes
-open Misc_utils
 module L = Stubs.Type_stubs.Lxc_snapshot
 
 type t =

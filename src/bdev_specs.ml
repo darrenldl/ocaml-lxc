@@ -1,5 +1,4 @@
 open Ctypes
-open Misc_utils
 module B = Stubs.Type_stubs.Bdev_specs__glue
 open B
 
