@@ -208,16 +208,6 @@ module Container = struct
       backing_store_specs 0 argv
     |> bool_to_unit_result_true_is_ok
 
-(* let create ?(template = "download") ?bdev_type
- *     ?(bdev_specs : Bdev_specs.t option) ?(flags = 0) ~(argv : string array) c
- *   =
- *   let bdev_specs =
- *     Option.map (fun x -> addr (Bdev_specs.c_struct_of_t x)) bdev_specs
- *   in
- *   C.create__glue c.lxc_container template bdev_type bdev_specs flags
- *     (string_arr_ptr_from_string_arr argv)
- *   |> bool_to_unit_result_true_is_ok *)
-
    let rename ~new_name c =
    C.rename c.lxc_container (Some new_name) |> bool_to_unit_result_true_is_ok
 
