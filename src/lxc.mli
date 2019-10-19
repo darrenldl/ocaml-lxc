@@ -179,6 +179,5 @@ module Container : sig
   val migrate :
     Migrate.Cmd.t -> Migrate.Options.t -> container -> (unit, unit) result
 
-  val console_log :
-    Console_log.options -> container -> (Console_log.result, unit) result
+  val console_log : Console_log.options -> container -> (string, unit) result
 end
