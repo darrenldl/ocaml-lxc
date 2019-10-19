@@ -17,38 +17,43 @@ module Attach_flags = Lxc_c.Lxc_attach_flags
 module Lxc_attach_options_t = struct
   module L = Stubs.Type_stubs.Lxc_attach_options_t
 
-  type t = {
-    attach_flags : Attach_flags.t list;
-    namespace_flags : Namespace_flags.t list;
-    personality : int64;
-    initial_cwd : string option;
-    uid : int;
-    gid : int;
-    extra_env_vars : string list option;
-    extra_keep_env : string list option;
-    stdin_fd : int;
-    stdout_fd : int;
-    stderr_fd : int;
-    log_fd : int;
-  }
+  type t =
+    { attach_flags : Attach_flags.t list
+    ; namespace_flags : Namespace_flags.t list
+    ; personality : int64
+    ; initial_cwd : string option
+    ; uid : int
+    ; gid : int
+    ; extra_env_vars : string list option
+    ; extra_keep_env : string list option
+    ; stdin_fd : int
+    ; stdout_fd : int
+    ; stderr_fd : int
+    ; log_fd : int }
 
   let default =
-    {
-    attach_flags = [Attach_flags.Attach_default];
-    namespace_flags = Namespace_flags.([Clone_newcgroup; Clone_newipc; Clone_newnet; Clone_newns; Clone_newpid; Clone_newuser; Clone_newuts]);
-    personality = -1L;
-    initial_cwd = None;
-    uid = -1;
-    gid = -1;
-    (* env_policy =
-     *   Attach_env *)
-    extra_env_vars = None;
-    extra_keep_env = None;
-    stdin_fd = 0;
-    stdout_fd = 1;
-    stderr_fd = 2;
-    log_fd = -Stubs.Type_stubs.Errno.ebadf;
-  }
+    { attach_flags = [Attach_flags.Attach_default]
+    ; namespace_flags =
+        (let open Namespace_flags in
+         [ Clone_newcgroup
+         ; Clone_newipc
+         ; Clone_newnet
+         ; Clone_newns
+         ; Clone_newpid
+         ; Clone_newuser
+         ; Clone_newuts ])
+    ; personality = -1L
+    ; initial_cwd = None
+    ; uid = -1
+    ; gid = -1
+    ; (* env_policy =
+       *   Attach_env *)
+      extra_env_vars = None
+    ; extra_keep_env = None
+    ; stdin_fd = 0
+    ; stdout_fd = 1
+    ; stderr_fd = 2
+    ; log_fd = -Stubs.Type_stubs.Errno.ebadf }
 
   type c_struct = Types.Lxc_attach_options_t.t structure
 
@@ -232,13 +237,11 @@ let list_container_names_internal f ~(lxcpath : string option) =
   let name_arr_typ = ptr (ptr char) in
   let name_arr_ptr = allocate_ptr_init_to_null name_arr_typ in
   let struct_ptr_arr_typ = ptr (ptr Types.lxc_container) in
-  let struct_ptr_arr_ptr_null =
-    make_null_ptr (ptr struct_ptr_arr_typ)
-  in
+  let struct_ptr_arr_ptr_null = make_null_ptr (ptr struct_ptr_arr_typ) in
   let count = f lxcpath name_arr_ptr struct_ptr_arr_ptr_null in
   let ret =
-    string_list_from_string_ptr_arr_ptr name_arr_ptr
-      ~free_each_ptr_in_arr:true ~count
+    string_list_from_string_ptr_arr_ptr name_arr_ptr ~free_each_ptr_in_arr:true
+      ~count
   in
   ret
 
@@ -267,13 +270,11 @@ let list_containers_internal f ~(lxcpath : string option) =
   let name_arr_typ = ptr (ptr char) in
   let name_arr_ptr = allocate_ptr_init_to_null name_arr_typ in
   let struct_ptr_arr_typ = ptr (ptr Types.lxc_container) in
-  let struct_ptr_arr_ptr =
-    allocate_ptr_init_to_null struct_ptr_arr_typ
-  in
+  let struct_ptr_arr_ptr = allocate_ptr_init_to_null struct_ptr_arr_typ in
   let count = f lxcpath name_arr_ptr struct_ptr_arr_ptr in
   let names =
-    string_list_from_string_ptr_arr_ptr name_arr_ptr
-      ~free_each_ptr_in_arr:true ~count
+    string_list_from_string_ptr_arr_ptr name_arr_ptr ~free_each_ptr_in_arr:true
+      ~count
   in
   let struct_ptr_list =
     CArray.from_ptr struct_ptr_arr_ptr count |> CArray.to_list
@@ -388,9 +389,7 @@ module Container = struct
 
   let get_config_item ~key c =
     let len =
-      C.get_config_item c.lxc_container (Some key)
-        (make_null_ptr (ptr char))
-        0
+      C.get_config_item c.lxc_container (Some key) (make_null_ptr (ptr char)) 0
     in
     if len < 0 then Error ()
     else
@@ -408,9 +407,7 @@ module Container = struct
 
   let get_keys ~prefix c =
     let len =
-      C.get_keys c.lxc_container (Some prefix)
-        (make_null_ptr (ptr char))
-        0
+      C.get_keys c.lxc_container (Some prefix) (make_null_ptr (ptr char)) 0
     in
     if len < 0 then Error ()
     else
@@ -419,8 +416,7 @@ module Container = struct
         C.get_keys c.lxc_container (Some prefix) (CArray.start ret) len
       in
       if len <> new_len then raise C.Unexpected_value_from_C;
-      string_from_carray ret
-      |> String.split_on_char '\n'
+      string_from_carray ret |> String.split_on_char '\n'
       |> List.filter (fun s -> s <> "")
       |> Result.ok
 
@@ -428,8 +424,8 @@ module Container = struct
     let ret_ptr = C.get_interfaces c.lxc_container in
     if is_null ret_ptr then Error ()
     else
-      string_list_from_string_null_term_arr_ptr
-        ~free_each_ptr_in_arr:true ret_ptr
+      string_list_from_string_null_term_arr_ptr ~free_each_ptr_in_arr:true
+        ret_ptr
       |> Result.ok
 
   let get_ips ~interface ~family ~scope c =
@@ -439,8 +435,8 @@ module Container = struct
     if is_null ret_ptr then Error ()
     else
       let strings =
-        string_list_from_string_null_term_arr_ptr
-          ~free_each_ptr_in_arr:true ret_ptr
+        string_list_from_string_null_term_arr_ptr ~free_each_ptr_in_arr:true
+          ret_ptr
       in
       Ok strings
 
@@ -552,9 +548,7 @@ module Container = struct
     |> bool_to_unit_result_true_is_ok
 
   let checkpoint ~dir ~stop ~verbose c =
-    C.checkpoint c.lxc_container
-      (string_ptr_from_string dir)
-      stop verbose
+    C.checkpoint c.lxc_container (string_ptr_from_string dir) stop verbose
     |> bool_to_unit_result_true_is_ok
 
   let restore_from_checkpoint ~dir ~verbose c =
