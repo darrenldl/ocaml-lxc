@@ -22,6 +22,8 @@ val release : container -> (unit, unit) result
 
 val get_global_config_item : key:string -> string
 
+val get_version : unit -> string
+
 val list_defined_container_names : ?lxcpath:string -> unit -> string list
 
 val list_active_container_names : ?lxcpath:string -> unit -> string list
