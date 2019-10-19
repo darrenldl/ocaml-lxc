@@ -13,8 +13,7 @@ type getfd_result =
   ; masterfd : int
   ; tty_fd : int }
 
-val new_container :
-  ?config_path:string -> string -> (container, unit) result
+val new_container : ?config_path:string -> string -> (container, unit) result
 
 val acquire : container -> (unit, unit) result
 
@@ -62,7 +61,8 @@ module Container : sig
 
   val stop : container -> (unit, unit) result
 
-  val set_want_daemonize : want:[`Yes | `No] -> container -> (unit, unit) result
+  val set_want_daemonize :
+    want:[`Yes | `No] -> container -> (unit, unit) result
 
   val want_close_all_fds :
     want:[`Yes | `No] -> container -> (unit, unit) result
