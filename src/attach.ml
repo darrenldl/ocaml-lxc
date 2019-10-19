@@ -2,7 +2,6 @@ open Ctypes
 open Misc_utils
 module Namespace_flags = Lxc_c.Namespace_flags
 module Flags = Lxc_c.Lxc_attach_flags
-
 module Env_policy = Stubs.Type_stubs.Lxc_attach_env_policy_t
 
 module Options = struct
@@ -40,9 +39,8 @@ module Options = struct
     ; initial_cwd = None
     ; uid = -1
     ; gid = -1
-    ; env_policy =
-       Env_policy.Lxc_attach_keep_env ;
-      extra_env_vars = None
+    ; env_policy = Env_policy.Lxc_attach_keep_env
+    ; extra_env_vars = None
     ; extra_keep_env = None
     ; stdin_fd = 0
     ; stdout_fd = 1
