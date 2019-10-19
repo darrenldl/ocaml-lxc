@@ -11,89 +11,6 @@ type getfd_result =
   ; masterfd : int
   ; tty_fd : int }
 
-module Helpers = struct
-  let free_ptr (typ : 'a ptr typ) ret_ptr =
-    let ret_ptr = coerce typ (ptr char) ret_ptr in
-    Stubs.Fun_stubs.free ret_ptr
-
-  let free_char_ptr ret_ptr = free_ptr (ptr char) ret_ptr
-
-  let strlen ptr =
-    let len = Stubs.Fun_stubs.strlen ptr in
-    Signed.Long.to_int len
-
-  let elements_from_null_term_ptr (ptr : 'a ptr) : 'a list =
-    let rec aux acc ptr =
-      if is_null ptr then List.rev acc else aux (!@ptr :: acc) (ptr +@ 1)
-    in
-    aux [] ptr
-
-  let string_from_string_ptr ?(free = false) (ptr : char ptr) =
-    let length = strlen ptr in
-    let ret = string_from_ptr ptr ~length in
-    if free then free_char_ptr ptr;
-    ret
-
-  let string_from_carray (arr : char CArray.t) =
-    string_from_string_ptr (CArray.start arr)
-
-  let bigstring_from_string_ptr ptr : Bigstring.t =
-    let length = strlen ptr in
-    bigarray_of_ptr array1 length Bigarray.Char ptr
-
-  let string_list_from_string_ptr_arr_ptr ?(free = false)
-      ?(free_each_ptr_in_arr = false) ~(count : int) (p : char ptr ptr ptr) =
-    assert (count >= 0);
-    let ret =
-      CArray.from_ptr p count |> CArray.to_list
-      |> List.map (fun ptr ->
-          string_from_string_ptr ~free:free_each_ptr_in_arr !@ptr)
-    in
-    if free then free_ptr (ptr (ptr (ptr char))) p;
-    ret
-
-  let string_list_from_string_ptr_null_term_arr_ptr ?(free = false)
-      ?(free_each_ptr_in_arr = false) (p : char ptr ptr ptr) =
-    let ret =
-      elements_from_null_term_ptr p
-      |> List.map (fun p ->
-          string_from_string_ptr ~free:free_each_ptr_in_arr !@p)
-    in
-    if free then free_ptr (ptr (ptr (ptr char))) p;
-    ret
-
-  let string_list_from_string_null_term_arr_ptr ?(free = false)
-      ?(free_each_ptr_in_arr = false) (p : char ptr ptr) =
-    let ret =
-      elements_from_null_term_ptr p
-      |> List.map (fun p ->
-          string_from_string_ptr ~free:free_each_ptr_in_arr p)
-    in
-    if free then free_ptr (ptr (ptr char)) p;
-    ret
-
-  let make_null_ptr (typ : 'a ptr typ) : 'a ptr = coerce (ptr void) typ null
-
-  let allocate_ptr_init_to_null (typ : 'a ptr typ) : 'a ptr ptr =
-    allocate typ (make_null_ptr typ)
-
-  let string_carray_from_string_list l =
-    l
-    |> List.map (fun s -> s |> CArray.of_string |> CArray.start)
-    |> CArray.of_list (ptr char)
-
-  let string_arr_ptr_from_string_list l =
-    l |> string_carray_from_string_list |> CArray.start
-
-  let string_carray_from_string_arr arr =
-    string_carray_from_string_list (Array.to_list arr)
-
-  let string_arr_ptr_from_string_arr arr =
-    string_arr_ptr_from_string_list (Array.to_list arr)
-
-  let string_ptr_from_string s = s |> CArray.of_string |> CArray.start
-end
-
 module Namespace_flags = Lxc_c.Namespace_flags
 module Attach_flags = Lxc_c.Lxc_attach_flags
 
@@ -166,8 +83,8 @@ module Lxc_attach_options_t = struct
     setf t L.gid (Posix_types.Gid.of_int (-1));
     setf t L.env_policy
       Stubs.Type_stubs.Lxc_attach_env_policy_t.Lxc_attach_keep_env;
-    setf t L.extra_env_vars (Helpers.make_null_ptr (ptr (ptr char)));
-    setf t L.extra_keep_env (Helpers.make_null_ptr (ptr (ptr char)));
+    setf t L.extra_env_vars (make_null_ptr (ptr (ptr char)));
+    setf t L.extra_keep_env (make_null_ptr (ptr (ptr char)));
     setf t L.stdin_fd 0;
     setf t L.stdout_fd 1;
     setf t L.stderr_fd 2;
@@ -307,20 +224,20 @@ let release t =
     raise C.Unexpected_value_from_C
 
 let get_global_config_item ~key =
-  C.lxc_get_global_config_item key |> Helpers.string_from_string_ptr ~free:true
+  C.lxc_get_global_config_item key |> string_from_string_ptr ~free:true
 
 let get_version () = C.lxc_get_version ()
 
 let list_container_names_internal f ~(lxcpath : string option) =
   let name_arr_typ = ptr (ptr char) in
-  let name_arr_ptr = Helpers.allocate_ptr_init_to_null name_arr_typ in
+  let name_arr_ptr = allocate_ptr_init_to_null name_arr_typ in
   let struct_ptr_arr_typ = ptr (ptr Types.lxc_container) in
   let struct_ptr_arr_ptr_null =
-    Helpers.make_null_ptr (ptr struct_ptr_arr_typ)
+    make_null_ptr (ptr struct_ptr_arr_typ)
   in
   let count = f lxcpath name_arr_ptr struct_ptr_arr_ptr_null in
   let ret =
-    Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr
+    string_list_from_string_ptr_arr_ptr name_arr_ptr
       ~free_each_ptr_in_arr:true ~count
   in
   ret
@@ -348,14 +265,14 @@ let list_all_container_names ?(lxcpath : string option) () =
 
 let list_containers_internal f ~(lxcpath : string option) =
   let name_arr_typ = ptr (ptr char) in
-  let name_arr_ptr = Helpers.allocate_ptr_init_to_null name_arr_typ in
+  let name_arr_ptr = allocate_ptr_init_to_null name_arr_typ in
   let struct_ptr_arr_typ = ptr (ptr Types.lxc_container) in
   let struct_ptr_arr_ptr =
-    Helpers.allocate_ptr_init_to_null struct_ptr_arr_typ
+    allocate_ptr_init_to_null struct_ptr_arr_typ
   in
   let count = f lxcpath name_arr_ptr struct_ptr_arr_ptr in
   let names =
-    Helpers.string_list_from_string_ptr_arr_ptr name_arr_ptr
+    string_list_from_string_ptr_arr_ptr name_arr_ptr
       ~free_each_ptr_in_arr:true ~count
   in
   let struct_ptr_list =
@@ -409,7 +326,7 @@ module Container = struct
 
   let start ~use_init ~argv c =
     C.start c.lxc_container (bool_to_int use_init)
-      (Helpers.string_arr_ptr_from_string_arr argv)
+      (string_arr_ptr_from_string_arr argv)
     |> bool_to_unit_result_true_is_ok
 
   let stop c = C.stop c.lxc_container |> bool_to_unit_result_true_is_ok
@@ -424,7 +341,7 @@ module Container = struct
 
   let config_file_name c =
     let ret_ptr = C.config_file_name c.lxc_container in
-    Helpers.string_from_string_ptr ~free:true ret_ptr
+    string_from_string_ptr ~free:true ret_ptr
 
   let wait ?(timeout = -1) ~wait_for c =
     let state = Some (C.State.to_string wait_for) in
@@ -447,7 +364,7 @@ module Container = struct
       Option.map (fun (x : Bdev_specs.t) -> addr x.t) bdev_specs
     in
     C.create__glue c.lxc_container template bdev_type bdev_specs flags
-      (Helpers.string_arr_ptr_from_string_arr argv)
+      (string_arr_ptr_from_string_arr argv)
     |> bool_to_unit_result_true_is_ok
 
   let rename ~new_name c =
@@ -472,7 +389,7 @@ module Container = struct
   let get_config_item ~key c =
     let len =
       C.get_config_item c.lxc_container (Some key)
-        (Helpers.make_null_ptr (ptr char))
+        (make_null_ptr (ptr char))
         0
     in
     if len < 0 then Error ()
@@ -482,17 +399,17 @@ module Container = struct
         C.get_config_item c.lxc_container (Some key) (CArray.start ret) len
       in
       if len <> new_len then raise C.Unexpected_value_from_C;
-      Ok (Helpers.string_from_carray ret)
+      Ok (string_from_carray ret)
 
   let get_running_config_item ~key c =
     let ret_ptr = C.get_running_config_item c.lxc_container (Some key) in
     if is_null ret_ptr then Error ()
-    else Helpers.string_from_string_ptr ~free:true ret_ptr |> Result.ok
+    else string_from_string_ptr ~free:true ret_ptr |> Result.ok
 
   let get_keys ~prefix c =
     let len =
       C.get_keys c.lxc_container (Some prefix)
-        (Helpers.make_null_ptr (ptr char))
+        (make_null_ptr (ptr char))
         0
     in
     if len < 0 then Error ()
@@ -502,7 +419,7 @@ module Container = struct
         C.get_keys c.lxc_container (Some prefix) (CArray.start ret) len
       in
       if len <> new_len then raise C.Unexpected_value_from_C;
-      Helpers.string_from_carray ret
+      string_from_carray ret
       |> String.split_on_char '\n'
       |> List.filter (fun s -> s <> "")
       |> Result.ok
@@ -511,7 +428,7 @@ module Container = struct
     let ret_ptr = C.get_interfaces c.lxc_container in
     if is_null ret_ptr then Error ()
     else
-      Helpers.string_list_from_string_null_term_arr_ptr
+      string_list_from_string_null_term_arr_ptr
         ~free_each_ptr_in_arr:true ret_ptr
       |> Result.ok
 
@@ -522,7 +439,7 @@ module Container = struct
     if is_null ret_ptr then Error ()
     else
       let strings =
-        Helpers.string_list_from_string_null_term_arr_ptr
+        string_list_from_string_null_term_arr_ptr
           ~free_each_ptr_in_arr:true ret_ptr
       in
       Ok strings
@@ -530,7 +447,7 @@ module Container = struct
   let get_cgroup_item ~subsys c =
     let len =
       C.get_cgroup_item c.lxc_container (Some subsys)
-        (Helpers.make_null_ptr (ptr char))
+        (make_null_ptr (ptr char))
         0
     in
     if len < 0 then Error ()
@@ -540,7 +457,7 @@ module Container = struct
         C.get_cgroup_item c.lxc_container (Some subsys) (CArray.start ret) len
       in
       if len <> new_len then raise C.Unexpected_value_from_C;
-      Helpers.string_from_carray ret |> Result.ok
+      string_from_carray ret |> Result.ok
 
   let set_cgroup_item ~subsys ~value c =
     C.set_cgroup_item c.lxc_container (Some subsys) (Some value)
@@ -555,7 +472,7 @@ module Container = struct
   let clone c ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size
       ~hook_args =
     let new_size = Unsigned.UInt64.of_int64 new_size in
-    let hook_args = Helpers.string_carray_from_string_list hook_args in
+    let hook_args = string_carray_from_string_list hook_args in
     C.clone c.lxc_container (Some new_name) (Some lxcpath) flags
       (Some bdevtype) (Some bdevdata) new_size (CArray.start hook_args)
 
@@ -586,7 +503,7 @@ module Container = struct
       allocate Stubs.Type_stubs.Lxc_attach_options_t.t options
     in
     C.attach_run_wait c.lxc_container options_ptr (Some program)
-      (Helpers.string_arr_ptr_from_string_arr argv)
+      (string_arr_ptr_from_string_arr argv)
 
   let create_snapshot ~comment_file c =
     match C.snapshot c.lxc_container (Some comment_file) with
@@ -597,14 +514,14 @@ module Container = struct
 
   let list_snapshots c =
     let snapshot_arr_ptr =
-      Helpers.allocate_ptr_init_to_null (ptr Types.Lxc_snapshot.t)
+      allocate_ptr_init_to_null (ptr Types.Lxc_snapshot.t)
     in
     let count = C.snapshot_list c.lxc_container snapshot_arr_ptr in
     if count < 0 then Error ()
     else
       let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
       let ret = CArray.to_list snapshot_arr in
-      Helpers.free_ptr (ptr (ptr Types.Lxc_snapshot.t)) snapshot_arr_ptr;
+      free_ptr (ptr (ptr Types.Lxc_snapshot.t)) snapshot_arr_ptr;
       ret |> List.map (fun t -> Snapshot.{t}) |> Result.ok
 
   let restore_snapshot ~snap_name ~new_container_name c =
@@ -636,12 +553,12 @@ module Container = struct
 
   let checkpoint ~dir ~stop ~verbose c =
     C.checkpoint c.lxc_container
-      (Helpers.string_ptr_from_string dir)
+      (string_ptr_from_string dir)
       stop verbose
     |> bool_to_unit_result_true_is_ok
 
   let restore_from_checkpoint ~dir ~verbose c =
-    C.restore c.lxc_container (Helpers.string_ptr_from_string dir) verbose
+    C.restore c.lxc_container (string_ptr_from_string dir) verbose
     |> bool_to_unit_result_true_is_ok
 
   let destroy_with_snapshots c =
