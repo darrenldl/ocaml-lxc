@@ -335,16 +335,21 @@ module For_ffi_types_dot_ml = struct
     List.iter gen_lxc_container_funptr_field_ml funptr_records
 end
 
-module For_lxc_c_dot_ml = struct
+module For_ffi_bindings_dot_ml = struct
   let gen_lxc_container_funptr_field_ml_glue {fun_name; other_param_tys; ret_ty}
     =
-    Printf.printf "let %s%s =\n" fun_name glue_fun_name_suffix;
+    Printf.printf "let %s =\n" fun_name;
     Printf.printf "  foreign \"%s%s\"\n" fun_name glue_fun_name_suffix;
     Printf.printf "    (%s\n"
       (String.concat " @-> "
          ("ptr lxc_container" :: List.map c_type_to_ocaml_type other_param_tys));
     Printf.printf "     @-> returning (%s))\n" (c_type_to_ocaml_type ret_ty)
 
+  let gen_lxc_container_funptr_field_ml_glue_all () =
+    List.iter gen_lxc_container_funptr_field_ml_glue funptr_records
+end
+
+module For_lxc_c_dot_ml = struct
   let gen_lxc_container_funptr_field_ml_wrapper
       {fun_name; other_param_tys; ret_ty} =
     let raw_fun_name = fun_name ^ funptr_field_ml_raw_suffix in
@@ -363,9 +368,6 @@ module For_lxc_c_dot_ml = struct
     Printf.printf "  f c %s\n"
       (String.concat " "
          (List.mapi (fun i _ -> Printf.sprintf "a%d" i) other_param_tys))
-
-  let gen_lxc_container_funptr_field_ml_glue_all () =
-    List.iter gen_lxc_container_funptr_field_ml_glue funptr_records
 
   let gen_lxc_container_funptr_field_ml_wrapper_all () =
     List.iter gen_lxc_container_funptr_field_ml_wrapper funptr_records
