@@ -377,7 +377,6 @@ module Container = struct
     else
       let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
       let ret = CArray.to_list snapshot_arr in
-      free_ptr (ptr (ptr Types.Lxc_snapshot.t)) snapshot_arr_ptr;
       ret |> List.map Snapshot.t_of_c_struct_ptr |> Result.ok
 
   let restore_snapshot ~snap_name ~new_container_name c =
