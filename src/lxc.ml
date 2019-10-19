@@ -180,19 +180,15 @@ module Container = struct
     |> bool_to_unit_result_true_is_ok
 
   let create (options : Create_options.t) c =
-    Printf.eprintf "test - start\n";
     let template = Option.value ~default:"download" options.template in
-    Printf.eprintf "test - before store_type_to_string\n";
     let backing_store_type =
       Option.map Backing_store.store_type_to_string options.backing_store_type
     in
-    Printf.eprintf "test - before c_struct_of_t\n";
     let backing_store_specs =
       Option.map
         (fun x -> addr (Backing_store.Specs.c_struct_of_t x))
         options.backing_store_specs
     in
-    Printf.eprintf "test - before args construction\n";
     let args =
       let queue = Queue.create () in
       let add s = Queue.push s queue in
@@ -219,10 +215,8 @@ module Container = struct
           options.flush_cache );
       Queue.to_seq queue |> Array.of_seq
     in
-    Printf.eprintf "test - before extra_args construction\n";
     let extra_args = Option.value ~default:[||] options.extra_args in
     let args = Array.append args extra_args in
-    Printf.eprintf "test - before args pointer construction\n";
     let argv =
       match args with
       | [||] ->
@@ -230,7 +224,6 @@ module Container = struct
       | _ ->
         string_arr_ptr_from_string_arr args
     in
-    Printf.eprintf "test - before create__glue call\n";
     C.create__glue c.lxc_container template backing_store_type
       backing_store_specs 0 argv
     |> bool_to_unit_result_true_is_ok
