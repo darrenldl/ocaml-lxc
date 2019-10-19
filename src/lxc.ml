@@ -18,7 +18,7 @@ module Console_log = Console_log
 module Backing_store = Backing_store
 module Attach = Attach
 
-let new_container ?config_path ~name () =
+let new_container ?config_path name =
   match C.lxc_container_new name config_path with
   | None ->
     Error ()

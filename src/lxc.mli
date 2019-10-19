@@ -14,7 +14,7 @@ type getfd_result =
   ; tty_fd : int }
 
 val new_container :
-  ?config_path:string -> name:string -> unit -> (container, unit) result
+  ?config_path:string -> string -> (container, unit) result
 
 val acquire : container -> (unit, unit) result
 
