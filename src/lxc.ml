@@ -305,13 +305,19 @@ module Container = struct
     | _ ->
       raise C.Unexpected_value_from_C
 
-  let attach_run_wait (opts : Attach.Options.t)
-      ~program ~argv c =
+  let attach_run_wait (opts : Attach.Options.t) ~program ~argv c =
     let opts_ptr =
-      allocate Stubs.Type_stubs.Lxc_attach_options_t.t (Attach.Options.c_struct_of_t opts)
+      allocate Stubs.Type_stubs.Lxc_attach_options_t.t
+        (Attach.Options.c_struct_of_t opts)
     in
-    C.attach_run_wait c.lxc_container opts_ptr (Some program)
-      (string_arr_ptr_from_string_arr argv)
+    match
+      C.attach_run_wait c.lxc_container opts_ptr (Some program)
+        (string_arr_ptr_from_string_arr argv)
+    with
+    | -1 ->
+      Error ()
+    | n ->
+      Ok n
 
   let create_snapshot ~comment_file c =
     match C.snapshot c.lxc_container (Some comment_file) with
