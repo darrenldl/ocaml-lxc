@@ -7,7 +7,7 @@ OCaml binding to LXC
 """
 maintainer: "Darren Ldl <darrenldldev@gmail.com>"
 authors: "Darren Ldl <darrenldldev@gmail.com>"
-license: "LGPL 2.1"
+license: "LGPL-2.1"
 homepage: "https://github.com/darrenldl/ocaml-lxc"
 bug-reports: "https://github.com/darrenldl/ocaml-lxc/issues"
 dev-repo: "git+https://github.com/darrenldl/ocaml-lxc"
