@@ -194,6 +194,8 @@ module Container = struct
       let add s = Queue.push s queue in
       if template = "download" then (
         Option.iter (fun s -> add "--dist"; add s) options.distro;
+        Option.iter (fun s -> add "--release"; add s) options.release;
+        Option.iter (fun s -> add "--arch"; add s) options.arch;
         Option.iter (fun s -> add "--variant"; add s) options.variant;
         Option.iter (fun s -> add "--server"; add s) options.server;
         Option.iter (fun s -> add "--keyid"; add s) options.key_id;
