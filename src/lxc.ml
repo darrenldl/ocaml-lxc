@@ -172,23 +172,31 @@ module Container = struct
 
   let create (opts : Create_options.t) c =
     let template = Option.value ~default:"download" opts.template in
-    let bdev_specs =
-      Option.map (fun x -> addr (Bdev_specs.c_struct_of_t x)) opts.bdev_specs
+    let backing_store_type =
+      Option.map Backing_store.store_type_to_string opts.backing_store_type
     in
-    C.create__glue c.lxc_container
-      template
-      bdev_specs
-    ()
-
-  let create ?(template = "download") ?bdev_type
-      ?(bdev_specs : Bdev_specs.t option) ?(flags = 0) ~(argv : string array) c
-    =
-    let bdev_specs =
-      Option.map (fun x -> addr (Bdev_specs.c_struct_of_t x)) bdev_specs
+    let backing_store_specs =
+      Option.map (fun x -> addr (Backing_store.Specs.c_struct_of_t x)) opts.backing_store_specs
     in
-    C.create__glue c.lxc_container template bdev_type bdev_specs flags
-      (string_arr_ptr_from_string_arr argv)
+    let argv =
+      opts.extra_args
+      |> Option.map string_arr_ptr_from_string_arr
+      |> Option.value ~default:(make_null_ptr (ptr (ptr char)))
+    in
+    C.create__glue c.lxc_container template backing_store_type backing_store_specs
+      0
+      argv
     |> bool_to_unit_result_true_is_ok
+
+  (* let create ?(template = "download") ?bdev_type
+   *     ?(bdev_specs : Bdev_specs.t option) ?(flags = 0) ~(argv : string array) c
+   *   =
+   *   let bdev_specs =
+   *     Option.map (fun x -> addr (Bdev_specs.c_struct_of_t x)) bdev_specs
+   *   in
+   *   C.create__glue c.lxc_container template bdev_type bdev_specs flags
+   *     (string_arr_ptr_from_string_arr argv)
+   *   |> bool_to_unit_result_true_is_ok *)
 
   let rename ~new_name c =
     C.rename c.lxc_container (Some new_name) |> bool_to_unit_result_true_is_ok

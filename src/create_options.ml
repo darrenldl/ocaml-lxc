@@ -1,7 +1,7 @@
 type t = {
   template : string option;
-  backend_store : Backing_store.store_type option;
-  bdev_specs : Bdev_specs.t option;
+  backing_store_type : Backing_store.store_type option;
+  backing_store_specs : Backing_store.Specs.t option;
   distro : string option;
   release : string option;
   arch : string option;
@@ -17,8 +17,8 @@ type t = {
 
 let blank = {
   template = None;
-  backend_store = None;
-  bdev_specs = None;
+  backing_store_type = None;
+  backing_store_specs = None;
   distro = None;
   release = None;
   arch = None;
