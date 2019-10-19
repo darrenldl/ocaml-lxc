@@ -208,220 +208,220 @@ module Container = struct
       backing_store_specs 0 argv
     |> bool_to_unit_result_true_is_ok
 
-   let rename ~new_name c =
-   C.rename c.lxc_container (Some new_name) |> bool_to_unit_result_true_is_ok
+  let rename ~new_name c =
+    C.rename c.lxc_container (Some new_name) |> bool_to_unit_result_true_is_ok
 
-   let reboot ?timeout c =
-   match timeout with
-   | None ->
+  let reboot ?timeout c =
+    match timeout with
+    | None ->
       C.reboot c.lxc_container |> bool_to_unit_result_true_is_ok
-   | Some timeout ->
+    | Some timeout ->
       C.reboot2 c.lxc_container timeout |> bool_to_unit_result_true_is_ok
 
-   let shutdown ~timeout c =
-   C.shutdown c.lxc_container timeout |> bool_to_unit_result_true_is_ok
+  let shutdown ~timeout c =
+    C.shutdown c.lxc_container timeout |> bool_to_unit_result_true_is_ok
 
-   let clear_config c = C.clear_config c.lxc_container
+  let clear_config c = C.clear_config c.lxc_container
 
-   let clear_config_item ~key c =
-   C.clear_config_item c.lxc_container (Some key)
-   |> bool_to_unit_result_true_is_ok
+  let clear_config_item ~key c =
+    C.clear_config_item c.lxc_container (Some key)
+    |> bool_to_unit_result_true_is_ok
 
-   let get_config_item ~key c =
-   let len =
-    C.get_config_item c.lxc_container (Some key) (make_null_ptr (ptr char)) 0
-   in
-   if len < 0 then Error ()
-   else
-    let ret = CArray.make char len in
-    let new_len =
-      C.get_config_item c.lxc_container (Some key) (CArray.start ret) len
+  let get_config_item ~key c =
+    let len =
+      C.get_config_item c.lxc_container (Some key) (make_null_ptr (ptr char)) 0
     in
-    if len <> new_len then raise C.Unexpected_value_from_C;
-    Ok (string_from_carray ret)
+    if len < 0 then Error ()
+    else
+      let ret = CArray.make char len in
+      let new_len =
+        C.get_config_item c.lxc_container (Some key) (CArray.start ret) len
+      in
+      if len <> new_len then raise C.Unexpected_value_from_C;
+      Ok (string_from_carray ret)
 
-   let get_running_config_item ~key c =
-   let ret_ptr = C.get_running_config_item c.lxc_container (Some key) in
-   if is_null ret_ptr then Error ()
-   else string_from_string_ptr ~free:true ret_ptr |> Result.ok
+  let get_running_config_item ~key c =
+    let ret_ptr = C.get_running_config_item c.lxc_container (Some key) in
+    if is_null ret_ptr then Error ()
+    else string_from_string_ptr ~free:true ret_ptr |> Result.ok
 
-   let get_keys ~prefix c =
-   let len =
-    C.get_keys c.lxc_container (Some prefix) (make_null_ptr (ptr char)) 0
-   in
-   if len < 0 then Error ()
-   else
-    let ret = CArray.make char len in
-    let new_len =
-      C.get_keys c.lxc_container (Some prefix) (CArray.start ret) len
+  let get_keys ~prefix c =
+    let len =
+      C.get_keys c.lxc_container (Some prefix) (make_null_ptr (ptr char)) 0
     in
-    if len <> new_len then raise C.Unexpected_value_from_C;
-    string_from_carray ret |> String.split_on_char '\n'
-    |> List.filter (fun s -> s <> "")
-    |> Result.ok
+    if len < 0 then Error ()
+    else
+      let ret = CArray.make char len in
+      let new_len =
+        C.get_keys c.lxc_container (Some prefix) (CArray.start ret) len
+      in
+      if len <> new_len then raise C.Unexpected_value_from_C;
+      string_from_carray ret |> String.split_on_char '\n'
+      |> List.filter (fun s -> s <> "")
+      |> Result.ok
 
-   let get_interfaces c =
-   let ret_ptr = C.get_interfaces c.lxc_container in
-   if is_null ret_ptr then Error ()
-   else
-    string_list_from_string_null_term_arr_ptr ~free_each_ptr_in_arr:true
-      ret_ptr
-    |> Result.ok
-
-   let get_ips ~interface ~family ~scope c =
-   let ret_ptr =
-    C.get_ips c.lxc_container (Some interface) (Some family) scope
-   in
-   if is_null ret_ptr then Error ()
-   else
-    let strings =
+  let get_interfaces c =
+    let ret_ptr = C.get_interfaces c.lxc_container in
+    if is_null ret_ptr then Error ()
+    else
       string_list_from_string_null_term_arr_ptr ~free_each_ptr_in_arr:true
         ret_ptr
+      |> Result.ok
+
+  let get_ips ~interface ~family ~scope c =
+    let ret_ptr =
+      C.get_ips c.lxc_container (Some interface) (Some family) scope
     in
-    Ok strings
+    if is_null ret_ptr then Error ()
+    else
+      let strings =
+        string_list_from_string_null_term_arr_ptr ~free_each_ptr_in_arr:true
+          ret_ptr
+      in
+      Ok strings
 
-   let get_cgroup_item ~subsys c =
-   let len =
-    C.get_cgroup_item c.lxc_container (Some subsys)
-      (make_null_ptr (ptr char))
-      0
-   in
-   if len < 0 then Error ()
-   else
-    let ret = CArray.make char len in
-    let new_len =
-      C.get_cgroup_item c.lxc_container (Some subsys) (CArray.start ret) len
+  let get_cgroup_item ~subsys c =
+    let len =
+      C.get_cgroup_item c.lxc_container (Some subsys)
+        (make_null_ptr (ptr char))
+        0
     in
-    if len <> new_len then raise C.Unexpected_value_from_C;
-    string_from_carray ret |> Result.ok
+    if len < 0 then Error ()
+    else
+      let ret = CArray.make char len in
+      let new_len =
+        C.get_cgroup_item c.lxc_container (Some subsys) (CArray.start ret) len
+      in
+      if len <> new_len then raise C.Unexpected_value_from_C;
+      string_from_carray ret |> Result.ok
 
-   let set_cgroup_item ~subsys ~value c =
-   C.set_cgroup_item c.lxc_container (Some subsys) (Some value)
-   |> bool_to_unit_result_true_is_ok
+  let set_cgroup_item ~subsys ~value c =
+    C.set_cgroup_item c.lxc_container (Some subsys) (Some value)
+    |> bool_to_unit_result_true_is_ok
 
-   let get_config_path c = C.get_config_path c.lxc_container |> Option.get
+  let get_config_path c = C.get_config_path c.lxc_container |> Option.get
 
-   let set_config_path ~path c =
-   C.set_config_path c.lxc_container (Some path)
-   |> bool_to_unit_result_true_is_ok
+  let set_config_path ~path c =
+    C.set_config_path c.lxc_container (Some path)
+    |> bool_to_unit_result_true_is_ok
 
-   let clone ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size ~hook_args
-    c =
-   let new_size = Unsigned.UInt64.of_int64 new_size in
-   let hook_args = string_carray_from_string_list hook_args in
-   let ret_ptr =
-    C.clone c.lxc_container (Some new_name) (Some lxcpath) flags
-      (Some bdevtype) (Some bdevdata) new_size (CArray.start hook_args)
-   in
-   if is_null ret_ptr then Error () else Ok {lxc_container = ret_ptr}
+  let clone ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size ~hook_args
+      c =
+    let new_size = Unsigned.UInt64.of_int64 new_size in
+    let hook_args = string_carray_from_string_list hook_args in
+    let ret_ptr =
+      C.clone c.lxc_container (Some new_name) (Some lxcpath) flags
+        (Some bdevtype) (Some bdevdata) new_size (CArray.start hook_args)
+    in
+    if is_null ret_ptr then Error () else Ok {lxc_container = ret_ptr}
 
-   let console_getfd ?(ttynum : int = -1) c =
-   let ttynum_ptr_init = ttynum in
-   let ttynum_ptr = allocate int ttynum_ptr_init in
-   let masterfd_ptr = allocate int 0 in
-   let tty_fd = C.console_getfd c.lxc_container ttynum_ptr masterfd_ptr in
-   if tty_fd = -1 then Error ()
-   else Ok {ttynum = !@ttynum_ptr; masterfd = !@masterfd_ptr; tty_fd}
+  let console_getfd ?(ttynum : int = -1) c =
+    let ttynum_ptr_init = ttynum in
+    let ttynum_ptr = allocate int ttynum_ptr_init in
+    let masterfd_ptr = allocate int 0 in
+    let tty_fd = C.console_getfd c.lxc_container ttynum_ptr masterfd_ptr in
+    if tty_fd = -1 then Error ()
+    else Ok {ttynum = !@ttynum_ptr; masterfd = !@masterfd_ptr; tty_fd}
 
-   let console ?(ttynum : int = -1) ~stdin_fd ~stdout_fd ~stderr_fd
-    ~(escape_char : char) c =
-   let escape = Char.code escape_char - Char.code 'a' in
-   match
-    C.console c.lxc_container ttynum stdin_fd stdout_fd stderr_fd escape
-   with
-   | 0 ->
+  let console ?(ttynum : int = -1) ~stdin_fd ~stdout_fd ~stderr_fd
+      ~(escape_char : char) c =
+    let escape = Char.code escape_char - Char.code 'a' in
+    match
+      C.console c.lxc_container ttynum stdin_fd stdout_fd stderr_fd escape
+    with
+    | 0 ->
       Ok ()
-   | -1 ->
+    | -1 ->
       Error ()
-   | _ ->
+    | _ ->
       raise C.Unexpected_value_from_C
 
-   let attach_run_wait (opts : Attach.Options.t) ~program ~argv c =
-   let opts_ptr =
-    allocate Stubs.Type_stubs.Lxc_attach_options_t.t
-      (Attach.Options.c_struct_of_t opts)
-   in
-   match
-    C.attach_run_wait c.lxc_container opts_ptr (Some program)
-      (string_arr_ptr_from_string_arr argv)
-   with
-   | -1 ->
+  let attach_run_wait (opts : Attach.Options.t) ~program ~argv c =
+    let opts_ptr =
+      allocate Stubs.Type_stubs.Lxc_attach_options_t.t
+        (Attach.Options.c_struct_of_t opts)
+    in
+    match
+      C.attach_run_wait c.lxc_container opts_ptr (Some program)
+        (string_arr_ptr_from_string_arr argv)
+    with
+    | -1 ->
       Error ()
-   | n ->
+    | n ->
       Ok n
 
-   let create_snapshot ~comment_file c =
-   match C.snapshot c.lxc_container (Some comment_file) with
-   | -1 ->
+  let create_snapshot ~comment_file c =
+    match C.snapshot c.lxc_container (Some comment_file) with
+    | -1 ->
       Error ()
-   | n ->
+    | n ->
       Ok n
 
-   let list_snapshots c =
-   let snapshot_arr_ptr =
-    allocate_ptr_init_to_null (ptr Types.Lxc_snapshot.t)
-   in
-   let count = C.snapshot_list c.lxc_container snapshot_arr_ptr in
-   if count < 0 then Error ()
-   else
-    let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
-    let ret = CArray.to_list snapshot_arr in
-    free_ptr (ptr (ptr Types.Lxc_snapshot.t)) snapshot_arr_ptr;
-    ret |> List.map Snapshot.t_of_c_struct_ptr |> Result.ok
+  let list_snapshots c =
+    let snapshot_arr_ptr =
+      allocate_ptr_init_to_null (ptr Types.Lxc_snapshot.t)
+    in
+    let count = C.snapshot_list c.lxc_container snapshot_arr_ptr in
+    if count < 0 then Error ()
+    else
+      let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
+      let ret = CArray.to_list snapshot_arr in
+      free_ptr (ptr (ptr Types.Lxc_snapshot.t)) snapshot_arr_ptr;
+      ret |> List.map Snapshot.t_of_c_struct_ptr |> Result.ok
 
-   let restore_snapshot ~snap_name ~new_container_name c =
-   C.snapshot_restore c.lxc_container (Some snap_name)
-    (Some new_container_name)
-   |> bool_to_unit_result_true_is_ok
+  let restore_snapshot ~snap_name ~new_container_name c =
+    C.snapshot_restore c.lxc_container (Some snap_name)
+      (Some new_container_name)
+    |> bool_to_unit_result_true_is_ok
 
-   let destroy_snapshot ~snap_name c =
-   C.snapshot_destroy c.lxc_container (Some snap_name)
-   |> bool_to_unit_result_true_is_ok
+  let destroy_snapshot ~snap_name c =
+    C.snapshot_destroy c.lxc_container (Some snap_name)
+    |> bool_to_unit_result_true_is_ok
 
-   let may_control c = C.may_control c.lxc_container
+  let may_control c = C.may_control c.lxc_container
 
-   let add_device_node ~src_path ~dst_path c =
-   C.add_device_node c.lxc_container (Some src_path) (Some dst_path)
-   |> bool_to_unit_result_true_is_ok
+  let add_device_node ~src_path ~dst_path c =
+    C.add_device_node c.lxc_container (Some src_path) (Some dst_path)
+    |> bool_to_unit_result_true_is_ok
 
-   let remove_device_node ~src_path ~dst_path c =
-   C.remove_device_node c.lxc_container (Some src_path) (Some dst_path)
-   |> bool_to_unit_result_true_is_ok
+  let remove_device_node ~src_path ~dst_path c =
+    C.remove_device_node c.lxc_container (Some src_path) (Some dst_path)
+    |> bool_to_unit_result_true_is_ok
 
-   let attach_interface ~src_dev ~dst_dev c =
-   C.attach_interface c.lxc_container (Some src_dev) (Some dst_dev)
-   |> bool_to_unit_result_true_is_ok
+  let attach_interface ~src_dev ~dst_dev c =
+    C.attach_interface c.lxc_container (Some src_dev) (Some dst_dev)
+    |> bool_to_unit_result_true_is_ok
 
-   let detach_interface ~src_dev c =
-   C.detach_interface c.lxc_container (Some src_dev) None
-   |> bool_to_unit_result_true_is_ok
+  let detach_interface ~src_dev c =
+    C.detach_interface c.lxc_container (Some src_dev) None
+    |> bool_to_unit_result_true_is_ok
 
-   let checkpoint ~dir ~stop ~verbose c =
-   C.checkpoint c.lxc_container (string_ptr_from_string dir) stop verbose
-   |> bool_to_unit_result_true_is_ok
+  let checkpoint ~dir ~stop ~verbose c =
+    C.checkpoint c.lxc_container (string_ptr_from_string dir) stop verbose
+    |> bool_to_unit_result_true_is_ok
 
-   let restore_from_checkpoint ~dir ~verbose c =
-   C.restore c.lxc_container (string_ptr_from_string dir) verbose
-   |> bool_to_unit_result_true_is_ok
+  let restore_from_checkpoint ~dir ~verbose c =
+    C.restore c.lxc_container (string_ptr_from_string dir) verbose
+    |> bool_to_unit_result_true_is_ok
 
-   let destroy_with_snapshots c =
-   C.destroy_with_snapshots c.lxc_container |> bool_to_unit_result_true_is_ok
+  let destroy_with_snapshots c =
+    C.destroy_with_snapshots c.lxc_container |> bool_to_unit_result_true_is_ok
 
-   let destroy_all_snapshots c =
-   C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
+  let destroy_all_snapshots c =
+    C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
 
-   let migrate (cmd : Migrate.Cmd.t) (opts : Migrate.Options.t) c =
-   let cmd = Migrate.Cmd.to_c_int cmd |> Unsigned.UInt.of_int64 in
-   C.migrate c.lxc_container cmd
-    (addr (Migrate.Options.c_struct_of_t opts))
-    (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
-   |> int_to_unit_result_zero_is_ok
+  let migrate (cmd : Migrate.Cmd.t) (opts : Migrate.Options.t) c =
+    let cmd = Migrate.Cmd.to_c_int cmd |> Unsigned.UInt.of_int64 in
+    C.migrate c.lxc_container cmd
+      (addr (Migrate.Options.c_struct_of_t opts))
+      (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
+    |> int_to_unit_result_zero_is_ok
 
-   let console_log (opts : Console_log.options) c =
-   let c_struct = Console_log.c_struct_of_options opts in
-   match C.console_log c.lxc_container (addr c_struct) with
-   | 0 ->
+  let console_log (opts : Console_log.options) c =
+    let c_struct = Console_log.c_struct_of_options opts in
+    match C.console_log c.lxc_container (addr c_struct) with
+    | 0 ->
       Ok (Console_log.result_of_c_struct (addr c_struct))
-   | _ ->
+    | _ ->
       Error ()
-   end
+end
