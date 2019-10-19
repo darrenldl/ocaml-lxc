@@ -14,7 +14,6 @@ type getfd_result =
 module Namespace_flags = Lxc_c.Namespace_flags
 module Attach_flags = Lxc_c.Lxc_attach_flags
 module Feature_checks = Lxc_c.Feature_checks
-module Migrate_cmd = Lxc_c.Migrate_cmd
 module State = Lxc_c.State
 
 let new_container ?config_path ~name () =
@@ -372,8 +371,8 @@ module Container = struct
   let destroy_all_snapshots c =
     C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let migrate (cmd : C.Migrate_cmd.t) (opts : Migrate.Options.t) c =
-    let cmd = C.Migrate_cmd.to_c_int cmd |> Unsigned.UInt.of_int64 in
+  let migrate (cmd : Migrate.Cmd.t) (opts : Migrate.Options.t) c =
+    let cmd = Migrate.Cmd.to_c_int cmd |> Unsigned.UInt.of_int64 in
     C.migrate c.lxc_container cmd
       (addr (Migrate.Options.c_struct_of_t opts))
       (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))

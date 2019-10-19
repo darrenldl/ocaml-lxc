@@ -2,7 +2,6 @@ type container
 
 module State = Lxc_c.State
 module Feature_checks = Lxc_c.Feature_checks
-module Migrate_cmd = Lxc_c.Migrate_cmd
 
 type getfd_result =
   { ttynum : int
@@ -161,7 +160,7 @@ module Container : sig
   val destroy_with_snapshots : container -> (unit, unit) result
 
   val migrate :
-    Migrate_cmd.t -> Migrate.Options.t -> container -> (unit, unit) result
+    Migrate.Cmd.t -> Migrate.Options.t -> container -> (unit, unit) result
 
   val console_log :
     Console_log.options -> container -> (Console_log.result, unit) result
