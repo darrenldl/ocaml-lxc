@@ -5,7 +5,7 @@ module Feature_checks = Lxc_c.Feature_checks
 module State = Lxc_c.State
 module Migrate = Migrate
 module Console_log = Console_log
-module Bdev_specs = Bdev_specs
+module Backing_store = Backing_store
 module Attach = Attach
 
 type getfd_result =

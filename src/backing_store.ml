@@ -10,14 +10,22 @@ type store_type =
 
 let store_type_to_string t =
   match t with
-  | Btrfs -> "btrfs"
-  | Directory -> "dir"
-  | Lvm -> "lvm"
-  | Zfs -> "zfs"
-  | Aufs -> "aufs"
-  | Overlayfs -> "overlayfs"
-  | Loopback -> "loopback"
-  | Best -> "best"
+  | Btrfs ->
+    "btrfs"
+  | Directory ->
+    "dir"
+  | Lvm ->
+    "lvm"
+  | Zfs ->
+    "zfs"
+  | Aufs ->
+    "aufs"
+  | Overlayfs ->
+    "overlayfs"
+  | Loopback ->
+    "loopback"
+  | Best ->
+    "best"
 
 module Specs = struct
   open Ctypes
