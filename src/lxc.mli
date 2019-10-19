@@ -4,6 +4,9 @@ module Namespace_flags = Lxc_c.Namespace_flags
 module Attach_flags = Lxc_c.Lxc_attach_flags
 module Feature_checks = Lxc_c.Feature_checks
 module State = Lxc_c.State
+module Migrate = Migrate
+module Console_log = Console_log
+module Bdev_specs = Bdev_specs
 
 type getfd_result =
   { ttynum : int
@@ -74,7 +77,14 @@ module Container : sig
 
   val save_config : alt_file:string -> container -> (unit, unit) result
 
-  (* val create *)
+  val create :
+    ?template:string
+    -> ?bdev_type:string
+    -> ?bdev_specs:Bdev_specs.t
+    -> ?flags:int
+    -> argv:string array
+    -> container
+    -> (unit, unit) result
 
   val rename : new_name:string -> container -> (unit, unit) result
 

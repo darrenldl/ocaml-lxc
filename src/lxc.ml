@@ -14,6 +14,9 @@ module Namespace_flags = C.Namespace_flags
 module Attach_flags = C.Lxc_attach_flags
 module Feature_checks = C.Feature_checks
 module State = C.State
+module Migrate = Migrate
+module Console_log = Console_log
+module Bdev_specs = Bdev_specs
 
 let new_container ?config_path ~name () =
   match C.lxc_container_new name config_path with
@@ -168,7 +171,7 @@ module Container = struct
     |> bool_to_unit_result_true_is_ok
 
   let create ?(template = "download") ?bdev_type
-      ?(bdev_specs : Bdev_specs.t option) ?(flags = 0) c ~(argv : string array)
+      ?(bdev_specs : Bdev_specs.t option) ?(flags = 0) ~(argv : string array) c
     =
     let bdev_specs =
       Option.map (fun x -> addr (Bdev_specs.c_struct_of_t x)) bdev_specs
