@@ -77,14 +77,7 @@ module Container : sig
 
   val save_config : alt_file:string -> container -> (unit, unit) result
 
-  (* val create :
-   *   ?template:string
-   *   -> ?bdev_type:string
-   *   -> ?bdev_specs:Bdev_specs.t
-   *   -> ?flags:int
-   *   -> argv:string array
-   *   -> container
-   *   -> (unit, unit) result *)
+  val create : Create_options.t -> container -> (unit, unit) result
 
   val rename : new_name:string -> container -> (unit, unit) result
 
