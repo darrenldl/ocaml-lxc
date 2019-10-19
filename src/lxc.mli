@@ -56,11 +56,11 @@ module Container : sig
   val load_config : ?alt_file:string -> container -> (unit, unit) result
 
   val start :
-    use_init:bool -> argv:string array -> container -> (unit, unit) result
+    ?use_init:bool -> ?argv:string array -> container -> (unit, unit) result
 
   val stop : container -> (unit, unit) result
 
-  val want_daemonize : want:[`Yes | `No] -> container -> (unit, unit) result
+  val set_want_daemonize : want:[`Yes | `No] -> container -> (unit, unit) result
 
   val want_close_all_fds :
     want:[`Yes | `No] -> container -> (unit, unit) result

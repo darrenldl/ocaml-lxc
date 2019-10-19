@@ -137,14 +137,20 @@ module Container = struct
   let load_config ?alt_file c =
     C.load_config c.lxc_container alt_file |> bool_to_unit_result_true_is_ok
 
-  let start ~use_init ~argv c =
-    C.start c.lxc_container (bool_to_int use_init)
-      (string_arr_ptr_from_string_arr argv)
+  let start ?(use_init = false) ?(argv = [||]) c =
+    let argv =
+      match argv with
+      | [||] ->
+        make_null_ptr (ptr (ptr char))
+      | _ ->
+        string_arr_ptr_from_string_arr argv
+    in
+    C.start c.lxc_container (bool_to_int use_init) argv
     |> bool_to_unit_result_true_is_ok
 
   let stop c = C.stop c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let want_daemonize ~(want : [`Yes | `No]) c =
+  let set_want_daemonize ~(want : [`Yes | `No]) c =
     C.want_daemonize c.lxc_container (want_to_bool want)
     |> bool_to_unit_result_true_is_ok
 
@@ -203,8 +209,11 @@ module Container = struct
     let extra_args = Option.value ~default:[||] opts.extra_args in
     let args = Array.append args extra_args in
     let argv =
-      if Array.length args = 0 then make_null_ptr (ptr (ptr char))
-      else string_arr_ptr_from_string_arr args
+      match args with
+      | [||] ->
+        make_null_ptr (ptr (ptr char))
+      | _ ->
+        string_arr_ptr_from_string_arr args
     in
     C.create__glue c.lxc_container template backing_store_type
       backing_store_specs 0 argv
