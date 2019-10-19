@@ -2,10 +2,6 @@ type container
 
 module State = Lxc_c.State
 
-module Console_log : sig
-  type t
-end
-
 module Feature_checks = Lxc_c.Feature_checks
 module Migrate_cmd = Lxc_c.Migrate_cmd
 
@@ -186,5 +182,5 @@ module Container : sig
   val migrate :
     Migrate_cmd.t -> Migrate_opts.t -> container -> (unit, unit) result
 
-  val console_log : Console_log.t -> container -> (unit, unit) result
+  val console_log : Console_log.options -> container -> (Console_log.result, unit) result
 end
