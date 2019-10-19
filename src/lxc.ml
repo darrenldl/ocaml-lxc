@@ -13,7 +13,6 @@ type getfd_result =
 
 module Namespace_flags = Lxc_c.Namespace_flags
 module Attach_flags = Lxc_c.Lxc_attach_flags
-
 module Feature_checks = Lxc_c.Feature_checks
 module Migrate_cmd = Lxc_c.Migrate_cmd
 
@@ -408,9 +407,10 @@ module Container = struct
     |> int_to_unit_result_zero_is_ok
 
   let console_log (opts : Console_log.options) c =
-    let c_struct = (Console_log.c_struct_of_options opts) in
+    let c_struct = Console_log.c_struct_of_options opts in
     match C.console_log c.lxc_container (addr c_struct) with
     | 0 ->
       Ok (Console_log.result_of_c_struct (addr c_struct))
-    | _ -> Error ()
+    | _ ->
+      Error ()
 end
