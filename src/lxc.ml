@@ -13,6 +13,7 @@ type getfd_result =
 module Attach = Attach
 module Backing_store = Backing_store
 module Console_log = Console_log
+module Console_options = Console_options
 module Create_options = Create_options
 module Namespace_flags = C.Namespace_flags
 module Feature_checks = C.Feature_checks
@@ -178,42 +179,48 @@ module Container = struct
     C.save_config c.lxc_container (Some alt_file)
     |> bool_to_unit_result_true_is_ok
 
-  let create (opts : Create_options.t) c =
+  let create (options : Create_options.t) c =
     Printf.eprintf "test - start\n";
-    let template = Option.value ~default:"download" opts.template in
+    let template = Option.value ~default:"download" options.template in
     Printf.eprintf "test - before store_type_to_string\n";
     let backing_store_type =
-      Option.map Backing_store.store_type_to_string opts.backing_store_type
+      Option.map Backing_store.store_type_to_string options.backing_store_type
     in
     Printf.eprintf "test - before c_struct_of_t\n";
     let backing_store_specs =
       Option.map
         (fun x -> addr (Backing_store.Specs.c_struct_of_t x))
-        opts.backing_store_specs
+        options.backing_store_specs
     in
     Printf.eprintf "test - before args construction\n";
     let args =
       let queue = Queue.create () in
       let add s = Queue.push s queue in
       if template = "download" then (
-        Option.iter (fun s -> add "--dist"; add s) opts.distro;
-        Option.iter (fun s -> add "--variant"; add s) opts.variant;
-        Option.iter (fun s -> add "--server"; add s) opts.server;
-        Option.iter (fun s -> add "--keyid"; add s) opts.key_id;
-        Option.iter (fun s -> add "--keyserver"; add s) opts.key_server;
+        Option.iter (fun s -> add "--dist"; add s) options.distro;
+        Option.iter (fun s -> add "--variant"; add s) options.variant;
+        Option.iter (fun s -> add "--server"; add s) options.server;
+        Option.iter (fun s -> add "--keyid"; add s) options.key_id;
+        Option.iter (fun s -> add "--keyserver"; add s) options.key_server;
         Option.iter
           (fun b -> if b then add "--no-validate")
-          opts.disable_gpg_validation;
-        Option.iter (fun b -> if b then add "--flush-cache") opts.flush_cache;
-        Option.iter (fun b -> if b then add "--force-cache") opts.force_cache )
+          options.disable_gpg_validation;
+        Option.iter
+          (fun b -> if b then add "--flush-cache")
+          options.flush_cache;
+        Option.iter
+          (fun b -> if b then add "--force-cache")
+          options.force_cache )
       else (
-        Option.iter (fun s -> add "--release"; add s) opts.release;
-        Option.iter (fun s -> add "--arch"; add s) opts.arch;
-        Option.iter (fun b -> if b then add "--flush-cache") opts.flush_cache );
+        Option.iter (fun s -> add "--release"; add s) options.release;
+        Option.iter (fun s -> add "--arch"; add s) options.arch;
+        Option.iter
+          (fun b -> if b then add "--flush-cache")
+          options.flush_cache );
       Queue.to_seq queue |> Array.of_seq
     in
     Printf.eprintf "test - before extra_args construction\n";
-    let extra_args = Option.value ~default:[||] opts.extra_args in
+    let extra_args = Option.value ~default:[||] options.extra_args in
     let args = Array.append args extra_args in
     Printf.eprintf "test - before args pointer construction\n";
     let argv =
@@ -343,11 +350,11 @@ module Container = struct
     if tty_fd = -1 then Error ()
     else Ok {ttynum = !@ttynum_ptr; masterfd = !@masterfd_ptr; tty_fd}
 
-  let console ?(ttynum : int = -1) ~stdin_fd ~stdout_fd ~stderr_fd
-      ~(escape_char : char) c =
-    let escape = Char.code escape_char - Char.code 'a' in
+  let console ?(options : Console_options.t = Console_options.default) c =
+    let escape = Char.code options.escape_char - Char.code 'a' in
     match
-      C.console c.lxc_container ttynum stdin_fd stdout_fd stderr_fd escape
+      C.console c.lxc_container options.tty_num options.stdin_fd
+        options.stdout_fd options.stderr_fd escape
     with
     | 0 ->
       Ok ()
@@ -356,13 +363,13 @@ module Container = struct
     | _ ->
       raise C.Unexpected_value_from_C
 
-  let attach_run_wait (opts : Attach.Options.t) ~program ~argv c =
-    let opts_ptr =
+  let attach_run_wait (options : Attach.Options.t) ~program ~argv c =
+    let options_ptr =
       allocate Stubs.Type_stubs.Lxc_attach_options_t.t
-        (Attach.Options.c_struct_of_t opts)
+        (Attach.Options.c_struct_of_t options)
     in
     match
-      C.attach_run_wait c.lxc_container opts_ptr (Some program)
+      C.attach_run_wait c.lxc_container options_ptr (Some program)
         (string_arr_ptr_from_string_arr argv)
     with
     | -1 ->
@@ -429,15 +436,15 @@ module Container = struct
   let destroy_all_snapshots c =
     C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let migrate (cmd : Migrate.Cmd.t) (opts : Migrate.Options.t) c =
+  let migrate (cmd : Migrate.Cmd.t) (options : Migrate.Options.t) c =
     let cmd = Migrate.Cmd.to_c_int cmd |> Unsigned.UInt.of_int64 in
     C.migrate c.lxc_container cmd
-      (addr (Migrate.Options.c_struct_of_t opts))
+      (addr (Migrate.Options.c_struct_of_t options))
       (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
     |> int_to_unit_result_zero_is_ok
 
-  let console_log (opts : Console_log.options) c =
-    let c_struct = Console_log.c_struct_of_options opts in
+  let console_log (options : Console_log.options) c =
+    let c_struct = Console_log.c_struct_of_options options in
     match C.console_log c.lxc_container (addr c_struct) with
     | 0 ->
       Ok (Console_log.result_of_c_struct (addr c_struct))

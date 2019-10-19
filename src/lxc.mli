@@ -3,6 +3,7 @@ type container
 module Attach = Attach
 module Backing_store = Backing_store
 module Console_log = Console_log
+module Console_options = Console_options
 module Create_options = Create_options
 module Namespace_flags = Lxc_c.Namespace_flags
 module Feature_checks = Lxc_c.Feature_checks
@@ -131,14 +132,7 @@ module Container : sig
 
   val console_getfd : ?ttynum:int -> container -> (getfd_result, unit) result
 
-  val console :
-    ?ttynum:int
-    -> stdin_fd:int
-    -> stdout_fd:int
-    -> stderr_fd:int
-    -> escape_char:char
-    -> container
-    -> (unit, unit) result
+  val console : ?options:Console_options.t -> container -> (unit, unit) result
 
   val attach_run_wait :
     Attach.Options.t
