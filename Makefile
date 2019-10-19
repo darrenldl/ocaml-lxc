@@ -27,6 +27,10 @@ CLANG_FORMAT = clang-format \
 all :
 	dune build @all
 
+.PHONY: doc
+doc :
+	dune build @doc
+
 .PHONY: format
 format :
 	$(OCAMLFORMAT)
