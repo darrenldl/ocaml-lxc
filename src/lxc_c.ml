@@ -1,5 +1,3 @@
-open Ctypes
-open Types
 open Stubs
 
 exception Unexpected_value_from_C
