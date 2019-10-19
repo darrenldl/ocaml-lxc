@@ -31,7 +31,7 @@ let blank =
   ; extra_args = None }
 
 module Templates = struct
-  let download_ubuntu_trusty_and64 =
+  let download_ubuntu_trusty_amd64 =
     { blank with
       template = Some "download"
     ; distro = Some "ubuntu"
