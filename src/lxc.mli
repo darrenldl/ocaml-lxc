@@ -130,7 +130,7 @@ module Container : sig
     -> container
     -> (container, unit) result
 
-  val console_getfd : ?ttynum:int -> container -> (getfd_result, unit) result
+  val console_getfd : ?tty_num:int -> container -> (getfd_result, unit) result
 
   val console : ?options:Console_options.t -> container -> (unit, unit) result
 

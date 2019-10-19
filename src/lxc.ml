@@ -342,8 +342,8 @@ module Container = struct
     in
     if is_null ret_ptr then Error () else Ok {lxc_container = ret_ptr}
 
-  let console_getfd ?(ttynum : int = -1) c =
-    let ttynum_ptr_init = ttynum in
+  let console_getfd ?(tty_num : int = -1) c =
+    let ttynum_ptr_init = tty_num in
     let ttynum_ptr = allocate int ttynum_ptr_init in
     let masterfd_ptr = allocate int 0 in
     let tty_fd = C.console_getfd c.lxc_container ttynum_ptr masterfd_ptr in
