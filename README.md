@@ -17,7 +17,7 @@ There are two C FFI code generation "backends" to allow `Lxc_c` module to access
 
 The library uses the glue backend right now
 
-But since interface of `Lxc_c` remains unchanged between two backends, so backend can always be changed easily.
+But since interface of `Lxc_c` remains unchanged between two backends, backend can always be changed easily.
 This also means there should be no functional differences between the two backends.
 
 ## Index
@@ -47,7 +47,9 @@ This also means there should be no functional differences between the two backen
         - Central module for importing of FFI stubs
 
 ## Acknowledgement
-I'd like to thank [Stéphane Graber](https://github.com/stgraber) for answering my questions w.r.t. binding and design of go-lxc
+I'd like to thank the following people for their help
+- [Stéphane Graber](https://github.com/stgraber) for answering my questions w.r.t. binding and design of go-lxc [here](https://discuss.linuxcontainers.org/t/creating-an-ocaml-binding-to-lxc-seeking-advice-on-api-design/5929)
+- [Jeremy Yallow](https://github.com/yallop) for answering my questions w.r.t. Ctypes [here](https://discuss.ocaml.org/t/questions-about-ctypes-funptr-and-const-pointer/4534)
 
 ## License
 LGPL v2.1 as specified in the LICENSE file
