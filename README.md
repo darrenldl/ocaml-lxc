@@ -48,8 +48,8 @@ This also means there should be no functional differences between the two backen
 
 ## Acknowledgement
 I'd like to thank the following people for their help
-- [Stéphane Graber](https://github.com/stgraber) for answering my questions w.r.t. binding and design of go-lxc [here](https://discuss.linuxcontainers.org/t/creating-an-ocaml-binding-to-lxc-seeking-advice-on-api-design/5929)
-- [Jeremy Yallop](https://github.com/yallop) for answering my questions w.r.t. Ctypes [here](https://discuss.ocaml.org/t/questions-about-ctypes-funptr-and-const-pointer/4534)
+- [Stéphane Graber](https://github.com/stgraber) for answering my questions w.r.t. binding and design of go-lxc
+- [Jeremy Yallop](https://github.com/yallop) for answering my questions w.r.t. Ctypes
 
 ## License
 LGPL v2.1 as specified in the LICENSE file
