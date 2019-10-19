@@ -261,5 +261,113 @@ let lxc_has_api_extension = Fun_stubs.lxc_has_api_extension
 
 (*$ #use "code_gen/gen.cinaps";;
 
+     For_lxc_c_dot_ml.gen_lxc_container_funptr_field_ml_glue_all ()
 *)
-(*$*)
+
+let is_defined = Fun_stubs.is_defined
+
+let state = Fun_stubs.state
+
+let is_running = Fun_stubs.is_running
+
+let freeze = Fun_stubs.freeze
+
+let unfreeze = Fun_stubs.unfreeze
+
+let init_pid = Fun_stubs.init_pid
+
+let load_config = Fun_stubs.load_config
+
+let start = Fun_stubs.start
+
+let stop = Fun_stubs.stop
+
+let want_daemonize = Fun_stubs.want_daemonize
+
+let want_close_all_fds = Fun_stubs.want_close_all_fds
+
+let config_file_name = Fun_stubs.config_file_name
+
+let wait = Fun_stubs.wait
+
+let set_config_item = Fun_stubs.set_config_item
+
+let destroy = Fun_stubs.destroy
+
+let save_config = Fun_stubs.save_config
+
+let rename = Fun_stubs.rename
+
+let reboot = Fun_stubs.reboot
+
+let shutdown = Fun_stubs.shutdown
+
+let clear_config = Fun_stubs.clear_config
+
+let clear_config_item = Fun_stubs.clear_config_item
+
+let get_config_item = Fun_stubs.get_config_item
+
+let get_running_config_item = Fun_stubs.get_running_config_item
+
+let get_keys = Fun_stubs.get_keys
+
+let get_interfaces = Fun_stubs.get_interfaces
+
+let get_ips = Fun_stubs.get_ips
+
+let get_cgroup_item = Fun_stubs.get_cgroup_item
+
+let set_cgroup_item = Fun_stubs.set_cgroup_item
+
+let get_config_path = Fun_stubs.get_config_path
+
+let set_config_path = Fun_stubs.set_config_path
+
+let clone = Fun_stubs.clone
+
+let console_getfd = Fun_stubs.console_getfd
+
+let console = Fun_stubs.console
+
+let attach_run_wait = Fun_stubs.attach_run_wait
+
+let snapshot = Fun_stubs.snapshot
+
+let snapshot_list = Fun_stubs.snapshot_list
+
+let snapshot_restore = Fun_stubs.snapshot_restore
+
+let snapshot_destroy = Fun_stubs.snapshot_destroy
+
+let may_control = Fun_stubs.may_control
+
+let add_device_node = Fun_stubs.add_device_node
+
+let remove_device_node = Fun_stubs.remove_device_node
+
+let attach_interface = Fun_stubs.attach_interface
+
+let detach_interface = Fun_stubs.detach_interface
+
+let checkpoint = Fun_stubs.checkpoint
+
+let restore = Fun_stubs.restore
+
+let destroy_with_snapshots = Fun_stubs.destroy_with_snapshots
+
+let snapshot_destroy_all = Fun_stubs.snapshot_destroy_all
+
+let migrate = Fun_stubs.migrate
+
+let console_log = Fun_stubs.console_log
+
+let reboot2 = Fun_stubs.reboot2
+
+let mount = Fun_stubs.mount
+
+let umount = Fun_stubs.umount
+
+let seccomp_notify_fd = Fun_stubs.seccomp_notify_fd
+
+                        (*$*)
