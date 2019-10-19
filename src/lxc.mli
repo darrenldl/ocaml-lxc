@@ -1,59 +1,30 @@
 type container
 
-module State = Lxc_c.State
-
-module Console_log : sig
-  type t
-end
-
-module Snapshot : sig
-  type t
-
-  val get_name : t -> string
-
-  val get_comment_path_name : t -> string
-
-  val get_timestamp : t -> string
-
-  val get_lxcpath : t -> string
-
-  val free : t -> unit
-end
-
+module Attach = Attach
+module Backing_store = Backing_store
+module Console_log = Console_log
+module Console_options = Console_options
+module Create_options = Create_options
+module Namespace_flags = Lxc_c.Namespace_flags
 module Feature_checks = Lxc_c.Feature_checks
-module Migrate_cmd = Lxc_c.Migrate_cmd
-
-module Migrate_opts : sig
-  type t
-
-  val make :
-    ?predump_dir:string
-    -> ?page_server_addr:string
-    -> ?page_server_port:string
-    -> ?action_script:string
-    -> ?disable_skip_in_flight:bool
-    -> ?ghost_limit:int64
-    -> ?features_to_check:Feature_checks.t list
-    -> dir:string
-    -> verbose:bool
-    -> stop:bool
-    -> preserves_inodes:bool
-    -> t
-end
+module State = Lxc_c.State
+module Migrate = Migrate
+module Snapshot = Snapshot
 
 type getfd_result =
   { ttynum : int
   ; masterfd : int
   ; tty_fd : int }
 
-val new_container :
-  ?config_path:string -> name:string -> unit -> (container, unit) result
+val new_container : ?config_path:string -> string -> (container, unit) result
 
 val acquire : container -> (unit, unit) result
 
 val release : container -> (unit, unit) result
 
 val get_global_config_item : key:string -> string
+
+val get_version : unit -> string
 
 val list_defined_container_names : ?lxcpath:string -> unit -> string list
 
@@ -89,11 +60,12 @@ module Container : sig
   val load_config : ?alt_file:string -> container -> (unit, unit) result
 
   val start :
-    use_init:bool -> argv:string array -> container -> (unit, unit) result
+    ?use_init:bool -> ?argv:string array -> container -> (unit, unit) result
 
   val stop : container -> (unit, unit) result
 
-  val want_daemonize : want:[`Yes | `No] -> container -> (unit, unit) result
+  val set_want_daemonize :
+    want:[`Yes | `No] -> container -> (unit, unit) result
 
   val want_close_all_fds :
     want:[`Yes | `No] -> container -> (unit, unit) result
@@ -110,7 +82,7 @@ module Container : sig
 
   val save_config : alt_file:string -> container -> (unit, unit) result
 
-  (* val create *)
+  val create : Create_options.t -> container -> (unit, unit) result
 
   val rename : new_name:string -> container -> (unit, unit) result
 
@@ -147,20 +119,27 @@ module Container : sig
 
   val set_config_path : path:string -> container -> (unit, unit) result
 
-  (* val clone  *)
-
-  val console_getfd : ?ttynum:int -> container -> (getfd_result, unit) result
-
-  val console :
-    ?ttynum:int
-    -> stdin_fd:int
-    -> stdout_fd:int
-    -> stderr_fd:int
-    -> escape_char:char
+  val clone :
+    new_name:string
+    -> lxcpath:string
+    -> flags:int
+    -> bdevtype:string
+    -> bdevdata:string
+    -> new_size:int64
+    -> hook_args:string list
     -> container
-    -> (unit, unit) result
+    -> (container, unit) result
 
-  (* val attach_run_wait *)
+  val console_getfd : ?tty_num:int -> container -> (getfd_result, unit) result
+
+  val console : ?options:Console_options.t -> container -> (unit, unit) result
+
+  val attach_run_wait :
+    ?options:Attach.Options.t
+    -> program:string
+    -> argv:string array
+    -> container
+    -> (int, unit) result
 
   val create_snapshot : comment_file:string -> container -> (int, unit) result
 
@@ -198,7 +177,7 @@ module Container : sig
   val destroy_with_snapshots : container -> (unit, unit) result
 
   val migrate :
-    Migrate_cmd.t -> Migrate_opts.t -> container -> (unit, unit) result
+    Migrate.Cmd.t -> Migrate.Options.t -> container -> (unit, unit) result
 
-  val console_log : Console_log.t -> container -> (unit, unit) result
+  val console_log : Console_log.options -> container -> (string, unit) result
 end

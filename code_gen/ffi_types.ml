@@ -238,7 +238,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
     let read_max = field t "read_max" (ptr uint64_t)
 
-    let data = field t "data" string
+    let data = field t "data" (ptr char)
 
     let () = seal t
   end

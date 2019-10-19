@@ -118,7 +118,7 @@ val lxc_has_api_extension : string -> bool
 
 (*$ #use "code_gen/gen.cinaps";;
 
-     For_lxc_c_dot_mli.gen_lxc_container_funptr_field_ml_wrapper_sig_all ()
+     For_lxc_c_dot_mli.gen_lxc_container_funptr_field_ml_glue_sig_all ()
 *)
 
 val is_defined : Types.lxc_container structure ptr -> bool

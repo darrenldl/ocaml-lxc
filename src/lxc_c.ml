@@ -1,5 +1,3 @@
-open Ctypes
-open Types
 open Stubs
 
 exception Unexpected_value_from_C
@@ -261,575 +259,113 @@ let lxc_has_api_extension = Fun_stubs.lxc_has_api_extension
 
 (*$ #use "code_gen/gen.cinaps";;
 
-     For_lxc_c_dot_ml.gen_lxc_container_funptr_field_ml_wrapper_all ()
+     For_lxc_c_dot_ml.gen_lxc_container_funptr_field_ml_glue_all ()
 *)
 
-let is_defined (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.is_defined__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.is_defined__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning bool))
-      c_field
-  in
-  f c
+let is_defined = Fun_stubs.is_defined
 
-let state (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.state__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.state__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning string_opt))
-      c_field
-  in
-  f c
+let state = Fun_stubs.state
 
-let is_running (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.is_running__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.is_running__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning bool))
-      c_field
-  in
-  f c
+let is_running = Fun_stubs.is_running
 
-let freeze (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.freeze__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.freeze__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning bool))
-      c_field
-  in
-  f c
+let freeze = Fun_stubs.freeze
 
-let unfreeze (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.unfreeze__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.unfreeze__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning bool))
-      c_field
-  in
-  f c
+let unfreeze = Fun_stubs.unfreeze
 
-let init_pid (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.init_pid__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.init_pid__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning Posix_types.pid_t))
-      c_field
-  in
-  f c
+let init_pid = Fun_stubs.init_pid
 
-let load_config (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.load_config__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.load_config__raw)
-      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0
+let load_config = Fun_stubs.load_config
 
-let start (c : Types.lxc_container structure ptr) a0 a1 =
-  let c_field = getf !@c Type_stubs.start__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.start__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> int @-> ptr (ptr char) @-> returning bool))
-      c_field
-  in
-  f c a0 a1
+let start = Fun_stubs.start
 
-let stop (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.stop__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.stop__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning bool))
-      c_field
-  in
-  f c
+let stop = Fun_stubs.stop
 
-let want_daemonize (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.want_daemonize__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.want_daemonize__raw)
-      (Foreign.funptr (ptr lxc_container @-> bool @-> returning bool))
-      c_field
-  in
-  f c a0
+let want_daemonize = Fun_stubs.want_daemonize
 
-let want_close_all_fds (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.want_close_all_fds__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.want_close_all_fds__raw)
-      (Foreign.funptr (ptr lxc_container @-> bool @-> returning bool))
-      c_field
-  in
-  f c a0
+let want_close_all_fds = Fun_stubs.want_close_all_fds
 
-let config_file_name (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.config_file_name__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.config_file_name__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning (ptr char)))
-      c_field
-  in
-  f c
+let config_file_name = Fun_stubs.config_file_name
 
-let wait (c : Types.lxc_container structure ptr) a0 a1 =
-  let c_field = getf !@c Type_stubs.wait__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.wait__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> string_opt @-> int @-> returning bool))
-      c_field
-  in
-  f c a0 a1
+let wait = Fun_stubs.wait
 
-let set_config_item (c : Types.lxc_container structure ptr) a0 a1 =
-  let c_field = getf !@c Type_stubs.set_config_item__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.set_config_item__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0 a1
+let set_config_item = Fun_stubs.set_config_item
 
-let destroy (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.destroy__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.destroy__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning bool))
-      c_field
-  in
-  f c
+let destroy = Fun_stubs.destroy
 
-let save_config (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.save_config__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.save_config__raw)
-      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0
+let save_config = Fun_stubs.save_config
 
-let rename (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.rename__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.rename__raw)
-      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0
+let rename = Fun_stubs.rename
 
-let reboot (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.reboot__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.reboot__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning bool))
-      c_field
-  in
-  f c
+let reboot = Fun_stubs.reboot
 
-let shutdown (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.shutdown__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.shutdown__raw)
-      (Foreign.funptr (ptr lxc_container @-> int @-> returning bool))
-      c_field
-  in
-  f c a0
+let shutdown = Fun_stubs.shutdown
 
-let clear_config (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.clear_config__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.clear_config__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning void))
-      c_field
-  in
-  f c
+let clear_config = Fun_stubs.clear_config
 
-let clear_config_item (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.clear_config_item__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.clear_config_item__raw)
-      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0
+let clear_config_item = Fun_stubs.clear_config_item
 
-let get_config_item (c : Types.lxc_container structure ptr) a0 a1 a2 =
-  let c_field = getf !@c Type_stubs.get_config_item__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.get_config_item__raw)
-      (Foreign.funptr
-         ( ptr lxc_container @-> string_opt @-> ptr char @-> int
-           @-> returning int ))
-      c_field
-  in
-  f c a0 a1 a2
+let get_config_item = Fun_stubs.get_config_item
 
-let get_running_config_item (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.get_running_config_item__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.get_running_config_item__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> string_opt @-> returning (ptr char)))
-      c_field
-  in
-  f c a0
+let get_running_config_item = Fun_stubs.get_running_config_item
 
-let get_keys (c : Types.lxc_container structure ptr) a0 a1 a2 =
-  let c_field = getf !@c Type_stubs.get_keys__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.get_keys__raw)
-      (Foreign.funptr
-         ( ptr lxc_container @-> string_opt @-> ptr char @-> int
-           @-> returning int ))
-      c_field
-  in
-  f c a0 a1 a2
+let get_keys = Fun_stubs.get_keys
 
-let get_interfaces (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.get_interfaces__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.get_interfaces__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning (ptr (ptr char))))
-      c_field
-  in
-  f c
+let get_interfaces = Fun_stubs.get_interfaces
 
-let get_ips (c : Types.lxc_container structure ptr) a0 a1 a2 =
-  let c_field = getf !@c Type_stubs.get_ips__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.get_ips__raw)
-      (Foreign.funptr
-         ( ptr lxc_container @-> string_opt @-> string_opt @-> int
-           @-> returning (ptr (ptr char)) ))
-      c_field
-  in
-  f c a0 a1 a2
+let get_ips = Fun_stubs.get_ips
 
-let get_cgroup_item (c : Types.lxc_container structure ptr) a0 a1 a2 =
-  let c_field = getf !@c Type_stubs.get_cgroup_item__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.get_cgroup_item__raw)
-      (Foreign.funptr
-         ( ptr lxc_container @-> string_opt @-> ptr char @-> int
-           @-> returning int ))
-      c_field
-  in
-  f c a0 a1 a2
+let get_cgroup_item = Fun_stubs.get_cgroup_item
 
-let set_cgroup_item (c : Types.lxc_container structure ptr) a0 a1 =
-  let c_field = getf !@c Type_stubs.set_cgroup_item__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.set_cgroup_item__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0 a1
+let set_cgroup_item = Fun_stubs.set_cgroup_item
 
-let get_config_path (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.get_config_path__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.get_config_path__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning string_opt))
-      c_field
-  in
-  f c
+let get_config_path = Fun_stubs.get_config_path
 
-let set_config_path (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.set_config_path__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.set_config_path__raw)
-      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0
+let set_config_path = Fun_stubs.set_config_path
 
-let clone (c : Types.lxc_container structure ptr) a0 a1 a2 a3 a4 a5 a6 =
-  let c_field = getf !@c Type_stubs.clone__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.clone__raw)
-      (Foreign.funptr
-         ( ptr lxc_container @-> string_opt @-> string_opt @-> int
-           @-> string_opt @-> string_opt @-> uint64_t
-           @-> ptr (ptr char)
-           @-> returning (ptr lxc_container) ))
-      c_field
-  in
-  f c a0 a1 a2 a3 a4 a5 a6
+let clone = Fun_stubs.clone
 
-let console_getfd (c : Types.lxc_container structure ptr) a0 a1 =
-  let c_field = getf !@c Type_stubs.console_getfd__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.console_getfd__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> ptr int @-> ptr int @-> returning int))
-      c_field
-  in
-  f c a0 a1
+let console_getfd = Fun_stubs.console_getfd
 
-let console (c : Types.lxc_container structure ptr) a0 a1 a2 a3 a4 =
-  let c_field = getf !@c Type_stubs.console__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.console__raw)
-      (Foreign.funptr
-         ( ptr lxc_container @-> int @-> int @-> int @-> int @-> int
-           @-> returning int ))
-      c_field
-  in
-  f c a0 a1 a2 a3 a4
+let console = Fun_stubs.console
 
-let attach_run_wait (c : Types.lxc_container structure ptr) a0 a1 a2 =
-  let c_field = getf !@c Type_stubs.attach_run_wait__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.attach_run_wait__raw)
-      (Foreign.funptr
-         ( ptr lxc_container @-> ptr Lxc_attach_options_t.t @-> string_opt
-           @-> ptr (ptr char)
-           @-> returning int ))
-      c_field
-  in
-  f c a0 a1 a2
+let attach_run_wait = Fun_stubs.attach_run_wait
 
-let snapshot (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.snapshot__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.snapshot__raw)
-      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning int))
-      c_field
-  in
-  f c a0
+let snapshot = Fun_stubs.snapshot
 
-let snapshot_list (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.snapshot_list__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.snapshot_list__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> ptr (ptr Lxc_snapshot.t) @-> returning int))
-      c_field
-  in
-  f c a0
+let snapshot_list = Fun_stubs.snapshot_list
 
-let snapshot_restore (c : Types.lxc_container structure ptr) a0 a1 =
-  let c_field = getf !@c Type_stubs.snapshot_restore__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.snapshot_restore__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0 a1
+let snapshot_restore = Fun_stubs.snapshot_restore
 
-let snapshot_destroy (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.snapshot_destroy__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.snapshot_destroy__raw)
-      (Foreign.funptr (ptr lxc_container @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0
+let snapshot_destroy = Fun_stubs.snapshot_destroy
 
-let may_control (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.may_control__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.may_control__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning bool))
-      c_field
-  in
-  f c
+let may_control = Fun_stubs.may_control
 
-let add_device_node (c : Types.lxc_container structure ptr) a0 a1 =
-  let c_field = getf !@c Type_stubs.add_device_node__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.add_device_node__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0 a1
+let add_device_node = Fun_stubs.add_device_node
 
-let remove_device_node (c : Types.lxc_container structure ptr) a0 a1 =
-  let c_field = getf !@c Type_stubs.remove_device_node__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.remove_device_node__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0 a1
+let remove_device_node = Fun_stubs.remove_device_node
 
-let attach_interface (c : Types.lxc_container structure ptr) a0 a1 =
-  let c_field = getf !@c Type_stubs.attach_interface__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.attach_interface__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0 a1
+let attach_interface = Fun_stubs.attach_interface
 
-let detach_interface (c : Types.lxc_container structure ptr) a0 a1 =
-  let c_field = getf !@c Type_stubs.detach_interface__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.detach_interface__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> string_opt @-> string_opt @-> returning bool))
-      c_field
-  in
-  f c a0 a1
+let detach_interface = Fun_stubs.detach_interface
 
-let checkpoint (c : Types.lxc_container structure ptr) a0 a1 a2 =
-  let c_field = getf !@c Type_stubs.checkpoint__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.checkpoint__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> ptr char @-> bool @-> bool @-> returning bool))
-      c_field
-  in
-  f c a0 a1 a2
+let checkpoint = Fun_stubs.checkpoint
 
-let restore (c : Types.lxc_container structure ptr) a0 a1 =
-  let c_field = getf !@c Type_stubs.restore__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.restore__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> ptr char @-> bool @-> returning bool))
-      c_field
-  in
-  f c a0 a1
+let restore = Fun_stubs.restore
 
-let destroy_with_snapshots (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.destroy_with_snapshots__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.destroy_with_snapshots__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning bool))
-      c_field
-  in
-  f c
+let destroy_with_snapshots = Fun_stubs.destroy_with_snapshots
 
-let snapshot_destroy_all (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.snapshot_destroy_all__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.snapshot_destroy_all__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning bool))
-      c_field
-  in
-  f c
+let snapshot_destroy_all = Fun_stubs.snapshot_destroy_all
 
-let migrate (c : Types.lxc_container structure ptr) a0 a1 a2 =
-  let c_field = getf !@c Type_stubs.migrate__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.migrate__raw)
-      (Foreign.funptr
-         ( ptr lxc_container @-> uint @-> ptr Migrate_opts.t @-> uint
-           @-> returning int ))
-      c_field
-  in
-  f c a0 a1 a2
+let migrate = Fun_stubs.migrate
 
-let console_log (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.console_log__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.console_log__raw)
-      (Foreign.funptr
-         (ptr lxc_container @-> ptr Lxc_console_log.t @-> returning int))
-      c_field
-  in
-  f c a0
+let console_log = Fun_stubs.console_log
 
-let reboot2 (c : Types.lxc_container structure ptr) a0 =
-  let c_field = getf !@c Type_stubs.reboot2__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.reboot2__raw)
-      (Foreign.funptr (ptr lxc_container @-> int @-> returning bool))
-      c_field
-  in
-  f c a0
+let reboot2 = Fun_stubs.reboot2
 
-let mount (c : Types.lxc_container structure ptr) a0 a1 a2 a3 a4 a5 =
-  let c_field = getf !@c Type_stubs.mount__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.mount__raw)
-      (Foreign.funptr
-         ( ptr lxc_container @-> string_opt @-> string_opt @-> string_opt
-           @-> ulong @-> ptr void @-> ptr Lxc_mount.t @-> returning int ))
-      c_field
-  in
-  f c a0 a1 a2 a3 a4 a5
+let mount = Fun_stubs.mount
 
-let umount (c : Types.lxc_container structure ptr) a0 a1 a2 =
-  let c_field = getf !@c Type_stubs.umount__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.umount__raw)
-      (Foreign.funptr
-         ( ptr lxc_container @-> string_opt @-> ulong @-> ptr Lxc_mount.t
-           @-> returning int ))
-      c_field
-  in
-  f c a0 a1 a2
+let umount = Fun_stubs.umount
 
-let seccomp_notify_fd (c : Types.lxc_container structure ptr) =
-  let c_field = getf !@c Type_stubs.seccomp_notify_fd__raw in
-  let f =
-    coerce
-      (field_type Type_stubs.seccomp_notify_fd__raw)
-      (Foreign.funptr (ptr lxc_container @-> returning int))
-      c_field
-  in
-  f c
+let seccomp_notify_fd = Fun_stubs.seccomp_notify_fd
 
-  (*$*)
+                        (*$*)
