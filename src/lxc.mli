@@ -67,7 +67,7 @@ module Container : sig
   val set_want_daemonize :
     want:[`Yes | `No] -> container -> (unit, unit) result
 
-  val want_close_all_fds :
+  val set_want_close_all_fds :
     want:[`Yes | `No] -> container -> (unit, unit) result
 
   val config_file_name : container -> string
@@ -119,16 +119,16 @@ module Container : sig
 
   val set_config_path : path:string -> container -> (unit, unit) result
 
-  val clone :
-    new_name:string
-    -> lxcpath:string
-    -> flags:int
-    -> bdevtype:string
-    -> bdevdata:string
-    -> new_size:int64
-    -> hook_args:string list
-    -> container
-    -> (container, unit) result
+  (* val clone :
+   *   new_name:string
+   *   -> lxcpath:string
+   *   -> flags:int
+   *   -> bdevtype:string
+   *   -> bdevdata:string
+   *   -> new_size:int64
+   *   -> hook_args:string list
+   *   -> container
+   *   -> (container, unit) result *)
 
   val console_getfd : ?tty_num:int -> container -> (getfd_result, unit) result
 

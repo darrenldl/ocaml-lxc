@@ -157,7 +157,7 @@ module Container = struct
     C.want_daemonize c.lxc_container (want_to_bool want)
     |> bool_to_unit_result_true_is_ok
 
-  let want_close_all_fds ~(want : [`Yes | `No]) c =
+  let set_want_close_all_fds ~(want : [`Yes | `No]) c =
     C.want_close_all_fds c.lxc_container (want_to_bool want)
     |> bool_to_unit_result_true_is_ok
 
@@ -472,14 +472,38 @@ module Container = struct
     | _ ->
       Error ()
 
-  module Cgroup = struct
-    let get_mem_usage_in_bytes c =
+  module Cgroup_helpers = struct
+    let get_mem_usage_bytes c =
       get_cgroup_item ~key:"memory.usage_in_bytes" c
 
-    let get_mem_limit_in_bytes c =
+    let get_mem_limit_bytes c =
       get_cgroup_item ~key:"memory.limit_in_bytes" c
 
-    let set_mem_limit_in_bytes ~limit c =
+    let set_mem_limit_bytes c limit =
       set_cgroup_item ~key:"memory.limit_in_bytes" ~value:(string_of_int limit) c
+
+    let get_soft_mem_limit_bytes c =
+      get_cgroup_item ~key:"memory.soft_limit_in_bytes" c
+
+    let set_soft_mem_limit_bytes c limit =
+      set_cgroup_item ~key:"memory.soft_limit_in_bytes" ~value:(string_of_int limit)c
+
+    let get_kernel_mem_usage_bytes c =
+      get_cgroup_item ~key:"memory.kmem.usage_in_bytes" c
+
+    let get_kernel_mem_limit_bytes c =
+      get_cgroup_item ~key:"memory.kmem.limit_in_bytes" c
+
+    let set_kernel_mem_limit_bytes c limit =
+      set_cgroup_item ~key:"memory.kmem.limit_in_bytes" ~value:(string_of_int limit) c
+
+    let get_mem_swap_usage_bytes c =
+      get_cgroup_item ~key:"memory.memsw.usage_in_bytes" c
+
+    let get_mem_swap_limit_bytes c =
+      get_cgroup_item ~key:"memory.memsw.limit_in_bytes" c
+
+    let set_mem_swap_limit_bytes c limit =
+      set_cgroup_item ~key:"memory.memsw.limit_in_bytes" ~value:(string_of_int limit) c
   end
 end
