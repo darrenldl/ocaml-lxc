@@ -8,10 +8,14 @@ WIP
 
 ## Details
 #### Index
-You can see the index [here](doc/INDEX.md)
+See [here](doc/INDEX.md)
 
 #### Technical details
-They are available [here](doc/TECH.md)
+See [here](doc/TECH.md)
+
+The documentation includes following aspects and is mainly useful for people looking for a case study/example
+- Using cinaps for both OCaml and C code and remain consistent
+- Workflow of stubs generation for C types and functions, and tying them together in dune
 
 #### Mapping from go-lxc
 ocaml-lxc has roughly the same feature set as go-lxc, and fairly similar API design
