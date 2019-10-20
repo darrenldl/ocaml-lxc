@@ -88,10 +88,10 @@ module Command = struct
     setf c_struct L.program arr.(0);
     let argv =
       match arr with
-      | [||] -> failwith "Unexpected empty array"
+      | [||] ->
+        failwith "Unexpected empty array"
       | _ ->
         string_arr_ptr_from_string_arr arr
     in
-    setf c_struct L.argv argv;
-    c_struct
+    setf c_struct L.argv argv; c_struct
 end
