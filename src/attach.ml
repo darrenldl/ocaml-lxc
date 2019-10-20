@@ -79,3 +79,19 @@ module Options = struct
     setf c_struct L.log_fd t.log_fd;
     c_struct
 end
+
+module Command = struct
+  module L = Stubs.Type_stubs.Lxc_attach_command_t
+
+  let c_struct_of_string_array arr =
+    let c_struct = Ctypes.make L.t in
+    setf c_struct L.program arr.(0);
+    let argv =
+      match arr with
+      | [||] -> failwith "Unexpected empty array"
+      | _ ->
+        string_arr_ptr_from_string_arr arr
+    in
+    setf c_struct L.argv argv;
+    c_struct
+end

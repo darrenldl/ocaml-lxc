@@ -79,8 +79,8 @@ val create__glue :
 
 val attach_run_command__glue :
   lxc_container structure ptr
-  -> Lxc_attach_command_t.t structure ptr
   -> Lxc_attach_options_t.t structure ptr
+  -> Lxc_attach_command_t.t structure ptr
   -> Posix_types.pid_t ptr
   -> int
 
