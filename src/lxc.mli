@@ -177,7 +177,7 @@ module Container : sig
   val destroy_with_snapshots : container -> (unit, unit) result
 
   val migrate :
-    Migrate.Cmd.t -> Migrate.Options.t -> container -> (unit, unit) result
+    Migrate.Command.t -> Migrate.Options.t -> container -> (unit, unit) result
 
   val console_log : Console_log.options -> container -> (string, unit) result
 end
