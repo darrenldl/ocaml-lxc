@@ -153,11 +153,11 @@ module Container = struct
 
   let stop c = C.stop c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let set_want_daemonize ~(want : [`Yes | `No]) c =
+  let set_want_daemonize c ~(want : [`Yes | `No]) =
     C.want_daemonize c.lxc_container (want_to_bool want)
     |> bool_to_unit_result_true_is_ok
 
-  let set_want_close_all_fds ~(want : [`Yes | `No]) c =
+  let set_want_close_all_fds c ~(want : [`Yes | `No]) =
     C.want_close_all_fds c.lxc_container (want_to_bool want)
     |> bool_to_unit_result_true_is_ok
 
@@ -165,21 +165,21 @@ module Container = struct
     let ret_ptr = C.config_file_name c.lxc_container in
     string_from_string_ptr ~free:true ret_ptr
 
-  let wait ?(timeout = -1) ~wait_for c =
+  let wait ?(timeout = -1) c ~wait_for =
     let state = Some (C.State.to_string wait_for) in
     C.wait c.lxc_container state timeout |> bool_to_unit_result_true_is_ok
 
-  let set_config_item ~key ~value c =
+  let set_config_item c ~key ~value =
     C.set_config_item c.lxc_container (Some key) (Some value)
     |> bool_to_unit_result_true_is_ok
 
   let destroy c = C.destroy c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let save_config ~alt_file c =
+  let save_config c ~alt_file =
     C.save_config c.lxc_container (Some alt_file)
     |> bool_to_unit_result_true_is_ok
 
-  let create (options : Create_options.t) c =
+  let create c (options : Create_options.t) =
     let template = Option.value ~default:"download" options.template in
     let backing_store_type =
       Option.map Backing_store.store_type_to_string options.backing_store_type
@@ -230,7 +230,7 @@ module Container = struct
       backing_store_specs 0 argv
     |> bool_to_unit_result_true_is_ok
 
-  let rename ~new_name c =
+  let rename c ~new_name =
     C.rename c.lxc_container (Some new_name) |> bool_to_unit_result_true_is_ok
 
   let reboot ?timeout c =
@@ -240,16 +240,16 @@ module Container = struct
     | Some timeout ->
       C.reboot2 c.lxc_container timeout |> bool_to_unit_result_true_is_ok
 
-  let shutdown ~timeout c =
+  let shutdown c ~timeout =
     C.shutdown c.lxc_container timeout |> bool_to_unit_result_true_is_ok
 
   let clear_config c = C.clear_config c.lxc_container
 
-  let clear_config_item ~key c =
+  let clear_config_item c ~key =
     C.clear_config_item c.lxc_container (Some key)
     |> bool_to_unit_result_true_is_ok
 
-  let get_config_item ~key c =
+  let get_config_item c ~key =
     let len =
       C.get_config_item c.lxc_container (Some key) (make_null_ptr (ptr char)) 0
     in
@@ -262,12 +262,12 @@ module Container = struct
       if len <> new_len then raise C.Unexpected_value_from_C;
       Ok (string_from_carray ret)
 
-  let get_running_config_item ~key c =
+  let get_running_config_item c ~key =
     let ret_ptr = C.get_running_config_item c.lxc_container (Some key) in
     if is_null ret_ptr then Error ()
     else string_from_string_ptr ~free:true ret_ptr |> Result.ok
 
-  let get_keys ~prefix c =
+  let get_keys c ~prefix =
     let len =
       C.get_keys c.lxc_container (Some prefix) (make_null_ptr (ptr char)) 0
     in
@@ -290,7 +290,7 @@ module Container = struct
         ret_ptr
       |> Result.ok
 
-  let get_ips ~interface ~family ~scope c =
+  let get_ips c ~interface ~family ~scope =
     let ret_ptr =
       C.get_ips c.lxc_container (Some interface) (Some family) scope
     in
@@ -302,7 +302,7 @@ module Container = struct
       in
       Ok strings
 
-  let get_cgroup_item ~key c =
+  let get_cgroup_item c ~key =
     let len =
       C.get_cgroup_item c.lxc_container (Some key)
         (make_null_ptr (ptr char))
@@ -317,18 +317,18 @@ module Container = struct
       if len <> new_len then raise C.Unexpected_value_from_C;
       string_from_carray ret |> Result.ok
 
-  let set_cgroup_item ~key ~value c =
+  let set_cgroup_item c ~key ~value =
     C.set_cgroup_item c.lxc_container (Some key) (Some value)
     |> bool_to_unit_result_true_is_ok
 
   let get_config_path c = C.get_config_path c.lxc_container |> Option.get
 
-  let set_config_path ~path c =
+  let set_config_path c ~path =
     C.set_config_path c.lxc_container (Some path)
     |> bool_to_unit_result_true_is_ok
 
-  let clone ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size ~hook_args
-      c =
+  let clone c ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size ~hook_args
+      =
     let new_size = Unsigned.UInt64.of_int64 new_size in
     let hook_args = string_carray_from_string_list hook_args in
     let ret_ptr =
@@ -371,7 +371,7 @@ module Container = struct
     | _ ->
       raise C.Unexpected_value_from_C
 
-  let attach_run_command_no_wait ?(options = Attach.Options.default) ~argv c =
+  let attach_run_command_no_wait ?(options = Attach.Options.default) c ~argv =
     let options = Attach.Options.c_struct_of_t options in
     let command = Attach.Command.c_struct_of_string_array argv in
     let pid_t_ptr = allocate Posix_types.pid_t (Posix_types.Pid.of_int 0) in
@@ -386,7 +386,7 @@ module Container = struct
     | _ ->
       raise C.Unexpected_value_from_C
 
-  let attach_run_command_status ?(options = Attach.Options.default) ~argv c =
+  let attach_run_command_status ?(options = Attach.Options.default) c ~argv =
     let options = Attach.Options.c_struct_of_t options in
     match
       C.attach_run_wait c.lxc_container (addr options)
@@ -398,7 +398,7 @@ module Container = struct
     | n ->
       Ok n
 
-  let create_snapshot ~comment_file c =
+  let create_snapshot c ~comment_file =
     match C.snapshot c.lxc_container (Some comment_file) with
     | -1 ->
       Error ()
@@ -416,38 +416,38 @@ module Container = struct
       let ret = CArray.to_list snapshot_arr in
       ret |> List.map Snapshot.t_of_c_struct_ptr |> Result.ok
 
-  let restore_snapshot ~snap_name ~new_container_name c =
+  let restore_snapshot c ~snap_name ~new_container_name =
     C.snapshot_restore c.lxc_container (Some snap_name)
       (Some new_container_name)
     |> bool_to_unit_result_true_is_ok
 
-  let destroy_snapshot ~snap_name c =
+  let destroy_snapshot c ~snap_name =
     C.snapshot_destroy c.lxc_container (Some snap_name)
     |> bool_to_unit_result_true_is_ok
 
   let may_control c = C.may_control c.lxc_container
 
-  let add_device_node ~src_path ~dst_path c =
+  let add_device_node c ~src_path ~dst_path =
     C.add_device_node c.lxc_container (Some src_path) (Some dst_path)
     |> bool_to_unit_result_true_is_ok
 
-  let remove_device_node ~src_path ~dst_path c =
+  let remove_device_node c ~src_path ~dst_path =
     C.remove_device_node c.lxc_container (Some src_path) (Some dst_path)
     |> bool_to_unit_result_true_is_ok
 
-  let attach_interface ~src_dev ~dst_dev c =
+  let attach_interface c ~src_dev ~dst_dev =
     C.attach_interface c.lxc_container (Some src_dev) (Some dst_dev)
     |> bool_to_unit_result_true_is_ok
 
-  let detach_interface ~src_dev c =
+  let detach_interface c ~src_dev =
     C.detach_interface c.lxc_container (Some src_dev) None
     |> bool_to_unit_result_true_is_ok
 
-  let checkpoint ~dir ~stop ~verbose c =
+  let checkpoint c ~dir ~stop ~verbose =
     C.checkpoint c.lxc_container (string_ptr_from_string dir) stop verbose
     |> bool_to_unit_result_true_is_ok
 
-  let restore_from_checkpoint ~dir ~verbose c =
+  let restore_from_checkpoint c ~dir ~verbose =
     C.restore c.lxc_container (string_ptr_from_string dir) verbose
     |> bool_to_unit_result_true_is_ok
 
@@ -457,14 +457,14 @@ module Container = struct
   let destroy_all_snapshots c =
     C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let migrate (cmd : Migrate.Command.t) (options : Migrate.Options.t) c =
+  let migrate c (cmd : Migrate.Command.t) (options : Migrate.Options.t) =
     let cmd = Migrate.Command.to_c_int cmd |> Unsigned.UInt.of_int64 in
     C.migrate c.lxc_container cmd
       (addr (Migrate.Options.c_struct_of_t options))
       (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
     |> int_to_unit_result_zero_is_ok
 
-  let console_log (options : Console_log.options) c =
+  let console_log c (options : Console_log.options) =
     let c_struct = Console_log.c_struct_of_options options in
     match C.console_log c.lxc_container (addr c_struct) with
     | 0 ->
@@ -474,36 +474,36 @@ module Container = struct
 
   module Cgroup_helpers = struct
     let get_mem_usage_bytes c =
-      get_cgroup_item ~key:"memory.usage_in_bytes" c
+      get_cgroup_item c ~key:"memory.usage_in_bytes"
 
     let get_mem_limit_bytes c =
-      get_cgroup_item ~key:"memory.limit_in_bytes" c
+      get_cgroup_item c ~key:"memory.limit_in_bytes"
 
     let set_mem_limit_bytes c limit =
-      set_cgroup_item ~key:"memory.limit_in_bytes" ~value:(string_of_int limit) c
+      set_cgroup_item c ~key:"memory.limit_in_bytes" ~value:(string_of_int limit)
 
     let get_soft_mem_limit_bytes c =
-      get_cgroup_item ~key:"memory.soft_limit_in_bytes" c
+      get_cgroup_item c ~key:"memory.soft_limit_in_bytes"
 
     let set_soft_mem_limit_bytes c limit =
-      set_cgroup_item ~key:"memory.soft_limit_in_bytes" ~value:(string_of_int limit)c
+      set_cgroup_item c ~key:"memory.soft_limit_in_bytes" ~value:(string_of_int limit)
 
     let get_kernel_mem_usage_bytes c =
-      get_cgroup_item ~key:"memory.kmem.usage_in_bytes" c
+      get_cgroup_item c ~key:"memory.kmem.usage_in_bytes"
 
     let get_kernel_mem_limit_bytes c =
-      get_cgroup_item ~key:"memory.kmem.limit_in_bytes" c
+      get_cgroup_item c ~key:"memory.kmem.limit_in_bytes"
 
     let set_kernel_mem_limit_bytes c limit =
-      set_cgroup_item ~key:"memory.kmem.limit_in_bytes" ~value:(string_of_int limit) c
+      set_cgroup_item c ~key:"memory.kmem.limit_in_bytes" ~value:(string_of_int limit)
 
     let get_mem_swap_usage_bytes c =
-      get_cgroup_item ~key:"memory.memsw.usage_in_bytes" c
+      get_cgroup_item c ~key:"memory.memsw.usage_in_bytes"
 
     let get_mem_swap_limit_bytes c =
-      get_cgroup_item ~key:"memory.memsw.limit_in_bytes" c
+      get_cgroup_item c ~key:"memory.memsw.limit_in_bytes"
 
     let set_mem_swap_limit_bytes c limit =
-      set_cgroup_item ~key:"memory.memsw.limit_in_bytes" ~value:(string_of_int limit) c
+      set_cgroup_item c ~key:"memory.memsw.limit_in_bytes" ~value:(string_of_int limit)
   end
 end

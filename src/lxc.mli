@@ -65,69 +65,70 @@ module Container : sig
   val stop : container -> (unit, unit) result
 
   val set_want_daemonize :
-    want:[`Yes | `No] -> container -> (unit, unit) result
+    container -> want:[`Yes | `No] -> (unit, unit) result
 
   val set_want_close_all_fds :
-    want:[`Yes | `No] -> container -> (unit, unit) result
+    container -> want:[`Yes | `No] -> (unit, unit) result
 
   val config_file_name : container -> string
 
   val wait :
-    ?timeout:int -> wait_for:State.t -> container -> (unit, unit) result
+    ?timeout:int -> container -> wait_for:State.t -> (unit, unit) result
 
   val set_config_item :
-    key:string -> value:string -> container -> (unit, unit) result
+    container -> key:string -> value:string -> (unit, unit) result
 
   val destroy : container -> (unit, unit) result
 
-  val save_config : alt_file:string -> container -> (unit, unit) result
+  val save_config : container -> alt_file:string -> (unit, unit) result
 
-  val create : Create_options.t -> container -> (unit, unit) result
+  val create : container -> Create_options.t -> (unit, unit) result
 
-  val rename : new_name:string -> container -> (unit, unit) result
+  val rename : container -> new_name:string -> (unit, unit) result
 
   val reboot : ?timeout:int -> container -> (unit, unit) result
 
-  val shutdown : timeout:int -> container -> (unit, unit) result
+  val shutdown : container -> timeout:int -> (unit, unit) result
 
   val clear_config : container -> unit
 
-  val clear_config_item : key:string -> container -> (unit, unit) result
+  val clear_config_item : container -> key:string -> (unit, unit) result
 
-  val get_config_item : key:string -> container -> (string, unit) result
+  val get_config_item : container -> key:string -> (string, unit) result
 
   val get_running_config_item :
-    key:string -> container -> (string, unit) result
+    container -> key:string -> (string, unit) result
 
-  val get_keys : prefix:string -> container -> (string list, unit) result
+  val get_keys : container -> prefix:string -> (string list, unit) result
 
   val get_interfaces : container -> (string list, unit) result
 
   val get_ips :
+    container ->
     interface:string
     -> family:string
     -> scope:int
-    -> container
     -> (string list, unit) result
 
-  val get_cgroup_item : key:string -> container -> (string, unit) result
+  val get_cgroup_item : container -> key:string -> (string, unit) result
 
   val set_cgroup_item :
-    key:string -> value:string -> container -> (unit, unit) result
+    container ->
+    key:string -> value:string -> (unit, unit) result
 
   val get_config_path : container -> string
 
-  val set_config_path : path:string -> container -> (unit, unit) result
+  val set_config_path : container -> path:string -> (unit, unit) result
 
   (* val clone :
-   *   new_name:string
+   *   container
+   *   -> new_name:string
    *   -> lxcpath:string
    *   -> flags:int
    *   -> bdevtype:string
    *   -> bdevdata:string
    *   -> new_size:int64
    *   -> hook_args:string list
-   *   -> container
    *   -> (container, unit) result *)
 
   val console_getfd : ?tty_num:int -> container -> (getfd_result, unit) result
@@ -139,53 +140,57 @@ module Container : sig
 
   val attach_run_command_no_wait :
     ?options:Attach.Options.t
-    -> argv:string array
     -> container
+    -> argv:string array
     -> (int, unit) result
 
   val attach_run_command_status :
     ?options:Attach.Options.t
-    -> argv:string array
     -> container
+    -> argv:string array
     -> (int, unit) result
 
-  val create_snapshot : comment_file:string -> container -> (int, unit) result
+  val create_snapshot : container -> comment_file:string -> (int, unit) result
 
   val list_snapshots : container -> (Snapshot.t list, unit) result
 
   val restore_snapshot :
-    snap_name:string
+    container
+    -> snap_name:string
     -> new_container_name:string
-    -> container
     -> (unit, unit) result
 
-  val destroy_snapshot : snap_name:string -> container -> (unit, unit) result
+  val destroy_snapshot : container -> snap_name:string -> (unit, unit) result
 
   val destroy_all_snapshots : container -> (unit, unit) result
 
   val may_control : container -> bool
 
   val add_device_node :
-    src_path:string -> dst_path:string -> container -> (unit, unit) result
+    container -> src_path:string -> dst_path:string -> (unit, unit) result
 
   val remove_device_node :
-    src_path:string -> dst_path:string -> container -> (unit, unit) result
+    container ->
+    src_path:string -> dst_path:string -> (unit, unit) result
 
   val attach_interface :
-    src_dev:string -> dst_dev:string -> container -> (unit, unit) result
+    container ->
+    src_dev:string -> dst_dev:string -> (unit, unit) result
 
-  val detach_interface : src_dev:string -> container -> (unit, unit) result
+  val detach_interface : container -> src_dev:string ->  (unit, unit) result
 
-  val checkpoint :
-    dir:string -> stop:bool -> verbose:bool -> container -> (unit, unit) result
+  val checkpoint :container ->
+    dir:string -> stop:bool -> verbose:bool ->  (unit, unit) result
 
   val restore_from_checkpoint :
-    dir:string -> verbose:bool -> container -> (unit, unit) result
+container ->
+    dir:string -> verbose:bool ->  (unit, unit) result
 
   val destroy_with_snapshots : container -> (unit, unit) result
 
   val migrate :
-    Migrate.Command.t -> Migrate.Options.t -> container -> (unit, unit) result
+    container ->
+    Migrate.Command.t -> Migrate.Options.t ->  (unit, unit) result
 
-  val console_log : Console_log.options -> container -> (string, unit) result
+  val console_log : container -> Console_log.options ->  (string, unit) result
 end
