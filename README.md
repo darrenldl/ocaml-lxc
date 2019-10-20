@@ -1,13 +1,13 @@
 # ocaml-lxc
-OCaml binding to LXC with idiomatic OCaml error handling
+OCaml binding to LXC with idiomatic OCaml API design
 
 ## Technical description & design
 Ctypes is used for stubs generation, and additional C "glue" code is used where necessary
 
 The design of the high level exposed API (`Lxc`) is largely derived from
 [go-lxc](https://github.com/lxc/go-lxc),
-and utilise OCaml types extensively to make semantics of returned value clear and
-allow better error handling
+and utilise OCaml modules and types extensively to make semantics of returned value clear and
+functions ergonomic to use
 
 The low level internal API (`Lxc_c`) follows the LXC C API and added glue code closely
 
