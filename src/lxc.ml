@@ -358,6 +358,20 @@ module Container = struct
     | _ ->
       raise C.Unexpected_value_from_C
 
+  let attach_run_shell ?(options = Attach.Options.default) c =
+    let options =
+        (Attach.Options.c_struct_of_t options)
+    in
+    let pid_t_ptr =
+      allocate Posix_types.pid_t (Posix_types.Pid.of_int 0)
+    in
+    match C.attach_run_shell__glue c.lxc_container
+            (addr options)
+            pid_t_ptr with
+    | 0 -> Ok (Posix_types.Pid.to_int !@pid_t_ptr)
+    | -1 -> Error ()
+    | _ -> raise C.Unexpected_value_from_C
+
   let attach_run_command_no_wait ?(options = Attach.Options.default)
       ~argv c =
     let options =
@@ -373,8 +387,9 @@ module Container = struct
             (addr options)
             (addr command)
             pid_t_ptr with
-    | 0 -> Ok ()
-    | _ -> Error ()
+    | 0 -> Ok (Posix_types.Pid.to_int !@pid_t_ptr)
+    | -1 -> Error ()
+    | _ -> raise C.Unexpected_value_from_C
 
   let attach_run_command_status ?(options = Attach.Options.default)
       ~argv c =

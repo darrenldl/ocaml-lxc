@@ -134,6 +134,17 @@ module Container : sig
 
   val console : ?options:Console_options.t -> container -> (unit, unit) result
 
+  val attach_run_shell :
+    ?options:Attach.Options.t
+    -> container
+    -> (int, unit) result
+
+  val attach_run_command_no_wait :
+    ?options:Attach.Options.t
+    -> argv:string array
+    -> container
+    -> (int, unit) result
+
   val attach_run_command_status :
     ?options:Attach.Options.t
     -> argv:string array
