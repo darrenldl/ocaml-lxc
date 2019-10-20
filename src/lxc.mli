@@ -110,10 +110,10 @@ module Container : sig
     -> container
     -> (string list, unit) result
 
-  val get_cgroup_item : subsys:string -> container -> (string, unit) result
+  val get_cgroup_item : key:string -> container -> (string, unit) result
 
   val set_cgroup_item :
-    subsys:string -> value:string -> container -> (unit, unit) result
+    key:string -> value:string -> container -> (unit, unit) result
 
   val get_config_path : container -> string
 

@@ -302,9 +302,9 @@ module Container = struct
       in
       Ok strings
 
-  let get_cgroup_item ~subsys c =
+  let get_cgroup_item ~key c =
     let len =
-      C.get_cgroup_item c.lxc_container (Some subsys)
+      C.get_cgroup_item c.lxc_container (Some key)
         (make_null_ptr (ptr char))
         0
     in
@@ -312,13 +312,13 @@ module Container = struct
     else
       let ret = CArray.make char len in
       let new_len =
-        C.get_cgroup_item c.lxc_container (Some subsys) (CArray.start ret) len
+        C.get_cgroup_item c.lxc_container (Some key) (CArray.start ret) len
       in
       if len <> new_len then raise C.Unexpected_value_from_C;
       string_from_carray ret |> Result.ok
 
-  let set_cgroup_item ~subsys ~value c =
-    C.set_cgroup_item c.lxc_container (Some subsys) (Some value)
+  let set_cgroup_item ~key ~value c =
+    C.set_cgroup_item c.lxc_container (Some key) (Some value)
     |> bool_to_unit_result_true_is_ok
 
   let get_config_path c = C.get_config_path c.lxc_container |> Option.get
@@ -471,4 +471,15 @@ module Container = struct
       Ok (Console_log.result_of_c_struct (addr c_struct))
     | _ ->
       Error ()
+
+  module Cgroup = struct
+    let get_mem_usage_in_bytes c =
+      get_cgroup_item ~key:"memory.usage_in_bytes" c
+
+    let get_mem_limit_in_bytes c =
+      get_cgroup_item ~key:"memory.limit_in_bytes" c
+
+    let set_mem_limit_in_bytes ~limit c =
+      set_cgroup_item ~key:"memory.limit_in_bytes" ~value:(string_of_int limit) c
+  end
 end
