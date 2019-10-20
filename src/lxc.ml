@@ -304,9 +304,7 @@ module Container = struct
 
   let get_cgroup_item c ~key =
     let len =
-      C.get_cgroup_item c.lxc_container (Some key)
-        (make_null_ptr (ptr char))
-        0
+      C.get_cgroup_item c.lxc_container (Some key) (make_null_ptr (ptr char)) 0
     in
     if len < 0 then Error ()
     else
@@ -327,8 +325,8 @@ module Container = struct
     C.set_config_path c.lxc_container (Some path)
     |> bool_to_unit_result_true_is_ok
 
-  let clone c ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size ~hook_args
-      =
+  let clone c ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size
+      ~hook_args =
     let new_size = Unsigned.UInt64.of_int64 new_size in
     let hook_args = string_carray_from_string_list hook_args in
     let ret_ptr =
@@ -473,20 +471,20 @@ module Container = struct
       Error ()
 
   module Cgroup_helpers = struct
-    let get_mem_usage_bytes c =
-      get_cgroup_item c ~key:"memory.usage_in_bytes"
+    let get_mem_usage_bytes c = get_cgroup_item c ~key:"memory.usage_in_bytes"
 
-    let get_mem_limit_bytes c =
-      get_cgroup_item c ~key:"memory.limit_in_bytes"
+    let get_mem_limit_bytes c = get_cgroup_item c ~key:"memory.limit_in_bytes"
 
     let set_mem_limit_bytes c limit =
-      set_cgroup_item c ~key:"memory.limit_in_bytes" ~value:(string_of_int limit)
+      set_cgroup_item c ~key:"memory.limit_in_bytes"
+        ~value:(string_of_int limit)
 
     let get_soft_mem_limit_bytes c =
       get_cgroup_item c ~key:"memory.soft_limit_in_bytes"
 
     let set_soft_mem_limit_bytes c limit =
-      set_cgroup_item c ~key:"memory.soft_limit_in_bytes" ~value:(string_of_int limit)
+      set_cgroup_item c ~key:"memory.soft_limit_in_bytes"
+        ~value:(string_of_int limit)
 
     let get_kernel_mem_usage_bytes c =
       get_cgroup_item c ~key:"memory.kmem.usage_in_bytes"
@@ -495,7 +493,8 @@ module Container = struct
       get_cgroup_item c ~key:"memory.kmem.limit_in_bytes"
 
     let set_kernel_mem_limit_bytes c limit =
-      set_cgroup_item c ~key:"memory.kmem.limit_in_bytes" ~value:(string_of_int limit)
+      set_cgroup_item c ~key:"memory.kmem.limit_in_bytes"
+        ~value:(string_of_int limit)
 
     let get_mem_swap_usage_bytes c =
       get_cgroup_item c ~key:"memory.memsw.usage_in_bytes"
@@ -504,6 +503,7 @@ module Container = struct
       get_cgroup_item c ~key:"memory.memsw.limit_in_bytes"
 
     let set_mem_swap_limit_bytes c limit =
-      set_cgroup_item c ~key:"memory.memsw.limit_in_bytes" ~value:(string_of_int limit)
+      set_cgroup_item c ~key:"memory.memsw.limit_in_bytes"
+        ~value:(string_of_int limit)
   end
 end

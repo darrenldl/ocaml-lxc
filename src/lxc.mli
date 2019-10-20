@@ -104,8 +104,8 @@ module Container : sig
   val get_interfaces : container -> (string list, unit) result
 
   val get_ips :
-    container ->
-    interface:string
+    container
+    -> interface:string
     -> family:string
     -> scope:int
     -> (string list, unit) result
@@ -113,8 +113,7 @@ module Container : sig
   val get_cgroup_item : container -> key:string -> (string, unit) result
 
   val set_cgroup_item :
-    container ->
-    key:string -> value:string -> (unit, unit) result
+    container -> key:string -> value:string -> (unit, unit) result
 
   val get_config_path : container -> string
 
@@ -170,27 +169,23 @@ module Container : sig
     container -> src_path:string -> dst_path:string -> (unit, unit) result
 
   val remove_device_node :
-    container ->
-    src_path:string -> dst_path:string -> (unit, unit) result
+    container -> src_path:string -> dst_path:string -> (unit, unit) result
 
   val attach_interface :
-    container ->
-    src_dev:string -> dst_dev:string -> (unit, unit) result
+    container -> src_dev:string -> dst_dev:string -> (unit, unit) result
 
-  val detach_interface : container -> src_dev:string ->  (unit, unit) result
+  val detach_interface : container -> src_dev:string -> (unit, unit) result
 
-  val checkpoint :container ->
-    dir:string -> stop:bool -> verbose:bool ->  (unit, unit) result
+  val checkpoint :
+    container -> dir:string -> stop:bool -> verbose:bool -> (unit, unit) result
 
   val restore_from_checkpoint :
-container ->
-    dir:string -> verbose:bool ->  (unit, unit) result
+    container -> dir:string -> verbose:bool -> (unit, unit) result
 
   val destroy_with_snapshots : container -> (unit, unit) result
 
   val migrate :
-    container ->
-    Migrate.Command.t -> Migrate.Options.t ->  (unit, unit) result
+    container -> Migrate.Command.t -> Migrate.Options.t -> (unit, unit) result
 
-  val console_log : container -> Console_log.options ->  (string, unit) result
+  val console_log : container -> Console_log.options -> (string, unit) result
 end
