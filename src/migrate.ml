@@ -1,7 +1,7 @@
 open Ctypes
 open Misc_utils
 module Feature_checks = Lxc_c.Feature_checks
-module Cmd = Lxc_c.Migrate_cmd
+module Command = Lxc_c.Migrate_cmd
 
 module Options = struct
   module M = Stubs.Type_stubs.Migrate_opts

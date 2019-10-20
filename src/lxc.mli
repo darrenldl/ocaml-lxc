@@ -134,9 +134,17 @@ module Container : sig
 
   val console : ?options:Console_options.t -> container -> (unit, unit) result
 
-  val attach_run_wait :
+  val attach_run_shell :
+    ?options:Attach.Options.t -> container -> (int, unit) result
+
+  val attach_run_command_no_wait :
     ?options:Attach.Options.t
-    -> program:string
+    -> argv:string array
+    -> container
+    -> (int, unit) result
+
+  val attach_run_command_status :
+    ?options:Attach.Options.t
     -> argv:string array
     -> container
     -> (int, unit) result
@@ -177,7 +185,7 @@ module Container : sig
   val destroy_with_snapshots : container -> (unit, unit) result
 
   val migrate :
-    Migrate.Cmd.t -> Migrate.Options.t -> container -> (unit, unit) result
+    Migrate.Command.t -> Migrate.Options.t -> container -> (unit, unit) result
 
   val console_log : Console_log.options -> container -> (string, unit) result
 end

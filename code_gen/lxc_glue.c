@@ -32,6 +32,21 @@ bool create__glue(struct lxc_container *c, const char *t, const char *bdevtype,
   }
 }
 
+int attach_run_command__glue(struct lxc_container *c,
+                             lxc_attach_options_t *options,
+                             struct lxc_attach_command_t *cmd,
+                             pid_t *attached_process_pid) {
+  return c->attach(c, lxc_attach_run_command, cmd, options,
+                   attached_process_pid);
+}
+
+int attach_run_shell__glue(struct lxc_container *c,
+                           lxc_attach_options_t *options,
+                           pid_t *attached_process_pid) {
+  return c->attach(c, lxc_attach_run_shell, NULL, options,
+                   attached_process_pid);
+}
+
 /*$ #use "code_gen/gen.cinaps";;
 
     For_lxc_glue_dot_c.gen_lxc_container_funptr_field_c_glue_code_all ()

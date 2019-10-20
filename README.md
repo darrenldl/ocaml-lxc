@@ -1,55 +1,38 @@
 # ocaml-lxc
-OCaml binding to LXC with idiomatic OCaml error handling
+OCaml binding to LXC with idiomatic OCaml API design
 
-## Technical description & design
-Ctypes is used for stubs generation, and additional C "glue" code is used where necessary
+## Documentation
+WIP
 
-The design of the high level exposed API (`Lxc`) is largely derived from
-[go-lxc](https://github.com/lxc/go-lxc),
-and utilise OCaml types extensively to make semantics of returned value clear and
-allow better error handling
+## Examples
+WIP
 
-The low level internal API (`Lxc_c`) follows the LXC C API and added glue code closely
+## Details
+#### Index
+See [here](doc/INDEX.md)
 
-There are two C FFI code generation "backends" to allow `Lxc_c` module to access `lxc_container` function pointer fields
-- "Wrapper" backend generates OCaml wrappers (which use Ctypes's `coerce`) in `src/lxc_c.ml` and access function pointer fields on OCaml side
-- "Glue" backend generates C code in `code_gen/lxc_glue.c` which access function pointer fields on C side
+#### Technical details
+See [here](doc/TECH.md)
 
-The library uses the glue backend right now
+The documentation includes following aspects and is mainly useful for people looking for a case study/example
+- Using cinaps for both OCaml and C code and remain consistent
+- Workflow of stubs generation for C types and functions, and tying them together in dune
 
-But since interface of `Lxc_c` remains unchanged between two backends, backend can always be changed easily.
-This also means there should be no functional differences between the two backends.
+#### Mapping from go-lxc
+ocaml-lxc has roughly the same feature set as go-lxc, and fairly similar API design
 
-## Index
-- `code_gen/`
-    - `ffi_bindings.ml`
-        - FFI bindings to C functions
-    - `ffi_types.ml`
-        - FFI bindings to C types
-    - `gen.cinaps`
-        - Main cinaps code for code generation
-    - `lxc_glue.c`, `lxc_glue.h`
-        - C "glue" code for working around things not supported by Ctypes like anonymous structs
-    - `stubs_gen.ml`
-        - Main stubs generator code
-    - `types.ml`
-        - Top level C types declaration, shared by `ffi_bindings.ml`, `ffi_types.ml` and other files
-- `lxc_files/`
-    - Copies of files from LXC project, used only as reference during development
-- `src/`
-    - `lxc.ml`, `lxc.mli`
-        - High level API
-    - `lxc_c.ml`, `lxc_c.mli`
-        - Low level internal API
-    - `misc_utils.ml`
-        - miscellaneous helper functions
-    - `stubs.ml`
-        - Central module for importing of FFI stubs
+If you are familiar with go-lxc and wonder how use of go-lxc translates over here,
+you can see the documentation [here](doc/GO_LXC_COMPARISON.md)
 
 ## Acknowledgement
 I'd like to thank the following people for their help
 - [Stéphane Graber](https://github.com/stgraber) for answering my questions w.r.t. binding and design of go-lxc
 - [Jeremy Yallop](https://github.com/yallop) for answering my questions w.r.t. Ctypes
+
+I'd also like to thank the team behind [Cinaps](https://github.com/janestreet/cinaps) for the wonderful tool,
+as this project is close to impossible without its assistance.
+(There are 53 function pointer fields in `lxc_container` -
+writing wrapper/glue code for each manually would be exceedingly tedious and error prone.)
 
 ## License
 LGPL v2.1 as specified in the LICENSE file

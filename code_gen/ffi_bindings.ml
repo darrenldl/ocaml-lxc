@@ -15,6 +15,17 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
         @-> ptr (ptr char)
         @-> returning bool )
 
+  let attach_run_command__glue =
+    foreign "attach_run_command__glue"
+      ( ptr lxc_container @-> ptr Lxc_attach_options_t.t
+        @-> ptr Lxc_attach_command_t.t @-> ptr Posix_types.pid_t
+        @-> returning int )
+
+  let attach_run_shell__glue =
+    foreign "attach_run_shell__glue"
+      ( ptr lxc_container @-> ptr Lxc_attach_options_t.t
+        @-> ptr Posix_types.pid_t @-> returning int )
+
   let lxc_container_new =
     foreign "lxc_container_new"
       (string @-> string_opt @-> returning (ptr_opt Types.lxc_container))

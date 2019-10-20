@@ -77,6 +77,19 @@ val create__glue :
   -> char ptr ptr
   -> bool
 
+val attach_run_command__glue :
+  lxc_container structure ptr
+  -> Lxc_attach_options_t.t structure ptr
+  -> Lxc_attach_command_t.t structure ptr
+  -> Posix_types.pid_t ptr
+  -> int
+
+val attach_run_shell__glue :
+  lxc_container structure ptr
+  -> Lxc_attach_options_t.t structure ptr
+  -> Posix_types.pid_t ptr
+  -> int
+
 val lxc_container_new :
   string -> string option -> lxc_container structure ptr option
 

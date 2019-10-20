@@ -121,6 +121,16 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     let () = seal t
   end
 
+  module Lxc_attach_command_t = struct
+    let t = lift_typ Types.Lxc_attach_command_t.t
+
+    let program = field t "program" string
+
+    let argv = field t "argv" (ptr (ptr char))
+
+    let () = seal t
+  end
+
   module Lxc_snapshot = struct
     let t = lift_typ Types.Lxc_snapshot.t
 

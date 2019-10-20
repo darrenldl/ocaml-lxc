@@ -6,6 +6,12 @@ module Lxc_attach_options_t = struct
   let t : t structure typ = structure "lxc_attach_options_t"
 end
 
+module Lxc_attach_command_t = struct
+  type t
+
+  let t : t structure typ = structure "lxc_attach_command_t"
+end
+
 module Lxc_snapshot = struct
   type t
 
