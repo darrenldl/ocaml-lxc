@@ -467,7 +467,7 @@ module Container = struct
       Error ()
 
   module Cgroup = struct
-    let get_item c ~key =
+    let get c ~key =
       let len =
         C.get_cgroup_item c.lxc_container (Some key)
           (make_null_ptr (ptr char))
@@ -484,53 +484,50 @@ module Container = struct
         |> List.filter (fun s -> s <> "")
         |> Result.ok
 
-    let set_item c ~key ~value =
+    let set c ~key ~value =
       C.set_cgroup_item c.lxc_container (Some key) (Some value)
       |> bool_to_unit_result_true_is_ok
 
     module Helpers = struct
       let get_mem_usage_bytes c =
-        get_item c ~key:"memory.usage_in_bytes"
+        get c ~key:"memory.usage_in_bytes"
         |> Result.map List.hd |> Result.map int_of_string
 
       let get_mem_limit_bytes c =
-        get_item c ~key:"memory.limit_in_bytes"
+        get c ~key:"memory.limit_in_bytes"
         |> Result.map List.hd |> Result.map int_of_string
 
       let set_mem_limit_bytes c limit =
-        set_item c ~key:"memory.limit_in_bytes" ~value:(string_of_int limit)
+        set c ~key:"memory.limit_in_bytes" ~value:(string_of_int limit)
 
       let get_soft_mem_limit_bytes c =
-        get_item c ~key:"memory.soft_limit_in_bytes"
+        get c ~key:"memory.soft_limit_in_bytes"
         |> Result.map List.hd |> Result.map int_of_string
 
       let set_soft_mem_limit_bytes c limit =
-        set_item c ~key:"memory.soft_limit_in_bytes"
-          ~value:(string_of_int limit)
+        set c ~key:"memory.soft_limit_in_bytes" ~value:(string_of_int limit)
 
       let get_kernel_mem_usage_bytes c =
-        get_item c ~key:"memory.kmem.usage_in_bytes"
+        get c ~key:"memory.kmem.usage_in_bytes"
         |> Result.map List.hd |> Result.map int_of_string
 
       let get_kernel_mem_limit_bytes c =
-        get_item c ~key:"memory.kmem.limit_in_bytes"
+        get c ~key:"memory.kmem.limit_in_bytes"
         |> Result.map List.hd |> Result.map int_of_string
 
       let set_kernel_mem_limit_bytes c limit =
-        set_item c ~key:"memory.kmem.limit_in_bytes"
-          ~value:(string_of_int limit)
+        set c ~key:"memory.kmem.limit_in_bytes" ~value:(string_of_int limit)
 
       let get_mem_swap_usage_bytes c =
-        get_item c ~key:"memory.memsw.usage_in_bytes"
+        get c ~key:"memory.memsw.usage_in_bytes"
         |> Result.map List.hd |> Result.map int_of_string
 
       let get_mem_swap_limit_bytes c =
-        get_item c ~key:"memory.memsw.limit_in_bytes"
+        get c ~key:"memory.memsw.limit_in_bytes"
         |> Result.map List.hd |> Result.map int_of_string
 
       let set_mem_swap_limit_bytes c limit =
-        set_item c ~key:"memory.memsw.limit_in_bytes"
-          ~value:(string_of_int limit)
+        set c ~key:"memory.memsw.limit_in_bytes" ~value:(string_of_int limit)
     end
   end
 end

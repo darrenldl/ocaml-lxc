@@ -200,10 +200,9 @@ module Container : sig
   end
 
   module Cgroup : sig
-    val get_item : container -> key:string -> (string list, unit) result
+    val get : container -> key:string -> (string list, unit) result
 
-    val set_item :
-      container -> key:string -> value:string -> (unit, unit) result
+    val set : container -> key:string -> value:string -> (unit, unit) result
 
     module Helpers : sig
       val get_mem_usage_bytes : container -> (int, unit) result
