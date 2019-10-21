@@ -313,8 +313,7 @@ module Container = struct
         C.get_cgroup_item c.lxc_container (Some key) (CArray.start ret) len
       in
       if len <> new_len then raise C.Unexpected_value_from_C;
-      string_from_carray ret
-      |> String.split_on_char '\n'
+      string_from_carray ret |> String.split_on_char '\n'
       |> List.filter (fun s -> s <> "")
       |> Result.ok
 
