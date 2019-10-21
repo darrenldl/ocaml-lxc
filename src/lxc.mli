@@ -3,7 +3,6 @@ type container
 module Backing_store = Backing_store
 module Console_log = Console_log
 module Console_options = Console_options
-module Create_options = Create_options
 module Namespace_flags = Lxc_c.Namespace_flags
 module Feature_checks = Lxc_c.Feature_checks
 module State = Lxc_c.State
@@ -80,7 +79,12 @@ module Container : sig
 
   val save_config : container -> alt_file:string -> (unit, unit) result
 
-  val create : container -> Create_options.t -> (unit, unit) result
+  module Create : sig
+    module Options = Create_internal.Options
+    module Templates = Create_internal.Templates
+
+    val create : container -> Options.t -> (unit, unit) result
+  end
 
   val rename : container -> new_name:string -> (unit, unit) result
 
