@@ -11,6 +11,7 @@ type getfd_result =
   ; tty_fd : int }
 
 module Backing_store = Backing_store
+module Console_log = Console_log
 module Console_options = Console_options
 module Create_options = Create_options
 module Namespace_flags = C.Namespace_flags
@@ -477,17 +478,13 @@ module Container = struct
       |> int_to_unit_result_zero_is_ok
   end
 
-  module Console_log = struct
-    include Console_log_internal
-
-    let console_log c (options : options) =
-      let c_struct = c_struct_of_options options in
-      match C.console_log c.lxc_container (addr c_struct) with
-      | 0 ->
-        Ok (result_of_c_struct (addr c_struct))
-      | _ ->
-        Error ()
-  end
+  let console_log c (options : Console_log.options) =
+    let c_struct = Console_log.c_struct_of_options options in
+    match C.console_log c.lxc_container (addr c_struct) with
+    | 0 ->
+      Ok (Console_log.result_of_c_struct (addr c_struct))
+    | _ ->
+      Error ()
 
   module Cgroup = struct
     let get c ~key =
