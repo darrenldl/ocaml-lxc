@@ -7,7 +7,6 @@ module Create_options = Create_options
 module Namespace_flags = Lxc_c.Namespace_flags
 module Feature_checks = Lxc_c.Feature_checks
 module State = Lxc_c.State
-module Migrate = Migrate
 
 type getfd_result =
   { ttynum : int
@@ -120,10 +119,14 @@ module Container : sig
 
   val destroy_with_snapshots : container -> (unit, unit) result
 
-  val migrate :
-    container -> Migrate.Command.t -> Migrate.Options.t -> (unit, unit) result
-
   val console_log : container -> Console_log.options -> (string, unit) result
+
+  module Migrate : sig
+    module Command = Migrate_internal.Command
+    module Options = Migrate_internal.Options
+
+    val migrate : container -> Command.t -> Options.t -> (unit, unit) result
+  end
 
   module Clone : sig
     module Flags = Clone_internal.Flags

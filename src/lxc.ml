@@ -17,7 +17,6 @@ module Create_options = Create_options
 module Namespace_flags = C.Namespace_flags
 module Feature_checks = C.Feature_checks
 module State = C.State
-module Migrate = Migrate
 
 let new_container ?config_path name =
   match C.lxc_container_new name config_path with
@@ -465,12 +464,17 @@ module Container = struct
   let destroy_with_snapshots c =
     C.destroy_with_snapshots c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let migrate c (cmd : Migrate.Command.t) (options : Migrate.Options.t) =
-    let cmd = Migrate.Command.to_c_int cmd |> Unsigned.UInt.of_int64 in
-    C.migrate c.lxc_container cmd
-      (addr (Migrate.Options.c_struct_of_t options))
-      (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
-    |> int_to_unit_result_zero_is_ok
+  module Migrate = struct
+    module Command = Migrate_internal.Command
+    module Options = Migrate_internal.Options
+
+    let migrate c (cmd : Command.t) (options : Options.t) =
+      let cmd = Command.to_c_int cmd |> Unsigned.UInt.of_int64 in
+      C.migrate c.lxc_container cmd
+        (addr (Options.c_struct_of_t options))
+        (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
+      |> int_to_unit_result_zero_is_ok
+  end
 
   let console_log c (options : Console_log.options) =
     let c_struct = Console_log.c_struct_of_options options in
