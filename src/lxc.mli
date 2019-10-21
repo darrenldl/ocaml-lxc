@@ -128,24 +128,6 @@ module Container : sig
 
   val console : ?options:Console_options.t -> container -> (unit, unit) result
 
-  module Run : sig
-    module Options = Run_internal.Options
-
-    val shell : ?options:Options.t -> container -> (int, unit) result
-
-    val command_no_wait :
-      ?options:Options.t
-      -> container
-      -> argv:string array
-      -> (int, unit) result
-
-    val command_ret_status :
-      ?options:Options.t
-      -> container
-      -> argv:string array
-      -> (int, unit) result
-  end
-
   val create_snapshot : container -> comment_file:string -> (int, unit) result
 
   val list_snapshots : container -> (Snapshot.t list, unit) result
@@ -185,6 +167,24 @@ module Container : sig
     container -> Migrate.Command.t -> Migrate.Options.t -> (unit, unit) result
 
   val console_log : container -> Console_log.options -> (string, unit) result
+
+  module Run : sig
+    module Options = Run_internal.Options
+
+    val shell : ?options:Options.t -> container -> (int, unit) result
+
+    val command_no_wait :
+      ?options:Options.t
+      -> container
+      -> argv:string array
+      -> (int, unit) result
+
+    val command_ret_status :
+      ?options:Options.t
+      -> container
+      -> argv:string array
+      -> (int, unit) result
+  end
 
   module Cgroup : sig
     val get_item : container -> key:string -> (string list, unit) result
