@@ -112,17 +112,6 @@ module Container : sig
 
   val set_config_path : container -> path:string -> (unit, unit) result
 
-  (* val clone :
-   *   container
-   *   -> new_name:string
-   *   -> lxcpath:string
-   *   -> flags:int
-   *   -> bdevtype:string
-   *   -> bdevdata:string
-   *   -> new_size:int64
-   *   -> hook_args:string list
-   *   -> (container, unit) result *)
-
   val console_getfd : ?tty_num:int -> container -> (getfd_result, unit) result
 
   val console : ?options:Console_options.t -> container -> (unit, unit) result
@@ -135,6 +124,13 @@ module Container : sig
     container -> Migrate.Command.t -> Migrate.Options.t -> (unit, unit) result
 
   val console_log : container -> Console_log.options -> (string, unit) result
+
+  module Clone : sig
+    module Flags = Clone_internal.Flags
+    module Options = Clone_internal.Options
+
+    val clone : container -> options:Options.t -> (container, unit) result
+  end
 
   module Checkpoint : sig
     val checkpoint :

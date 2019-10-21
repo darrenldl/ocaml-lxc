@@ -310,17 +310,20 @@ module Container = struct
     module Flags = Clone_internal.Flags
     module Options = Clone_internal.Options
 
+    let clone c ~(options : Options.t) =
+      let new_size = Unsigned.UInt64.of_int64 options.new_size in
+      let backing_store_type =
+        Option.map Backing_store.store_type_to_string
+          options.backing_store_type
+      in
+      let flags = lor_flags Flags.to_c_int options.flags in
+      let hook_args = string_carray_from_string_list options.hook_args in
+      let ret_ptr =
+        C.clone c.lxc_container options.new_name options.lxcpath flags
+          backing_store_type None new_size (CArray.start hook_args)
+      in
+      if is_null ret_ptr then Error () else Ok {lxc_container = ret_ptr}
   end
-
-  let clone c ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size
-      ~hook_args =
-    let new_size = Unsigned.UInt64.of_int64 new_size in
-    let hook_args = string_carray_from_string_list hook_args in
-    let ret_ptr =
-      C.clone c.lxc_container (Some new_name) (Some lxcpath) flags
-        (Some bdevtype) (Some bdevdata) new_size (CArray.start hook_args)
-    in
-    if is_null ret_ptr then Error () else Ok {lxc_container = ret_ptr}
 
   let console_getfd ?(tty_num : int = -1) c =
     let ttynum_ptr_init = tty_num in
