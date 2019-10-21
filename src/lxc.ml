@@ -400,7 +400,11 @@ module Container = struct
       if count < 0 then Error ()
       else
         let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
-        let ret = CArray.to_list snapshot_arr |> List.map Snapshot_internal.t_of_c_struct_ptr |> Result.ok in
+        let ret =
+          CArray.to_list snapshot_arr
+          |> List.map Snapshot_internal.t_of_c_struct_ptr
+          |> Result.ok
+        in
         Snapshot_internal.free_arr_ptr snapshot_arr_ptr ~count;
         ret
 
