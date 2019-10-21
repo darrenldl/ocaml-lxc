@@ -6,7 +6,18 @@ module Console_options = Console_options
 module Create_options = Create_options
 module Namespace_flags = Lxc_c.Namespace_flags
 module Feature_checks = Lxc_c.Feature_checks
-module State = Lxc_c.State
+
+module State : sig
+  type t =
+    | Stopped
+    | Starting
+    | Running
+    | Stopping
+    | Aborting
+    | Freezing
+    | Frozen
+    | Thawed
+end
 
 type getfd_result =
   { ttynum : int
