@@ -129,11 +129,6 @@ module Container : sig
 
   val may_control : container -> bool
 
-  val checkpoint :
-    container -> dir:string -> stop:bool -> verbose:bool -> (unit, unit) result
-
-  val restore_from_checkpoint :
-    container -> dir:string -> verbose:bool -> (unit, unit) result
 
   val destroy_with_snapshots : container -> (unit, unit) result
 
@@ -141,6 +136,13 @@ module Container : sig
     container -> Migrate.Command.t -> Migrate.Options.t -> (unit, unit) result
 
   val console_log : container -> Console_log.options -> (string, unit) result
+  module Checkpoint : sig
+    val checkpoint :
+      container -> dir:string -> stop:bool -> verbose:bool -> (unit, unit) result
+
+    val restore :
+      container -> dir:string -> verbose:bool -> (unit, unit) result
+  end
 
   module Device : sig
     val add_node :

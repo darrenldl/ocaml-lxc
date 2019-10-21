@@ -439,13 +439,15 @@ module Container = struct
       |> bool_to_unit_result_true_is_ok
   end
 
-  let checkpoint c ~dir ~stop ~verbose =
-    C.checkpoint c.lxc_container (string_ptr_from_string dir) stop verbose
-    |> bool_to_unit_result_true_is_ok
+  module Checkpoint = struct
+    let checkpoint c ~dir ~stop ~verbose =
+      C.checkpoint c.lxc_container (string_ptr_from_string dir) stop verbose
+      |> bool_to_unit_result_true_is_ok
 
-  let restore_from_checkpoint c ~dir ~verbose =
-    C.restore c.lxc_container (string_ptr_from_string dir) verbose
-    |> bool_to_unit_result_true_is_ok
+    let restore c ~dir ~verbose =
+      C.restore c.lxc_container (string_ptr_from_string dir) verbose
+      |> bool_to_unit_result_true_is_ok
+  end
 
   let destroy_with_snapshots c =
     C.destroy_with_snapshots c.lxc_container |> bool_to_unit_result_true_is_ok
