@@ -245,8 +245,22 @@ module Container : sig
   end
 
   module Clone : sig
-    module Flags = Clone_internal.Flags
-    module Options = Clone_internal.Options
+    module Flags : sig
+      type t =
+        | Clone_keepname
+        | Clone_keepmacaddr
+        | Clone_snapshot
+    end
+
+    module Options : sig
+      type t =
+        { new_name : string option
+        ; lxcpath : string option
+        ; flags : Flags.t list
+        ; backing_store_type : Backing_store.store_type option
+        ; new_size : int64
+        ; hook_args : string list }
+    end
 
     val clone : container -> options:Options.t -> (container, unit) result
   end
