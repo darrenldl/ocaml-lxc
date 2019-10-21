@@ -129,6 +129,7 @@ module Container : sig
 
   module Snapshot : sig
     type t
+
     val create : container -> comment_file:string -> (int, unit) result
 
     val list : container -> (t list, unit) result
@@ -140,7 +141,6 @@ module Container : sig
       -> (unit, unit) result
 
     val destroy : container -> snap_name:string -> (unit, unit) result
-
   end
 
   val destroy_all_snapshots : container -> (unit, unit) result
