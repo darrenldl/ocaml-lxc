@@ -191,15 +191,25 @@ module Container : sig
 
   module Cgroup_helpers : sig
     val get_mem_usage_bytes : container -> (int, unit) result
+
     val get_mem_limit_bytes : container -> (int, unit) result
+
     val set_mem_limit_bytes : container -> int -> (unit, unit) result
+
     val get_soft_mem_limit_bytes : container -> (int, unit) result
+
     val set_soft_mem_limit_bytes : container -> int -> (unit, unit) result
+
     val get_kernel_mem_usage_bytes : container -> (int, unit) result
+
     val get_kernel_mem_limit_bytes : container -> (int, unit) result
+
     val set_kernel_mem_limit_bytes : container -> int -> (unit, unit) result
+
     val get_mem_swap_usage_bytes : container -> (int, unit) result
+
     val get_mem_swap_limit_bytes : container -> (int, unit) result
+
     val set_mem_swap_limit_bytes : container -> int -> (unit, unit) result
   end
 end
