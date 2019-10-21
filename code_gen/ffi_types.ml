@@ -18,6 +18,8 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
     let lxc_clone_keepmacaddr = S.constant "LXC_CLONE_KEEPMACADDR" int
 
+    let lxc_clone_snapshot = S.constant "LXC_CLONE_SNAPSHOT" int
+
     let lxc_clone_keepbdevtype = S.constant "LXC_CLONE_SNAPSHOT" int
 
     let lxc_clone_maybe_snapshot = S.constant "LXC_CLONE_MAYBE_SNAPSHOT" int
