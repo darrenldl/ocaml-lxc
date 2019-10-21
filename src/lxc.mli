@@ -201,7 +201,42 @@ module Container : sig
   end
 
   module Run : sig
-    module Options = Run_internal.Options
+    module Flags : sig
+      type t =
+        | Attach_move_to_cgroup
+        | Attach_drop_capabilities
+        | Attach_set_personality
+        | Attach_lsm_exec
+        | Attach_remount_proc_sys
+        | Attach_lsm_now
+        | Attach_no_new_privs
+        | Attach_terminal
+        | Attach_default
+        | Attach_lsm
+    end
+
+    module Env_policy : sig
+      type t =
+        | Lxc_attach_keep_env
+        | Lxc_attach_clear_env
+    end
+
+    module Options : sig
+      type t =
+        { attach_flags : Flags.t list
+        ; namespace_flags : Namespace_flags.t list
+        ; personality : int64
+        ; initial_cwd : string option
+        ; uid : int
+        ; gid : int
+        ; env_policy : Env_policy.t
+        ; extra_env_vars : string list option
+        ; extra_keep_env : string list option
+        ; stdin_fd : int
+        ; stdout_fd : int
+        ; stderr_fd : int
+        ; log_fd : int }
+    end
 
     val shell : ?options:Options.t -> container -> (int, unit) result
 

@@ -346,6 +346,8 @@ module Container = struct
       raise C.Unexpected_value_from_C
 
   module Run = struct
+    module Flags = Run_internal.Flags
+    module Env_policy = Run_internal.Env_policy
     module Options = Run_internal.Options
     module Command = Run_internal.Command
 
