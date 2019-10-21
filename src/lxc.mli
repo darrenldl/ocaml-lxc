@@ -131,8 +131,7 @@ module Container : sig
   module Run : sig
     module Options = Run_internal.Options
 
-    val shell :
-      ?options:Options.t -> container -> (int, unit) result
+    val shell : ?options:Options.t -> container -> (int, unit) result
 
     val command_no_wait :
       ?options:Options.t
@@ -145,7 +144,6 @@ module Container : sig
       -> container
       -> argv:string array
       -> (int, unit) result
-
   end
 
   val create_snapshot : container -> comment_file:string -> (int, unit) result

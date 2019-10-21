@@ -360,8 +360,8 @@ module Container = struct
       let command = Command.c_struct_of_string_array argv in
       let pid_t_ptr = allocate Posix_types.pid_t (Posix_types.Pid.of_int 0) in
       match
-        C.attach_run_command__glue c.lxc_container (addr options) (addr command)
-          pid_t_ptr
+        C.attach_run_command__glue c.lxc_container (addr options)
+          (addr command) pid_t_ptr
       with
       | 0 ->
         Ok (Posix_types.Pid.to_int !@pid_t_ptr)
@@ -382,6 +382,7 @@ module Container = struct
       | n ->
         Ok n
   end
+
   let create_snapshot c ~comment_file =
     match C.snapshot c.lxc_container (Some comment_file) with
     | -1 ->
