@@ -423,13 +423,15 @@ module Container = struct
     C.remove_device_node c.lxc_container (Some src_path) (Some dst_path)
     |> bool_to_unit_result_true_is_ok
 
-  let attach_interface c ~src_dev ~dst_dev =
-    C.attach_interface c.lxc_container (Some src_dev) (Some dst_dev)
-    |> bool_to_unit_result_true_is_ok
+  module Interface = struct
+    let attach c ~src_dev ~dst_dev =
+      C.attach_interface c.lxc_container (Some src_dev) (Some dst_dev)
+      |> bool_to_unit_result_true_is_ok
 
-  let detach_interface c ~src_dev =
-    C.detach_interface c.lxc_container (Some src_dev) None
-    |> bool_to_unit_result_true_is_ok
+    let detach c ~src_dev =
+      C.detach_interface c.lxc_container (Some src_dev) None
+      |> bool_to_unit_result_true_is_ok
+  end
 
   let checkpoint c ~dir ~stop ~verbose =
     C.checkpoint c.lxc_container (string_ptr_from_string dir) stop verbose
