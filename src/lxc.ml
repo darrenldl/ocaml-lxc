@@ -518,14 +518,6 @@ module Container = struct
       let set_mem_swap_limit_bytes c limit =
         set_item c ~key:"memory.memsw.limit_in_bytes"
           ~value:(string_of_int limit)
-
-(* let get_blkio_usage c =
- *   get_item c ~key:"blkio.throttle.io_service_bytes"
- *   |> Result.map (fun l ->
- *       match l with
- *       | [] -> 0
- *       | _ ->
- *     ) *)
-   end
-   end
-   end
+    end
+  end
+end
