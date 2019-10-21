@@ -40,10 +40,57 @@ module Console_log_options : sig
     ; read_max : int64 }
 end
 
-module Console_options = Console_options
-module Create_options = Create_options
-module Namespace_flags = Lxc_c.Namespace_flags
-module Feature_checks = Lxc_c.Feature_checks
+module Console_options : sig
+  type t =
+    { tty_num : int
+    ; stdin_fd : int
+    ; stdout_fd : int
+    ; stderr_fd : int
+    ; escape_char : char }
+end
+
+module Create_options : sig
+  type t =
+    { template : string option
+    ; backing_store_type : Backing_store.store_type option
+    ; backing_store_specs : Backing_store.Specs.t option
+    ; distro : string option
+    ; release : string option
+    ; arch : string option
+    ; variant : string option
+    ; server : string option
+    ; key_id : string option
+    ; key_server : string option
+    ; disable_gpg_validation : bool option
+    ; flush_cache : bool option
+    ; force_cache : bool option
+    ; extra_args : string array option }
+
+  module Templates : sig
+    val download_ubuntu_trusty_amd64 : t
+
+    val busybox : t
+
+    val ubuntu : t
+  end
+end
+
+module Namespace_flags : sig
+  type t =
+    | Clone_newcgroup
+    | Clone_newipc
+    | Clone_newnet
+    | Clone_newns
+    | Clone_newpid
+    | Clone_newuser
+    | Clone_newuts
+end
+
+module Feature_checks : sig
+  type t =
+    | Feature_mem_track
+    | Feature_lazy_pages
+end
 
 module State : sig
   type t =
