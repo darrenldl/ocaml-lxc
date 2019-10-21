@@ -20,11 +20,9 @@ let free c_struct_ptr =
   f c_struct_ptr
 
 let t_of_c_struct_ptr c_struct_ptr =
-  let finaliser () = free c_struct_ptr in
   let name = getf !@c_struct_ptr L.name in
   let comment_path_name = getf !@c_struct_ptr L.comment_pathname in
   let timestamp = getf !@c_struct_ptr L.timestamp in
   let lxcpath = getf !@c_struct_ptr L.lxcpath in
   let ret = {name; comment_path_name; timestamp; lxcpath} in
-  Gc.finalise_last finaliser ret;
   ret
