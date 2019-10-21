@@ -6,7 +6,7 @@ type container =
   {lxc_container : Types.lxc_container Ctypes.structure Ctypes.ptr}
 
 type getfd_result =
-  { ttynum : int
+  { tty_num : int
   ; masterfd : int
   ; tty_fd : int }
 
@@ -325,12 +325,12 @@ module Container = struct
   end
 
   let console_getfd ?(tty_num : int = -1) c =
-    let ttynum_ptr_init = tty_num in
-    let ttynum_ptr = allocate int ttynum_ptr_init in
+    let tty_num_ptr_init = tty_num in
+    let tty_num_ptr = allocate int tty_num_ptr_init in
     let masterfd_ptr = allocate int 0 in
-    let tty_fd = C.console_getfd c.lxc_container ttynum_ptr masterfd_ptr in
+    let tty_fd = C.console_getfd c.lxc_container tty_num_ptr masterfd_ptr in
     if tty_fd = -1 then Error ()
-    else Ok {ttynum = !@ttynum_ptr; masterfd = !@masterfd_ptr; tty_fd}
+    else Ok {tty_num = !@tty_num_ptr; masterfd = !@masterfd_ptr; tty_fd}
 
   let console ?(options : Console_options.t = Console_options.default) c =
     let escape = Char.code options.escape_char - Char.code 'a' in

@@ -105,7 +105,7 @@ module State : sig
 end
 
 type getfd_result =
-  { ttynum : int
+  { tty_num : int
   ; masterfd : int
   ; tty_fd : int }
 
