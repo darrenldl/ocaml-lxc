@@ -122,8 +122,28 @@ module Container : sig
   val console_log : container -> Console_log.options -> (string, unit) result
 
   module Migrate : sig
-    module Command = Migrate_internal.Command
-    module Options = Migrate_internal.Options
+    module Command : sig
+      type t =
+        | Migrate_pre_dump
+        | Migrate_dump
+        | Migrate_restore
+        | Migrate_feature_check
+    end
+
+    module Options : sig
+      type t =
+        { dir : string
+        ; verbose : bool
+        ; stop : bool
+        ; predump_dir : string option
+        ; page_server_addr : string option
+        ; page_server_port : string option
+        ; preserve_inodes : bool
+        ; action_script : string option
+        ; disable_skip_in_flight : bool
+        ; ghost_limit : int64
+        ; features_to_check : Feature_checks.t list }
+    end
 
     val migrate : container -> Command.t -> Options.t -> (unit, unit) result
   end
