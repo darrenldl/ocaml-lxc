@@ -1,10 +1,17 @@
 # ocaml-lxc
-OCaml binding to LXC with idiomatic OCaml API design
+OCaml binding to LXC with idiomatic (and opionated) OCaml API design
 
 **Warning**: This is still WIP, do **NOT** use it for anything serious yet
 
+## Notes
+Huge portion of high level design of ocaml-lxc is derived from [go-lxc](https://github.com/lxc/go-lxc)
+with adjustments to be closer to (hopefully) idomatic OCaml
+
+Test suite of ocaml-lxc also copies test suite of go-lxc
+
 ## TODO
-- Test code
+- Add test code (copy go-lxc's test suite)
+- Add examples
 - API documentation + Travis CI doc build for master
 - Document build flow architecture (specifically how dune fits into it maybe)
 - Document code architecture
