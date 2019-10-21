@@ -127,22 +127,6 @@ module Container : sig
 
   val console : ?options:Console_options.t -> container -> (unit, unit) result
 
-  module Snapshot : sig
-    type t
-
-    val create : container -> comment_file:string -> (int, unit) result
-
-    val list : container -> (t list, unit) result
-
-    val restore :
-      container
-      -> snap_name:string
-      -> new_container_name:string
-      -> (unit, unit) result
-
-    val destroy : container -> snap_name:string -> (unit, unit) result
-  end
-
   val destroy_all_snapshots : container -> (unit, unit) result
 
   val may_control : container -> bool
@@ -170,6 +154,22 @@ module Container : sig
     container -> Migrate.Command.t -> Migrate.Options.t -> (unit, unit) result
 
   val console_log : container -> Console_log.options -> (string, unit) result
+
+  module Snapshot : sig
+    type t
+
+    val create : container -> comment_file:string -> (int, unit) result
+
+    val list : container -> (t list, unit) result
+
+    val restore :
+      container
+      -> snap_name:string
+      -> new_container_name:string
+      -> (unit, unit) result
+
+    val destroy : container -> snap_name:string -> (unit, unit) result
+  end
 
   module Run : sig
     module Options = Run_internal.Options
