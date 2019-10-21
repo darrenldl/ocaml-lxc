@@ -56,7 +56,7 @@ module Options = struct
     setf c_struct L.initial_cwd t.initial_cwd;
     setf c_struct L.uid (Posix_types.Uid.of_int t.uid);
     setf c_struct L.gid (Posix_types.Gid.of_int t.gid);
-    (* setf c_struct L.env_policy t.env_policy; *)
+    setf c_struct L.env_policy t.env_policy;
     let extra_env_vars =
       match t.extra_env_vars with
       | None ->
