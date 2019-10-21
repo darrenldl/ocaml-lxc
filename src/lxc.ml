@@ -415,13 +415,15 @@ module Container = struct
 
   let may_control c = C.may_control c.lxc_container
 
-  let add_device_node c ~src_path ~dst_path =
-    C.add_device_node c.lxc_container (Some src_path) (Some dst_path)
-    |> bool_to_unit_result_true_is_ok
+  module Device = struct
+    let add_node c ~src_path ~dst_path =
+      C.add_device_node c.lxc_container (Some src_path) (Some dst_path)
+      |> bool_to_unit_result_true_is_ok
 
-  let remove_device_node c ~src_path ~dst_path =
-    C.remove_device_node c.lxc_container (Some src_path) (Some dst_path)
-    |> bool_to_unit_result_true_is_ok
+    let remove_node c ~src_path ~dst_path =
+      C.remove_device_node c.lxc_container (Some src_path) (Some dst_path)
+      |> bool_to_unit_result_true_is_ok
+  end
 
   module Interface = struct
     let attach c ~src_dev ~dst_dev =

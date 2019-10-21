@@ -131,12 +131,6 @@ module Container : sig
 
   val may_control : container -> bool
 
-  val add_device_node :
-    container -> src_path:string -> dst_path:string -> (unit, unit) result
-
-  val remove_device_node :
-    container -> src_path:string -> dst_path:string -> (unit, unit) result
-
   val checkpoint :
     container -> dir:string -> stop:bool -> verbose:bool -> (unit, unit) result
 
@@ -149,6 +143,14 @@ module Container : sig
     container -> Migrate.Command.t -> Migrate.Options.t -> (unit, unit) result
 
   val console_log : container -> Console_log.options -> (string, unit) result
+
+  module Device : sig
+    val add_node :
+      container -> src_path:string -> dst_path:string -> (unit, unit) result
+
+    val remove_node :
+      container -> src_path:string -> dst_path:string -> (unit, unit) result
+  end
 
   module Interface : sig
     val attach :
