@@ -414,7 +414,6 @@ module Container = struct
 
     let destroy_all c =
       C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
-
   end
 
   let may_control c = C.may_control c.lxc_container
