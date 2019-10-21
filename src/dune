@@ -8,8 +8,7 @@
             ffi_bindings_c_stubs)
  (libraries ctypes
             ctypes.foreign
-            posix-types
-            core))
+            posix-types))
 
 (rule
  (targets types.ml)

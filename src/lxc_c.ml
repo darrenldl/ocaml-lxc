@@ -53,6 +53,73 @@ module Namespace_flags = struct
       (*$*)
 end
 
+module Lxc_clone_flags = struct
+  open Type_stubs.Lxc_clone_flags
+
+  (*$
+       let l = ["keepname"; "keepmacaddr"; "snapshot"]
+
+       ;;
+       print_endline "type t ="
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Clone_%s\n" s) l
+
+       ;;
+       print_endline "let to_c_int t = match t with"
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Clone_%s -> lxc_clone_%s\n" s s) l
+  *)
+
+  type t =
+    | Clone_keepname
+    | Clone_keepmacaddr
+    | Clone_snapshot
+
+  let to_c_int t =
+    match t with
+    | Clone_keepname ->
+      lxc_clone_keepname
+    | Clone_keepmacaddr ->
+      lxc_clone_keepmacaddr
+    | Clone_snapshot ->
+      lxc_clone_snapshot
+
+      (*$*)
+end
+
+module Lxc_mount_api_version = struct
+  let lxc_mount_api_v1 =
+    Stubs.Type_stubs.Lxc_mount_api_version.lxc_mount_api_v1
+end
+
+module Lxc_create_flags = struct
+  open Stubs.Type_stubs.Lxc_create_flags
+
+  (*$
+       let l = ["quiet"]
+
+       ;;
+       print_endline "type t ="
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Create_%s\n" s) l
+
+       ;;
+       print_endline "let to_c_int t = match t with"
+
+       ;;
+       List.iter (fun s -> Printf.printf "| Create_%s -> lxc_create_%s\n" s s) l
+  *)
+
+  type t = Create_quiet
+
+  let to_c_int t = match t with Create_quiet -> lxc_create_quiet
+
+                                                (*$*)
+end
+
 module Lxc_attach_flags = struct
   open Type_stubs.Lxc_attach_flags
 

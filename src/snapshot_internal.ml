@@ -19,12 +19,15 @@ let free c_struct_ptr =
   in
   f c_struct_ptr
 
+let free_arr_ptr p ~count =
+  let snapshot_arr = CArray.from_ptr p count in
+  CArray.iter (fun p -> free p) snapshot_arr;
+  Misc_utils.free_ptr (ptr (ptr Types.Lxc_snapshot.t)) p
+
 let t_of_c_struct_ptr c_struct_ptr =
-  let finaliser () = free c_struct_ptr in
   let name = getf !@c_struct_ptr L.name in
   let comment_path_name = getf !@c_struct_ptr L.comment_pathname in
   let timestamp = getf !@c_struct_ptr L.timestamp in
   let lxcpath = getf !@c_struct_ptr L.lxcpath in
   let ret = {name; comment_path_name; timestamp; lxcpath} in
-  Gc.finalise_last finaliser ret;
   ret

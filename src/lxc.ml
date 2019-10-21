@@ -6,20 +6,17 @@ type container =
   {lxc_container : Types.lxc_container Ctypes.structure Ctypes.ptr}
 
 type getfd_result =
-  { ttynum : int
+  { tty_num : int
   ; masterfd : int
   ; tty_fd : int }
 
-module Attach = Attach
 module Backing_store = Backing_store
-module Console_log = Console_log
+module Console_log_options = Console_log_internal.Options
 module Console_options = Console_options
 module Create_options = Create_options
 module Namespace_flags = C.Namespace_flags
 module Feature_checks = C.Feature_checks
 module State = C.State
-module Migrate = Migrate
-module Snapshot = Snapshot
 
 let new_container ?config_path name =
   match C.lxc_container_new name config_path with
@@ -153,11 +150,11 @@ module Container = struct
 
   let stop c = C.stop c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let set_want_daemonize ~(want : [`Yes | `No]) c =
+  let set_want_daemonize c ~(want : [`Yes | `No]) =
     C.want_daemonize c.lxc_container (want_to_bool want)
     |> bool_to_unit_result_true_is_ok
 
-  let want_close_all_fds ~(want : [`Yes | `No]) c =
+  let set_want_close_all_fds c ~(want : [`Yes | `No]) =
     C.want_close_all_fds c.lxc_container (want_to_bool want)
     |> bool_to_unit_result_true_is_ok
 
@@ -165,21 +162,21 @@ module Container = struct
     let ret_ptr = C.config_file_name c.lxc_container in
     string_from_string_ptr ~free:true ret_ptr
 
-  let wait ?(timeout = -1) ~wait_for c =
+  let wait ?(timeout = -1) c ~wait_for =
     let state = Some (C.State.to_string wait_for) in
     C.wait c.lxc_container state timeout |> bool_to_unit_result_true_is_ok
 
-  let set_config_item ~key ~value c =
+  let set_config_item c ~key ~value =
     C.set_config_item c.lxc_container (Some key) (Some value)
     |> bool_to_unit_result_true_is_ok
 
   let destroy c = C.destroy c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let save_config ~alt_file c =
+  let save_config c ~alt_file =
     C.save_config c.lxc_container (Some alt_file)
     |> bool_to_unit_result_true_is_ok
 
-  let create (options : Create_options.t) c =
+  let create c (options : Create_options.t) =
     let template = Option.value ~default:"download" options.template in
     let backing_store_type =
       Option.map Backing_store.store_type_to_string options.backing_store_type
@@ -230,7 +227,7 @@ module Container = struct
       backing_store_specs 0 argv
     |> bool_to_unit_result_true_is_ok
 
-  let rename ~new_name c =
+  let rename c ~new_name =
     C.rename c.lxc_container (Some new_name) |> bool_to_unit_result_true_is_ok
 
   let reboot ?timeout c =
@@ -240,16 +237,16 @@ module Container = struct
     | Some timeout ->
       C.reboot2 c.lxc_container timeout |> bool_to_unit_result_true_is_ok
 
-  let shutdown ~timeout c =
+  let shutdown c ~timeout =
     C.shutdown c.lxc_container timeout |> bool_to_unit_result_true_is_ok
 
   let clear_config c = C.clear_config c.lxc_container
 
-  let clear_config_item ~key c =
+  let clear_config_item c ~key =
     C.clear_config_item c.lxc_container (Some key)
     |> bool_to_unit_result_true_is_ok
 
-  let get_config_item ~key c =
+  let get_config_item c ~key =
     let len =
       C.get_config_item c.lxc_container (Some key) (make_null_ptr (ptr char)) 0
     in
@@ -262,12 +259,12 @@ module Container = struct
       if len <> new_len then raise C.Unexpected_value_from_C;
       Ok (string_from_carray ret)
 
-  let get_running_config_item ~key c =
+  let get_running_config_item c ~key =
     let ret_ptr = C.get_running_config_item c.lxc_container (Some key) in
     if is_null ret_ptr then Error ()
     else string_from_string_ptr ~free:true ret_ptr |> Result.ok
 
-  let get_keys ~prefix c =
+  let get_keys c ~prefix =
     let len =
       C.get_keys c.lxc_container (Some prefix) (make_null_ptr (ptr char)) 0
     in
@@ -290,7 +287,7 @@ module Container = struct
         ret_ptr
       |> Result.ok
 
-  let get_ips ~interface ~family ~scope c =
+  let get_ips c ~interface ~family ~scope =
     let ret_ptr =
       C.get_ips c.lxc_container (Some interface) (Some family) scope
     in
@@ -302,48 +299,38 @@ module Container = struct
       in
       Ok strings
 
-  let get_cgroup_item ~subsys c =
-    let len =
-      C.get_cgroup_item c.lxc_container (Some subsys)
-        (make_null_ptr (ptr char))
-        0
-    in
-    if len < 0 then Error ()
-    else
-      let ret = CArray.make char len in
-      let new_len =
-        C.get_cgroup_item c.lxc_container (Some subsys) (CArray.start ret) len
-      in
-      if len <> new_len then raise C.Unexpected_value_from_C;
-      string_from_carray ret |> Result.ok
-
-  let set_cgroup_item ~subsys ~value c =
-    C.set_cgroup_item c.lxc_container (Some subsys) (Some value)
-    |> bool_to_unit_result_true_is_ok
-
   let get_config_path c = C.get_config_path c.lxc_container |> Option.get
 
-  let set_config_path ~path c =
+  let set_config_path c ~path =
     C.set_config_path c.lxc_container (Some path)
     |> bool_to_unit_result_true_is_ok
 
-  let clone ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size ~hook_args
-      c =
-    let new_size = Unsigned.UInt64.of_int64 new_size in
-    let hook_args = string_carray_from_string_list hook_args in
-    let ret_ptr =
-      C.clone c.lxc_container (Some new_name) (Some lxcpath) flags
-        (Some bdevtype) (Some bdevdata) new_size (CArray.start hook_args)
-    in
-    if is_null ret_ptr then Error () else Ok {lxc_container = ret_ptr}
+  module Clone = struct
+    module Flags = Clone_internal.Flags
+    module Options = Clone_internal.Options
+
+    let clone c ~(options : Options.t) =
+      let new_size = Unsigned.UInt64.of_int64 options.new_size in
+      let backing_store_type =
+        Option.map Backing_store.store_type_to_string
+          options.backing_store_type
+      in
+      let flags = lor_flags Flags.to_c_int options.flags in
+      let hook_args = string_carray_from_string_list options.hook_args in
+      let ret_ptr =
+        C.clone c.lxc_container options.new_name options.lxcpath flags
+          backing_store_type None new_size (CArray.start hook_args)
+      in
+      if is_null ret_ptr then Error () else Ok {lxc_container = ret_ptr}
+  end
 
   let console_getfd ?(tty_num : int = -1) c =
-    let ttynum_ptr_init = tty_num in
-    let ttynum_ptr = allocate int ttynum_ptr_init in
+    let tty_num_ptr_init = tty_num in
+    let tty_num_ptr = allocate int tty_num_ptr_init in
     let masterfd_ptr = allocate int 0 in
-    let tty_fd = C.console_getfd c.lxc_container ttynum_ptr masterfd_ptr in
+    let tty_fd = C.console_getfd c.lxc_container tty_num_ptr masterfd_ptr in
     if tty_fd = -1 then Error ()
-    else Ok {ttynum = !@ttynum_ptr; masterfd = !@masterfd_ptr; tty_fd}
+    else Ok {tty_num = !@tty_num_ptr; masterfd = !@masterfd_ptr; tty_fd}
 
   let console ?(options : Console_options.t = Console_options.default) c =
     let escape = Char.code options.escape_char - Char.code 'a' in
@@ -358,117 +345,209 @@ module Container = struct
     | _ ->
       raise C.Unexpected_value_from_C
 
-  let attach_run_shell ?(options = Attach.Options.default) c =
-    let options = Attach.Options.c_struct_of_t options in
-    let pid_t_ptr = allocate Posix_types.pid_t (Posix_types.Pid.of_int 0) in
-    match
-      C.attach_run_shell__glue c.lxc_container (addr options) pid_t_ptr
-    with
-    | 0 ->
-      Ok (Posix_types.Pid.to_int !@pid_t_ptr)
-    | -1 ->
-      Error ()
-    | _ ->
-      raise C.Unexpected_value_from_C
+  module Run = struct
+    module Flags = Run_internal.Flags
+    module Env_policy = Run_internal.Env_policy
+    module Options = Run_internal.Options
+    module Command = Run_internal.Command
 
-  let attach_run_command_no_wait ?(options = Attach.Options.default) ~argv c =
-    let options = Attach.Options.c_struct_of_t options in
-    let command = Attach.Command.c_struct_of_string_array argv in
-    let pid_t_ptr = allocate Posix_types.pid_t (Posix_types.Pid.of_int 0) in
-    match
-      C.attach_run_command__glue c.lxc_container (addr options) (addr command)
-        pid_t_ptr
-    with
-    | 0 ->
-      Ok (Posix_types.Pid.to_int !@pid_t_ptr)
-    | -1 ->
-      Error ()
-    | _ ->
-      raise C.Unexpected_value_from_C
+    let shell ?(options = Options.default) c =
+      let options = Options.c_struct_of_t options in
+      let pid_t_ptr = allocate Posix_types.pid_t (Posix_types.Pid.of_int 0) in
+      match
+        C.attach_run_shell__glue c.lxc_container (addr options) pid_t_ptr
+      with
+      | 0 ->
+        Ok (Posix_types.Pid.to_int !@pid_t_ptr)
+      | -1 ->
+        Error ()
+      | _ ->
+        raise C.Unexpected_value_from_C
 
-  let attach_run_command_status ?(options = Attach.Options.default) ~argv c =
-    let options = Attach.Options.c_struct_of_t options in
-    match
-      C.attach_run_wait c.lxc_container (addr options)
-        (Some argv.(0))
-        (string_arr_ptr_from_string_arr argv)
-    with
-    | -1 ->
-      Error ()
-    | n ->
-      Ok n
+    let command_no_wait ?(options = Options.default) c ~argv =
+      let options = Options.c_struct_of_t options in
+      let command = Command.c_struct_of_string_array argv in
+      let pid_t_ptr = allocate Posix_types.pid_t (Posix_types.Pid.of_int 0) in
+      match
+        C.attach_run_command__glue c.lxc_container (addr options)
+          (addr command) pid_t_ptr
+      with
+      | 0 ->
+        Ok (Posix_types.Pid.to_int !@pid_t_ptr)
+      | -1 ->
+        Error ()
+      | _ ->
+        raise C.Unexpected_value_from_C
 
-  let create_snapshot ~comment_file c =
-    match C.snapshot c.lxc_container (Some comment_file) with
-    | -1 ->
-      Error ()
-    | n ->
-      Ok n
+    let command_ret_status ?(options = Options.default) c ~argv =
+      let options = Options.c_struct_of_t options in
+      match
+        C.attach_run_wait c.lxc_container (addr options)
+          (Some argv.(0))
+          (string_arr_ptr_from_string_arr argv)
+      with
+      | -1 ->
+        Error ()
+      | n ->
+        Ok n
+  end
 
-  let list_snapshots c =
-    let snapshot_arr_ptr =
-      allocate_ptr_init_to_null (ptr Types.Lxc_snapshot.t)
-    in
-    let count = C.snapshot_list c.lxc_container snapshot_arr_ptr in
-    if count < 0 then Error ()
-    else
-      let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
-      let ret = CArray.to_list snapshot_arr in
-      ret |> List.map Snapshot.t_of_c_struct_ptr |> Result.ok
+  module Snapshot = struct
+    type t = Snapshot_internal.t
 
-  let restore_snapshot ~snap_name ~new_container_name c =
-    C.snapshot_restore c.lxc_container (Some snap_name)
-      (Some new_container_name)
-    |> bool_to_unit_result_true_is_ok
+    let create c ~comment_file =
+      match C.snapshot c.lxc_container (Some comment_file) with
+      | -1 ->
+        Error ()
+      | n ->
+        Ok n
 
-  let destroy_snapshot ~snap_name c =
-    C.snapshot_destroy c.lxc_container (Some snap_name)
-    |> bool_to_unit_result_true_is_ok
+    let list c =
+      let snapshot_arr_ptr =
+        allocate_ptr_init_to_null (ptr Types.Lxc_snapshot.t)
+      in
+      let count = C.snapshot_list c.lxc_container snapshot_arr_ptr in
+      if count < 0 then Error ()
+      else
+        let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
+        let ret =
+          CArray.to_list snapshot_arr
+          |> List.map Snapshot_internal.t_of_c_struct_ptr
+          |> Result.ok
+        in
+        Snapshot_internal.free_arr_ptr snapshot_arr_ptr ~count;
+        ret
+
+    let restore c ~snap_name ~new_container_name =
+      C.snapshot_restore c.lxc_container (Some snap_name)
+        (Some new_container_name)
+      |> bool_to_unit_result_true_is_ok
+
+    let destroy c ~snap_name =
+      C.snapshot_destroy c.lxc_container (Some snap_name)
+      |> bool_to_unit_result_true_is_ok
+
+    let destroy_all c =
+      C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
+  end
 
   let may_control c = C.may_control c.lxc_container
 
-  let add_device_node ~src_path ~dst_path c =
-    C.add_device_node c.lxc_container (Some src_path) (Some dst_path)
-    |> bool_to_unit_result_true_is_ok
+  module Device = struct
+    let add_node c ~src_path ~dst_path =
+      C.add_device_node c.lxc_container (Some src_path) (Some dst_path)
+      |> bool_to_unit_result_true_is_ok
 
-  let remove_device_node ~src_path ~dst_path c =
-    C.remove_device_node c.lxc_container (Some src_path) (Some dst_path)
-    |> bool_to_unit_result_true_is_ok
+    let remove_node c ~src_path ~dst_path =
+      C.remove_device_node c.lxc_container (Some src_path) (Some dst_path)
+      |> bool_to_unit_result_true_is_ok
+  end
 
-  let attach_interface ~src_dev ~dst_dev c =
-    C.attach_interface c.lxc_container (Some src_dev) (Some dst_dev)
-    |> bool_to_unit_result_true_is_ok
+  module Interface = struct
+    let attach c ~src_dev ~dst_dev =
+      C.attach_interface c.lxc_container (Some src_dev) (Some dst_dev)
+      |> bool_to_unit_result_true_is_ok
 
-  let detach_interface ~src_dev c =
-    C.detach_interface c.lxc_container (Some src_dev) None
-    |> bool_to_unit_result_true_is_ok
+    let detach c ~src_dev =
+      C.detach_interface c.lxc_container (Some src_dev) None
+      |> bool_to_unit_result_true_is_ok
+  end
 
-  let checkpoint ~dir ~stop ~verbose c =
-    C.checkpoint c.lxc_container (string_ptr_from_string dir) stop verbose
-    |> bool_to_unit_result_true_is_ok
+  module Checkpoint = struct
+    let checkpoint c ~dir ~stop ~verbose =
+      C.checkpoint c.lxc_container (string_ptr_from_string dir) stop verbose
+      |> bool_to_unit_result_true_is_ok
 
-  let restore_from_checkpoint ~dir ~verbose c =
-    C.restore c.lxc_container (string_ptr_from_string dir) verbose
-    |> bool_to_unit_result_true_is_ok
+    let restore c ~dir ~verbose =
+      C.restore c.lxc_container (string_ptr_from_string dir) verbose
+      |> bool_to_unit_result_true_is_ok
+  end
 
   let destroy_with_snapshots c =
     C.destroy_with_snapshots c.lxc_container |> bool_to_unit_result_true_is_ok
 
-  let destroy_all_snapshots c =
-    C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
+  module Migrate = struct
+    module Command = Migrate_internal.Command
+    module Options = Migrate_internal.Options
 
-  let migrate (cmd : Migrate.Command.t) (options : Migrate.Options.t) c =
-    let cmd = Migrate.Command.to_c_int cmd |> Unsigned.UInt.of_int64 in
-    C.migrate c.lxc_container cmd
-      (addr (Migrate.Options.c_struct_of_t options))
-      (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
-    |> int_to_unit_result_zero_is_ok
+    let migrate c (cmd : Command.t) (options : Options.t) =
+      let cmd = Command.to_c_int cmd |> Unsigned.UInt.of_int64 in
+      C.migrate c.lxc_container cmd
+        (addr (Options.c_struct_of_t options))
+        (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
+      |> int_to_unit_result_zero_is_ok
+  end
 
-  let console_log (options : Console_log.options) c =
-    let c_struct = Console_log.c_struct_of_options options in
+  let console_log c (options : Console_log_options.t) =
+    let c_struct = Console_log_internal.c_struct_of_options options in
     match C.console_log c.lxc_container (addr c_struct) with
     | 0 ->
-      Ok (Console_log.result_of_c_struct (addr c_struct))
+      Ok (Console_log_internal.result_of_c_struct (addr c_struct))
     | _ ->
       Error ()
+
+  module Cgroup = struct
+    let get c ~key =
+      let len =
+        C.get_cgroup_item c.lxc_container (Some key)
+          (make_null_ptr (ptr char))
+          0
+      in
+      if len < 0 then Error ()
+      else
+        let ret = CArray.make char len in
+        let new_len =
+          C.get_cgroup_item c.lxc_container (Some key) (CArray.start ret) len
+        in
+        if len <> new_len then raise C.Unexpected_value_from_C;
+        string_from_carray ret |> String.split_on_char '\n'
+        |> List.filter (fun s -> s <> "")
+        |> Result.ok
+
+    let set c ~key ~value =
+      C.set_cgroup_item c.lxc_container (Some key) (Some value)
+      |> bool_to_unit_result_true_is_ok
+
+    module Helpers = struct
+      let get_mem_usage_bytes c =
+        get c ~key:"memory.usage_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
+
+      let get_mem_limit_bytes c =
+        get c ~key:"memory.limit_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
+
+      let set_mem_limit_bytes c limit =
+        set c ~key:"memory.limit_in_bytes" ~value:(string_of_int limit)
+
+      let get_soft_mem_limit_bytes c =
+        get c ~key:"memory.soft_limit_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
+
+      let set_soft_mem_limit_bytes c limit =
+        set c ~key:"memory.soft_limit_in_bytes" ~value:(string_of_int limit)
+
+      let get_kernel_mem_usage_bytes c =
+        get c ~key:"memory.kmem.usage_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
+
+      let get_kernel_mem_limit_bytes c =
+        get c ~key:"memory.kmem.limit_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
+
+      let set_kernel_mem_limit_bytes c limit =
+        set c ~key:"memory.kmem.limit_in_bytes" ~value:(string_of_int limit)
+
+      let get_mem_swap_usage_bytes c =
+        get c ~key:"memory.memsw.usage_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
+
+      let get_mem_swap_limit_bytes c =
+        get c ~key:"memory.memsw.limit_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
+
+      let set_mem_swap_limit_bytes c limit =
+        set c ~key:"memory.memsw.limit_in_bytes" ~value:(string_of_int limit)
+    end
+  end
 end

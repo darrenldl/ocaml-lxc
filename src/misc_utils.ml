@@ -1,5 +1,5 @@
 open Ctypes
-module Bigstring = Core.Bigstring
+(* module Bigstring = Core.Bigstring *)
 
 let int_to_bool x = x <> 0
 
@@ -40,9 +40,9 @@ let string_from_string_ptr ?(free = false) (ptr : char ptr) =
 let string_from_carray (arr : char CArray.t) =
   string_from_string_ptr (CArray.start arr)
 
-let bigstring_from_string_ptr ptr : Bigstring.t =
-  let length = strlen ptr in
-  bigarray_of_ptr array1 length Bigarray.Char ptr
+(* let bigstring_from_string_ptr ptr : Bigstring.t =
+ *   let length = strlen ptr in
+ *   bigarray_of_ptr array1 length Bigarray.Char ptr *)
 
 let string_list_from_string_ptr_arr_ptr ?(free = false)
     ?(free_each_ptr_in_arr = false) ~(count : int) (p : char ptr ptr ptr) =

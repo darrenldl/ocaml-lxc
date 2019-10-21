@@ -18,19 +18,25 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
     let lxc_clone_keepmacaddr = S.constant "LXC_CLONE_KEEPMACADDR" int
 
-    let lxc_clone_keepbdevtype = S.constant "LXC_CLONE_SNAPSHOT" int
+    let lxc_clone_snapshot = S.constant "LXC_CLONE_SNAPSHOT" int
+
+    let lxc_clone_keepbdevtype = S.constant "LXC_CLONE_KEEPBDEVTYPE" int
 
     let lxc_clone_maybe_snapshot = S.constant "LXC_CLONE_MAYBE_SNAPSHOT" int
 
     let lxc_clone_maxflags = S.constant "LXC_CLONE_MAXFLAGS" int
 
     let lxc_clone_allow_running = S.constant "LXC_CLONE_ALLOW_RUNNING" int
+  end
 
+  module Lxc_mount_api_version = struct
+    let lxc_mount_api_v1 = S.constant "LXC_MOUNT_API_V1" int
+  end
+
+  module Lxc_create_flags = struct
     let lxc_create_quiet = S.constant "LXC_CREATE_QUIET" int
 
     let lxc_create_maxflags = S.constant "LXC_CREATE_MAXFLAGS" int
-
-    let lxc_mount_api_v1 = S.constant "LXC_MOUNT_API_V1" int
   end
 
   module Namespace_flags = struct

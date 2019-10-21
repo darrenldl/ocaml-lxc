@@ -11,7 +11,7 @@ license: "LGPL-2.1"
 homepage: "https://github.com/darrenldl/ocaml-lxc"
 bug-reports: "https://github.com/darrenldl/ocaml-lxc/issues"
 dev-repo: "git+https://github.com/darrenldl/ocaml-lxc"
-depends: [ "ocaml" "ocamlfind" "ctypes" "ctypes-foreign" "posix-types" "core"]
+depends: [ "ocaml" "ocamlfind" "ctypes" "ctypes-foreign" "posix-types"]
 build: [
   ["dune" "build" "@all"]
 ]

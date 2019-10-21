@@ -1,0 +1,15 @@
+language: c
+sudo: required
+branches:
+  except:
+    - dev
+
+before_install:
+  - apt-get install ocaml
+
+script:
+  - odoc
+
+notifications:
+  email:
+    on_success: never

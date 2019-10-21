@@ -18,6 +18,25 @@ module Namespace_flags : sig
   val to_c_int : t -> int
 end
 
+module Lxc_clone_flags : sig
+  type t =
+    | Clone_keepname
+    | Clone_keepmacaddr
+    | Clone_snapshot
+
+  val to_c_int : t -> int
+end
+
+module Lxc_mount_api_version : sig
+  val lxc_mount_api_v1 : int
+end
+
+module Lxc_create_flags : sig
+  type t = Create_quiet
+
+  val to_c_int : t -> int
+end
+
 module Lxc_attach_flags : sig
   type t =
     | Attach_move_to_cgroup
