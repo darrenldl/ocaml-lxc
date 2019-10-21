@@ -1,6 +1,5 @@
 type container
 
-module Attach = Attach
 module Backing_store = Backing_store
 module Console_log = Console_log
 module Console_options = Console_options
@@ -129,20 +128,25 @@ module Container : sig
 
   val console : ?options:Console_options.t -> container -> (unit, unit) result
 
-  val attach_run_shell :
-    ?options:Attach.Options.t -> container -> (int, unit) result
+  module Run : sig
+    module Options = Run_internal.Options
 
-  val attach_run_command_no_wait :
-    ?options:Attach.Options.t
-    -> container
-    -> argv:string array
-    -> (int, unit) result
+    val shell :
+      ?options:Options.t -> container -> (int, unit) result
 
-  val attach_run_command_status :
-    ?options:Attach.Options.t
-    -> container
-    -> argv:string array
-    -> (int, unit) result
+    val command_no_wait :
+      ?options:Options.t
+      -> container
+      -> argv:string array
+      -> (int, unit) result
+
+    val command_ret_status :
+      ?options:Options.t
+      -> container
+      -> argv:string array
+      -> (int, unit) result
+
+  end
 
   val create_snapshot : container -> comment_file:string -> (int, unit) result
 
