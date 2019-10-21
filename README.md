@@ -1,6 +1,14 @@
 # ocaml-lxc
 OCaml binding to LXC with idiomatic OCaml API design
 
+**Warning**: This is still WIP, do **NOT** use it for anything serious yet
+
+## TODO
+- Test code
+- API documentation + Travis CI doc build for master
+- Document build flow architecture (specifically how dune fits into it maybe)
+- Document code architecture
+
 ## Documentation
 WIP
 
