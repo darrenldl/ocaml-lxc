@@ -4,12 +4,14 @@ module L = Stubs.Type_stubs.Lxc_console_log
 
 type c_struct = Types.Lxc_console_log.t structure
 
-type options =
-  { clear : bool
-  ; read : bool
-  ; read_max : int64 }
+module Options = struct
+  type t =
+    { clear : bool
+    ; read : bool
+    ; read_max : int64 }
+end
 
-let c_struct_of_options t =
+let c_struct_of_options (t : Options.t) =
   let c_struct = Ctypes.make Types.Lxc_console_log.t in
   setf c_struct L.clear t.clear;
   setf c_struct L.read t.read;

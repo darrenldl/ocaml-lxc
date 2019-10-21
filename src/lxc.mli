@@ -33,7 +33,13 @@ module Backing_store : sig
   end
 end
 
-module Console_log = Console_log
+module Console_log_options : sig
+  type t =
+    { clear : bool
+    ; read : bool
+    ; read_max : int64 }
+end
+
 module Console_options = Console_options
 module Create_options = Create_options
 module Namespace_flags = Lxc_c.Namespace_flags
@@ -162,7 +168,7 @@ module Container : sig
 
   val destroy_with_snapshots : container -> (unit, unit) result
 
-  val console_log : container -> Console_log.options -> (string, unit) result
+  val console_log : container -> Console_log_options.t -> (string, unit) result
 
   module Migrate : sig
     module Command : sig
