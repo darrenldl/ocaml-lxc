@@ -110,11 +110,6 @@ module Container : sig
     -> scope:int
     -> (string list, unit) result
 
-  val get_cgroup_item : container -> key:string -> (string list, unit) result
-
-  val set_cgroup_item :
-    container -> key:string -> value:string -> (unit, unit) result
-
   val get_config_path : container -> string
 
   val set_config_path : container -> path:string -> (unit, unit) result
@@ -189,27 +184,34 @@ module Container : sig
 
   val console_log : container -> Console_log.options -> (string, unit) result
 
-  module Cgroup_helpers : sig
-    val get_mem_usage_bytes : container -> (int, unit) result
+  module Cgroup : sig
+    val get_item : container -> key:string -> (string list, unit) result
 
-    val get_mem_limit_bytes : container -> (int, unit) result
+    val set_item :
+      container -> key:string -> value:string -> (unit, unit) result
 
-    val set_mem_limit_bytes : container -> int -> (unit, unit) result
+    module Helpers : sig
+      val get_mem_usage_bytes : container -> (int, unit) result
 
-    val get_soft_mem_limit_bytes : container -> (int, unit) result
+      val get_mem_limit_bytes : container -> (int, unit) result
 
-    val set_soft_mem_limit_bytes : container -> int -> (unit, unit) result
+      val set_mem_limit_bytes : container -> int -> (unit, unit) result
 
-    val get_kernel_mem_usage_bytes : container -> (int, unit) result
+      val get_soft_mem_limit_bytes : container -> (int, unit) result
 
-    val get_kernel_mem_limit_bytes : container -> (int, unit) result
+      val set_soft_mem_limit_bytes : container -> int -> (unit, unit) result
 
-    val set_kernel_mem_limit_bytes : container -> int -> (unit, unit) result
+      val get_kernel_mem_usage_bytes : container -> (int, unit) result
 
-    val get_mem_swap_usage_bytes : container -> (int, unit) result
+      val get_kernel_mem_limit_bytes : container -> (int, unit) result
 
-    val get_mem_swap_limit_bytes : container -> (int, unit) result
+      val set_kernel_mem_limit_bytes : container -> int -> (unit, unit) result
 
-    val set_mem_swap_limit_bytes : container -> int -> (unit, unit) result
+      val get_mem_swap_usage_bytes : container -> (int, unit) result
+
+      val get_mem_swap_limit_bytes : container -> (int, unit) result
+
+      val set_mem_swap_limit_bytes : container -> int -> (unit, unit) result
+    end
   end
 end

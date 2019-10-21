@@ -302,25 +302,6 @@ module Container = struct
       in
       Ok strings
 
-  let get_cgroup_item c ~key =
-    let len =
-      C.get_cgroup_item c.lxc_container (Some key) (make_null_ptr (ptr char)) 0
-    in
-    if len < 0 then Error ()
-    else
-      let ret = CArray.make char len in
-      let new_len =
-        C.get_cgroup_item c.lxc_container (Some key) (CArray.start ret) len
-      in
-      if len <> new_len then raise C.Unexpected_value_from_C;
-      string_from_carray ret |> String.split_on_char '\n'
-      |> List.filter (fun s -> s <> "")
-      |> Result.ok
-
-  let set_cgroup_item c ~key ~value =
-    C.set_cgroup_item c.lxc_container (Some key) (Some value)
-    |> bool_to_unit_result_true_is_ok
-
   let get_config_path c = C.get_config_path c.lxc_container |> Option.get
 
   let set_config_path c ~path =
@@ -472,57 +453,79 @@ module Container = struct
     | _ ->
       Error ()
 
-  module Cgroup_helpers = struct
-    let get_mem_usage_bytes c =
-      get_cgroup_item c ~key:"memory.usage_in_bytes"
-      |> Result.map List.hd |> Result.map int_of_string
+  module Cgroup = struct
+    let get_item c ~key =
+      let len =
+        C.get_cgroup_item c.lxc_container (Some key)
+          (make_null_ptr (ptr char))
+          0
+      in
+      if len < 0 then Error ()
+      else
+        let ret = CArray.make char len in
+        let new_len =
+          C.get_cgroup_item c.lxc_container (Some key) (CArray.start ret) len
+        in
+        if len <> new_len then raise C.Unexpected_value_from_C;
+        string_from_carray ret |> String.split_on_char '\n'
+        |> List.filter (fun s -> s <> "")
+        |> Result.ok
 
-    let get_mem_limit_bytes c =
-      get_cgroup_item c ~key:"memory.limit_in_bytes"
-      |> Result.map List.hd |> Result.map int_of_string
+    let set_item c ~key ~value =
+      C.set_cgroup_item c.lxc_container (Some key) (Some value)
+      |> bool_to_unit_result_true_is_ok
 
-    let set_mem_limit_bytes c limit =
-      set_cgroup_item c ~key:"memory.limit_in_bytes"
-        ~value:(string_of_int limit)
+    module Helpers = struct
+      let get_mem_usage_bytes c =
+        get_item c ~key:"memory.usage_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
 
-    let get_soft_mem_limit_bytes c =
-      get_cgroup_item c ~key:"memory.soft_limit_in_bytes"
-      |> Result.map List.hd |> Result.map int_of_string
+      let get_mem_limit_bytes c =
+        get_item c ~key:"memory.limit_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
 
-    let set_soft_mem_limit_bytes c limit =
-      set_cgroup_item c ~key:"memory.soft_limit_in_bytes"
-        ~value:(string_of_int limit)
+      let set_mem_limit_bytes c limit =
+        set_item c ~key:"memory.limit_in_bytes" ~value:(string_of_int limit)
 
-    let get_kernel_mem_usage_bytes c =
-      get_cgroup_item c ~key:"memory.kmem.usage_in_bytes"
-      |> Result.map List.hd |> Result.map int_of_string
+      let get_soft_mem_limit_bytes c =
+        get_item c ~key:"memory.soft_limit_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
 
-    let get_kernel_mem_limit_bytes c =
-      get_cgroup_item c ~key:"memory.kmem.limit_in_bytes"
-      |> Result.map List.hd |> Result.map int_of_string
+      let set_soft_mem_limit_bytes c limit =
+        set_item c ~key:"memory.soft_limit_in_bytes"
+          ~value:(string_of_int limit)
 
-    let set_kernel_mem_limit_bytes c limit =
-      set_cgroup_item c ~key:"memory.kmem.limit_in_bytes"
-        ~value:(string_of_int limit)
+      let get_kernel_mem_usage_bytes c =
+        get_item c ~key:"memory.kmem.usage_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
 
-    let get_mem_swap_usage_bytes c =
-      get_cgroup_item c ~key:"memory.memsw.usage_in_bytes"
-      |> Result.map List.hd |> Result.map int_of_string
+      let get_kernel_mem_limit_bytes c =
+        get_item c ~key:"memory.kmem.limit_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
 
-    let get_mem_swap_limit_bytes c =
-      get_cgroup_item c ~key:"memory.memsw.limit_in_bytes"
-      |> Result.map List.hd |> Result.map int_of_string
+      let set_kernel_mem_limit_bytes c limit =
+        set_item c ~key:"memory.kmem.limit_in_bytes"
+          ~value:(string_of_int limit)
 
-    let set_mem_swap_limit_bytes c limit =
-      set_cgroup_item c ~key:"memory.memsw.limit_in_bytes"
-        ~value:(string_of_int limit)
+      let get_mem_swap_usage_bytes c =
+        get_item c ~key:"memory.memsw.usage_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
+
+      let get_mem_swap_limit_bytes c =
+        get_item c ~key:"memory.memsw.limit_in_bytes"
+        |> Result.map List.hd |> Result.map int_of_string
+
+      let set_mem_swap_limit_bytes c limit =
+        set_item c ~key:"memory.memsw.limit_in_bytes"
+          ~value:(string_of_int limit)
 
 (* let get_blkio_usage c =
- *   get_cgroup_item c ~key:"blkio.throttle.io_service_bytes"
+ *   get_item c ~key:"blkio.throttle.io_service_bytes"
  *   |> Result.map (fun l ->
  *       match l with
  *       | [] -> 0
  *       | _ ->
  *     ) *)
+   end
    end
    end
