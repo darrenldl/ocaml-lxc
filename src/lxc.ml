@@ -306,6 +306,12 @@ module Container = struct
     C.set_config_path c.lxc_container (Some path)
     |> bool_to_unit_result_true_is_ok
 
+  module Clone = struct
+    module Flags = Clone_internal.Flags
+    module Options = Clone_internal.Options
+
+  end
+
   let clone c ~new_name ~lxcpath ~flags ~bdevtype ~bdevdata ~new_size
       ~hook_args =
     let new_size = Unsigned.UInt64.of_int64 new_size in
