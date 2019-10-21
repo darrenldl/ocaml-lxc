@@ -13,6 +13,7 @@ type getfd_result =
 module Backing_store = Backing_store
 module Console_log = Console_log
 module Console_options = Console_options
+module Create_options = Create_options
 module Namespace_flags = C.Namespace_flags
 module Feature_checks = C.Feature_checks
 module State = C.State
@@ -176,62 +177,56 @@ module Container = struct
     C.save_config c.lxc_container (Some alt_file)
     |> bool_to_unit_result_true_is_ok
 
-  module Create = struct
-    module Options = Create_internal.Options
-    module Templates = Create_internal.Templates
-
-    let create c (options : Options.t) =
-      let template = Option.value ~default:"download" options.template in
-      let backing_store_type =
-        Option.map Backing_store.store_type_to_string
-          options.backing_store_type
-      in
-      let backing_store_specs =
-        Option.map
-          (fun x -> addr (Backing_store.Specs.c_struct_of_t x))
-          options.backing_store_specs
-      in
-      let args =
-        let queue = Queue.create () in
-        let add s = Queue.push s queue in
-        if template = "download" then (
-          Option.iter (fun s -> add "--dist"; add s) options.distro;
-          Option.iter (fun s -> add "--release"; add s) options.release;
-          Option.iter (fun s -> add "--arch"; add s) options.arch;
-          Option.iter (fun s -> add "--variant"; add s) options.variant;
-          Option.iter (fun s -> add "--server"; add s) options.server;
-          Option.iter (fun s -> add "--keyid"; add s) options.key_id;
-          Option.iter (fun s -> add "--keyserver"; add s) options.key_server;
-          Option.iter
-            (fun b -> if b then add "--no-validate")
-            options.disable_gpg_validation;
-          Option.iter
-            (fun b -> if b then add "--flush-cache")
-            options.flush_cache;
-          Option.iter
-            (fun b -> if b then add "--force-cache")
-            options.force_cache )
-        else (
-          Option.iter (fun s -> add "--release"; add s) options.release;
-          Option.iter (fun s -> add "--arch"; add s) options.arch;
-          Option.iter
-            (fun b -> if b then add "--flush-cache")
-            options.flush_cache );
-        Queue.to_seq queue |> Array.of_seq
-      in
-      let extra_args = Option.value ~default:[||] options.extra_args in
-      let args = Array.append args extra_args in
-      let argv =
-        match args with
-        | [||] ->
-          make_null_ptr (ptr (ptr char))
-        | _ ->
-          string_arr_ptr_from_string_arr args
-      in
-      C.create__glue c.lxc_container template backing_store_type
-        backing_store_specs 0 argv
-      |> bool_to_unit_result_true_is_ok
-  end
+  let create c (options : Create_options.t) =
+    let template = Option.value ~default:"download" options.template in
+    let backing_store_type =
+      Option.map Backing_store.store_type_to_string options.backing_store_type
+    in
+    let backing_store_specs =
+      Option.map
+        (fun x -> addr (Backing_store.Specs.c_struct_of_t x))
+        options.backing_store_specs
+    in
+    let args =
+      let queue = Queue.create () in
+      let add s = Queue.push s queue in
+      if template = "download" then (
+        Option.iter (fun s -> add "--dist"; add s) options.distro;
+        Option.iter (fun s -> add "--release"; add s) options.release;
+        Option.iter (fun s -> add "--arch"; add s) options.arch;
+        Option.iter (fun s -> add "--variant"; add s) options.variant;
+        Option.iter (fun s -> add "--server"; add s) options.server;
+        Option.iter (fun s -> add "--keyid"; add s) options.key_id;
+        Option.iter (fun s -> add "--keyserver"; add s) options.key_server;
+        Option.iter
+          (fun b -> if b then add "--no-validate")
+          options.disable_gpg_validation;
+        Option.iter
+          (fun b -> if b then add "--flush-cache")
+          options.flush_cache;
+        Option.iter
+          (fun b -> if b then add "--force-cache")
+          options.force_cache )
+      else (
+        Option.iter (fun s -> add "--release"; add s) options.release;
+        Option.iter (fun s -> add "--arch"; add s) options.arch;
+        Option.iter
+          (fun b -> if b then add "--flush-cache")
+          options.flush_cache );
+      Queue.to_seq queue |> Array.of_seq
+    in
+    let extra_args = Option.value ~default:[||] options.extra_args in
+    let args = Array.append args extra_args in
+    let argv =
+      match args with
+      | [||] ->
+        make_null_ptr (ptr (ptr char))
+      | _ ->
+        string_arr_ptr_from_string_arr args
+    in
+    C.create__glue c.lxc_container template backing_store_type
+      backing_store_specs 0 argv
+    |> bool_to_unit_result_true_is_ok
 
   let rename c ~new_name =
     C.rename c.lxc_container (Some new_name) |> bool_to_unit_result_true_is_ok
