@@ -473,9 +473,14 @@ module Container = struct
       Error ()
 
   module Cgroup_helpers = struct
-    let get_mem_usage_bytes c = get_cgroup_item c ~key:"memory.usage_in_bytes"
+    let get_mem_usage_bytes c =
+      get_cgroup_item c ~key:"memory.usage_in_bytes"
+      |> Result.map List.hd
+      |> Result.map int_of_string
 
     let get_mem_limit_bytes c = get_cgroup_item c ~key:"memory.limit_in_bytes"
+                                |> Result.map List.hd
+                                |> Result.map int_of_string
 
     let set_mem_limit_bytes c limit =
       set_cgroup_item c ~key:"memory.limit_in_bytes"
@@ -483,6 +488,8 @@ module Container = struct
 
     let get_soft_mem_limit_bytes c =
       get_cgroup_item c ~key:"memory.soft_limit_in_bytes"
+      |> Result.map List.hd
+      |> Result.map int_of_string
 
     let set_soft_mem_limit_bytes c limit =
       set_cgroup_item c ~key:"memory.soft_limit_in_bytes"
@@ -490,9 +497,13 @@ module Container = struct
 
     let get_kernel_mem_usage_bytes c =
       get_cgroup_item c ~key:"memory.kmem.usage_in_bytes"
+      |> Result.map List.hd
+      |> Result.map int_of_string
 
     let get_kernel_mem_limit_bytes c =
       get_cgroup_item c ~key:"memory.kmem.limit_in_bytes"
+      |> Result.map List.hd
+      |> Result.map int_of_string
 
     let set_kernel_mem_limit_bytes c limit =
       set_cgroup_item c ~key:"memory.kmem.limit_in_bytes"
@@ -500,15 +511,24 @@ module Container = struct
 
     let get_mem_swap_usage_bytes c =
       get_cgroup_item c ~key:"memory.memsw.usage_in_bytes"
+      |> Result.map List.hd
+      |> Result.map int_of_string
 
     let get_mem_swap_limit_bytes c =
       get_cgroup_item c ~key:"memory.memsw.limit_in_bytes"
+      |> Result.map List.hd
+      |> Result.map int_of_string
 
     let set_mem_swap_limit_bytes c limit =
       set_cgroup_item c ~key:"memory.memsw.limit_in_bytes"
         ~value:(string_of_int limit)
 
-    let get_blkio_usage c =
-      get_cgroup_item c ~key:"blkio.throttle.io_service_bytes"
+    (* let get_blkio_usage c =
+     *   get_cgroup_item c ~key:"blkio.throttle.io_service_bytes"
+     *   |> Result.map (fun l ->
+     *       match l with
+     *       | [] -> 0
+     *       | _ ->
+     *     ) *)
   end
 end
