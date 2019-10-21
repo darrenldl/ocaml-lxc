@@ -1,6 +1,38 @@
 type container
 
-module Backing_store = Backing_store
+module Backing_store : sig
+  type store_type =
+    | Btrfs
+    | Directory
+    | Lvm
+    | Zfs
+    | Aufs
+    | Overlayfs
+    | Loopback
+    | Best
+
+  module Specs : sig
+    type zfs = {zfs_root : string option}
+
+    type lvm =
+      { vg : string option
+      ; lv : string option
+      ; thin_pool : string option }
+
+    type rbd =
+      { rbd_name : string option
+      ; rbd_pool : string option }
+
+    type t =
+      { fstype : string option
+      ; fssize : int64
+      ; zfs : zfs
+      ; lvm : lvm
+      ; rbd : rbd
+      ; dir : string option }
+  end
+end
+
 module Console_log = Console_log
 module Console_options = Console_options
 module Create_options = Create_options
