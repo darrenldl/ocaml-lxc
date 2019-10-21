@@ -127,8 +127,6 @@ module Container : sig
 
   val console : ?options:Console_options.t -> container -> (unit, unit) result
 
-  val destroy_all_snapshots : container -> (unit, unit) result
-
   val may_control : container -> bool
 
   val checkpoint :
@@ -173,6 +171,9 @@ module Container : sig
       -> (unit, unit) result
 
     val destroy : container -> snap_name:string -> (unit, unit) result
+
+    val destroy_all : container -> (unit, unit) result
+
   end
 
   module Run : sig

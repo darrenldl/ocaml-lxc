@@ -411,6 +411,10 @@ module Container = struct
     let destroy c ~snap_name =
       C.snapshot_destroy c.lxc_container (Some snap_name)
       |> bool_to_unit_result_true_is_ok
+
+    let destroy_all c =
+      C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
+
   end
 
   let may_control c = C.may_control c.lxc_container
@@ -445,9 +449,6 @@ module Container = struct
 
   let destroy_with_snapshots c =
     C.destroy_with_snapshots c.lxc_container |> bool_to_unit_result_true_is_ok
-
-  let destroy_all_snapshots c =
-    C.snapshot_destroy_all c.lxc_container |> bool_to_unit_result_true_is_ok
 
   let migrate c (cmd : Migrate.Command.t) (options : Migrate.Options.t) =
     let cmd = Migrate.Command.to_c_int cmd |> Unsigned.UInt.of_int64 in
