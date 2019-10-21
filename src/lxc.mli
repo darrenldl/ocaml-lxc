@@ -110,7 +110,7 @@ module Container : sig
     -> scope:int
     -> (string list, unit) result
 
-  val get_cgroup_item : container -> key:string -> (string, unit) result
+  val get_cgroup_item : container -> key:string -> (string list, unit) result
 
   val set_cgroup_item :
     container -> key:string -> value:string -> (unit, unit) result

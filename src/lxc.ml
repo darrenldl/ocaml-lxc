@@ -313,7 +313,10 @@ module Container = struct
         C.get_cgroup_item c.lxc_container (Some key) (CArray.start ret) len
       in
       if len <> new_len then raise C.Unexpected_value_from_C;
-      string_from_carray ret |> Result.ok
+      string_from_carray ret
+      |> String.split_on_char '\n'
+      |> List.filter (fun s -> s <> "")
+      |> Result.ok
 
   let set_cgroup_item c ~key ~value =
     C.set_cgroup_item c.lxc_container (Some key) (Some value)
@@ -505,5 +508,8 @@ module Container = struct
     let set_mem_swap_limit_bytes c limit =
       set_cgroup_item c ~key:"memory.memsw.limit_in_bytes"
         ~value:(string_of_int limit)
+
+    let get_blkio_usage c =
+      get_cgroup_item c ~key:"blkio.throttle.io_service_bytes"
   end
 end
