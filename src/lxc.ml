@@ -18,7 +18,6 @@ module Namespace_flags = C.Namespace_flags
 module Feature_checks = C.Feature_checks
 module State = C.State
 module Migrate = Migrate
-module Snapshot = Snapshot
 
 let new_container ?config_path name =
   match C.lxc_container_new name config_path with
@@ -383,32 +382,37 @@ module Container = struct
         Ok n
   end
 
-  let create_snapshot c ~comment_file =
-    match C.snapshot c.lxc_container (Some comment_file) with
-    | -1 ->
-      Error ()
-    | n ->
-      Ok n
+  module Snapshot = struct
+    type t = Snapshot_internal.t
 
-  let list_snapshots c =
-    let snapshot_arr_ptr =
-      allocate_ptr_init_to_null (ptr Types.Lxc_snapshot.t)
-    in
-    let count = C.snapshot_list c.lxc_container snapshot_arr_ptr in
-    if count < 0 then Error ()
-    else
-      let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
-      let ret = CArray.to_list snapshot_arr in
-      ret |> List.map Snapshot.t_of_c_struct_ptr |> Result.ok
+    let create c ~comment_file =
+      match C.snapshot c.lxc_container (Some comment_file) with
+      | -1 ->
+        Error ()
+      | n ->
+        Ok n
 
-  let restore_snapshot c ~snap_name ~new_container_name =
-    C.snapshot_restore c.lxc_container (Some snap_name)
-      (Some new_container_name)
-    |> bool_to_unit_result_true_is_ok
+    let list c =
+      let snapshot_arr_ptr =
+        allocate_ptr_init_to_null (ptr Types.Lxc_snapshot.t)
+      in
+      let count = C.snapshot_list c.lxc_container snapshot_arr_ptr in
+      if count < 0 then Error ()
+      else
+        let snapshot_arr = CArray.from_ptr snapshot_arr_ptr count in
+        let ret = CArray.to_list snapshot_arr in
+        ret |> List.map Snapshot_internal.t_of_c_struct_ptr |> Result.ok
 
-  let destroy_snapshot c ~snap_name =
-    C.snapshot_destroy c.lxc_container (Some snap_name)
-    |> bool_to_unit_result_true_is_ok
+    let restore c ~snap_name ~new_container_name =
+      C.snapshot_restore c.lxc_container (Some snap_name)
+        (Some new_container_name)
+      |> bool_to_unit_result_true_is_ok
+
+    let destroy c ~snap_name =
+      C.snapshot_destroy c.lxc_container (Some snap_name)
+      |> bool_to_unit_result_true_is_ok
+
+  end
 
   let may_control c = C.may_control c.lxc_container
 

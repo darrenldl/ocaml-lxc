@@ -8,7 +8,6 @@ module Namespace_flags = Lxc_c.Namespace_flags
 module Feature_checks = Lxc_c.Feature_checks
 module State = Lxc_c.State
 module Migrate = Migrate
-module Snapshot = Snapshot
 
 type getfd_result =
   { ttynum : int
@@ -128,17 +127,21 @@ module Container : sig
 
   val console : ?options:Console_options.t -> container -> (unit, unit) result
 
-  val create_snapshot : container -> comment_file:string -> (int, unit) result
+  module Snapshot : sig
+    type t
+    val create : container -> comment_file:string -> (int, unit) result
 
-  val list_snapshots : container -> (Snapshot.t list, unit) result
+    val list : container -> (t list, unit) result
 
-  val restore_snapshot :
-    container
-    -> snap_name:string
-    -> new_container_name:string
-    -> (unit, unit) result
+    val restore :
+      container
+      -> snap_name:string
+      -> new_container_name:string
+      -> (unit, unit) result
 
-  val destroy_snapshot : container -> snap_name:string -> (unit, unit) result
+    val destroy : container -> snap_name:string -> (unit, unit) result
+
+  end
 
   val destroy_all_snapshots : container -> (unit, unit) result
 
