@@ -26,7 +26,7 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
     let lxc_clone_maxflags = S.constant "LXC_CLONE_MAXFLAGS" int
 
-    let lxc_clone_allow_running = S.constant "LXC_CLONE_ALLOW_RUNNING" int
+    (* let lxc_clone_allow_running = S.constant "LXC_CLONE_ALLOW_RUNNING" int *)
   end
 
   (* module Lxc_mount_api_version = struct
