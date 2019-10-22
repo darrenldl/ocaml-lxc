@@ -4,6 +4,7 @@ branches:
     - dev
 sudo: required
 install:
+  - sudo apt-get install liblxc-dev
   - sudo apt-get install lxc
   - test -e .travis.opam.sh || wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
 script: bash -ex .travis-opam.sh
