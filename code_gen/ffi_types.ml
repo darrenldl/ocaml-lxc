@@ -259,13 +259,13 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     let () = seal t
   end
 
-  module Lxc_mount = struct
-    let t = lift_typ Types.Lxc_mount.t
-
-    let version = field t "version" int
-
-    let () = seal t
-  end
+  (* module Lxc_mount = struct
+   *   let t = lift_typ Types.Lxc_mount.t
+   * 
+   *   let version = field t "version" int
+   * 
+   *   let () = seal t
+   * end *)
 
   module Lxc_log = struct
     let t = lift_typ Types.Lxc_log.t

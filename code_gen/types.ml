@@ -54,11 +54,11 @@ module Lxc_console_log = struct
   let t : t structure typ = structure "lxc_console_log"
 end
 
-module Lxc_mount = struct
-  type t
-
-  let t : t structure typ = structure "lxc_mount"
-end
+(* module Lxc_mount = struct
+ *   type t
+ * 
+ *   let t : t structure typ = structure "lxc_mount"
+ * end *)
 
 module Lxc_log = struct
   type t
