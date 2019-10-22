@@ -3,6 +3,8 @@ branches:
   except:
     - dev
 sudo: required
+before_install:
+  - sudo apt-get install lxc
 install: test -e .travis.opam.sh || wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
 script: bash -ex .travis-opam.sh
 env:
