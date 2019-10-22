@@ -1,4 +1,3 @@
-#include <lxc/attach_options.h>
 #include <lxc/lxccontainer.h>
 #include <stdint.h>
 
