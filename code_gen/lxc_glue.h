@@ -28,6 +28,15 @@ bool create__glue(struct lxc_container *c, const char *t, const char *bdevtype,
                   struct bdev_specs__glue *specs__glue, int flags,
                   char *const argv[]);
 
+int attach_run_command__glue(struct lxc_container *c,
+                             lxc_attach_options_t *options,
+                             struct lxc_attach_command_t *cmd,
+                             pid_t *attached_process_pid);
+
+int attach_run_shell__glue(struct lxc_container *c,
+                           lxc_attach_options_t *options,
+                           pid_t *attached_process_pid);
+
 /*$ #use "code_gen/gen.cinaps";;
 
     For_lxc_glue_dot_h.gen_lxc_container_funptr_field_c_glue_header_all ()
