@@ -535,10 +535,6 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     field lxc_container "reboot2"
       (static_funptr (ptr lxc_container @-> int @-> returning bool))
 
-  let seccomp_notify_fd__raw =
-    field lxc_container "seccomp_notify_fd"
-      (static_funptr (ptr lxc_container @-> returning int))
-
     (*$*)
 
 let () = seal lxc_container

@@ -146,8 +146,6 @@ int console_log__glue(struct lxc_container *c, struct lxc_console_log *a0);
 
 bool reboot2__glue(struct lxc_container *c, int a0);
 
-int seccomp_notify_fd__glue(struct lxc_container *c);
-
 /*$*/
 
 #endif

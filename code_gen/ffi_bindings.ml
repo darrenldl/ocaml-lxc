@@ -267,8 +267,5 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
   let reboot2 =
     foreign "reboot2__glue" (ptr lxc_container @-> int @-> returning bool)
 
-  let seccomp_notify_fd =
-    foreign "seccomp_notify_fd__glue" (ptr lxc_container @-> returning int)
-
     (*$*)
 end

@@ -296,6 +296,4 @@ val console_log :
 
 val reboot2 : Types.lxc_container structure ptr -> int -> bool
 
-val seccomp_notify_fd : Types.lxc_container structure ptr -> int
-
-                                                             (*$*)
+                                                          (*$*)

@@ -278,8 +278,4 @@ bool reboot2__glue(struct lxc_container *c, int a0) {
   return (bool)c->reboot2((struct lxc_container *)c, (int)a0);
 }
 
-int seccomp_notify_fd__glue(struct lxc_container *c) {
-  return (int)c->seccomp_notify_fd((struct lxc_container *)c);
-}
-
 /*$*/

@@ -435,6 +435,4 @@ let console_log = Fun_stubs.console_log
 
 let reboot2 = Fun_stubs.reboot2
 
-let seccomp_notify_fd = Fun_stubs.seccomp_notify_fd
-
-                        (*$*)
+              (*$*)
