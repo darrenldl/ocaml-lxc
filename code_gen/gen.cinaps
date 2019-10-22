@@ -127,19 +127,19 @@ let funptr_records =
     ; fun_name = "console_log"
     ; other_param_tys = ["struct lxc_console_log *"] }
   ; {ret_ty = "bool"; fun_name = "reboot2"; other_param_tys = ["int"]}
-  ; { ret_ty = "int"
-    ; fun_name = "mount"
-    ; other_param_tys =
-        [ "const char *"
-        ; "const char *"
-        ; "const char *"
-        ; "unsigned long"
-        ; "const void *"
-        ; "struct lxc_mount *" ] }
-  ; { ret_ty = "int"
-    ; fun_name = "umount"
-    ; other_param_tys = ["const char *"; "unsigned long"; "struct lxc_mount *"]
-    }
+  (* ; { ret_ty = "int"
+     ; fun_name = "mount"
+     ; other_param_tys =
+      [ "const char *"
+      ; "const char *"
+      ; "const char *"
+      ; "unsigned long"
+      ; "const void *"
+      ; "struct lxc_mount *" ] }
+     ; { ret_ty = "int"
+     ; fun_name = "umount"
+     ; other_param_tys = ["const char *"; "unsigned long"; "struct lxc_mount *"]
+     } *)
   ; {ret_ty = "int"; fun_name = "seccomp_notify_fd"; other_param_tys = []} ]
 
 let contains_substring s ~substr =

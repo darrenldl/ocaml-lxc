@@ -296,23 +296,6 @@ val console_log :
 
 val reboot2 : Types.lxc_container structure ptr -> int -> bool
 
-val mount :
-  Types.lxc_container structure ptr
-  -> string option
-  -> string option
-  -> string option
-  -> Unsigned.ulong
-  -> unit ptr
-  -> Lxc_mount.t structure ptr
-  -> int
-
-val umount :
-  Types.lxc_container structure ptr
-  -> string option
-  -> Unsigned.ulong
-  -> Lxc_mount.t structure ptr
-  -> int
-
 val seccomp_notify_fd : Types.lxc_container structure ptr -> int
 
                                                              (*$*)

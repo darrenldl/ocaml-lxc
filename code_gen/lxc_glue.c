@@ -278,19 +278,6 @@ bool reboot2__glue(struct lxc_container *c, int a0) {
   return (bool)c->reboot2((struct lxc_container *)c, (int)a0);
 }
 
-int mount__glue(struct lxc_container *c, char *a0, char *a1, char *a2,
-                unsigned long a3, const void *a4, struct lxc_mount *a5) {
-  return (int)c->mount((struct lxc_container *)c, (const char *)a0,
-                       (const char *)a1, (const char *)a2, (unsigned long)a3,
-                       (const void *)a4, (struct lxc_mount *)a5);
-}
-
-int umount__glue(struct lxc_container *c, char *a0, unsigned long a1,
-                 struct lxc_mount *a2) {
-  return (int)c->umount((struct lxc_container *)c, (const char *)a0,
-                        (unsigned long)a1, (struct lxc_mount *)a2);
-}
-
 int seccomp_notify_fd__glue(struct lxc_container *c) {
   return (int)c->seccomp_notify_fd((struct lxc_container *)c);
 }

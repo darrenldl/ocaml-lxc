@@ -146,12 +146,6 @@ int console_log__glue(struct lxc_container *c, struct lxc_console_log *a0);
 
 bool reboot2__glue(struct lxc_container *c, int a0);
 
-int mount__glue(struct lxc_container *c, char *a0, char *a1, char *a2,
-                unsigned long a3, const void *a4, struct lxc_mount *a5);
-
-int umount__glue(struct lxc_container *c, char *a0, unsigned long a1,
-                 struct lxc_mount *a2);
-
 int seccomp_notify_fd__glue(struct lxc_container *c);
 
 /*$*/

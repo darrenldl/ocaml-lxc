@@ -435,10 +435,6 @@ let console_log = Fun_stubs.console_log
 
 let reboot2 = Fun_stubs.reboot2
 
-let mount = Fun_stubs.mount
-
-let umount = Fun_stubs.umount
-
 let seccomp_notify_fd = Fun_stubs.seccomp_notify_fd
 
                         (*$*)

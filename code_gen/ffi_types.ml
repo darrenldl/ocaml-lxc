@@ -535,18 +535,6 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     field lxc_container "reboot2"
       (static_funptr (ptr lxc_container @-> int @-> returning bool))
 
-  let mount__raw =
-    field lxc_container "mount"
-      (static_funptr
-         ( ptr lxc_container @-> string_opt @-> string_opt @-> string_opt
-           @-> ulong @-> ptr void @-> ptr Lxc_mount.t @-> returning int ))
-
-  let umount__raw =
-    field lxc_container "umount"
-      (static_funptr
-         ( ptr lxc_container @-> string_opt @-> ulong @-> ptr Lxc_mount.t
-           @-> returning int ))
-
   let seccomp_notify_fd__raw =
     field lxc_container "seccomp_notify_fd"
       (static_funptr (ptr lxc_container @-> returning int))

@@ -267,16 +267,6 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
   let reboot2 =
     foreign "reboot2__glue" (ptr lxc_container @-> int @-> returning bool)
 
-  let mount =
-    foreign "mount__glue"
-      ( ptr lxc_container @-> string_opt @-> string_opt @-> string_opt @-> ulong
-        @-> ptr void @-> ptr Lxc_mount.t @-> returning int )
-
-  let umount =
-    foreign "umount__glue"
-      ( ptr lxc_container @-> string_opt @-> ulong @-> ptr Lxc_mount.t
-        @-> returning int )
-
   let seccomp_notify_fd =
     foreign "seccomp_notify_fd__glue" (ptr lxc_container @-> returning int)
 
