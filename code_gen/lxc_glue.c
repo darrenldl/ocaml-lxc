@@ -48,9 +48,35 @@ bool lxc_has_api_extension__glue(const char *extension) {
 #endif
 }
 
+struct migrate_opts
+migrate_opts__glue_dissolve(struct migrate_opts__glue *opts) {
+  struct migrate_opts ret = {0};
+
+#if VERSION_AT_LEAST(3, 0, 0)
+  ret.features_to_check = opts->features_to_check;
+#endif
+
+#if VERSION_AT_LEAST(2, 0, 4)
+  ret.action_script = opts->action_script;
+  ret.ghost_limit = opts->ghost_limit;
+#endif
+
+#if VERSION_AT_LEAST(2, 0, 1)
+  ret.preserves_inodes = opts->preserves_inodes;
+#endif
+
+  return ret;
+}
+
 int migrate__glue(struct lxc_container *c, unsigned int cmd,
-                  struct migrate_opts *opts, unsigned int size) {
-  return c->migrate(c, cmd, opts, size);
+                  struct migrate_opts__glue *opts__glue) {
+  struct migrate_opts opts = migrate_opts__glue_dissolve(opts__glue);
+
+#if VERSION_AT_LEAST(2, 0, 0)
+  return c->migrate(c, cmd, &opts, sizeof(struct migrate_opts));
+#else
+  return -EINVAL;
+#endif
 }
 
 int attach_run_command__glue(struct lxc_container *c,

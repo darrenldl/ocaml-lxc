@@ -87,7 +87,7 @@ int attach_run_shell__glue(struct lxc_container *c,
 bool lxc_has_api_extension__glue(const char *extension);
 
 int migrate__glue(struct lxc_container *c, unsigned int cmd,
-                  struct migrate_opts *opts, unsigned int size);
+                  struct migrate_opts__glue *opts__glue);
 
 /*$ #use "code_gen/gen.cinaps";;
 

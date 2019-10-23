@@ -78,7 +78,7 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
 
   let migrate__glue =
     foreign "migrate__glue"
-      ( ptr lxc_container @-> uint @-> ptr Migrate_opts.t @-> uint
+      ( ptr lxc_container @-> uint @-> ptr Migrate_opts__glue.t
         @-> returning int )
 
   (*$ #use "code_gen/gen.cinaps";;

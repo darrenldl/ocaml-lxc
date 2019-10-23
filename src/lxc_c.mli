@@ -151,8 +151,7 @@ val lxc_has_api_extension__glue : string -> bool
 val migrate__glue :
   lxc_container structure ptr
   -> Unsigned.UInt.t
-  -> Migrate_opts.t structure ptr
-  -> Unsigned.UInt.t
+  -> Migrate_opts__glue.t structure ptr
   -> int
 
 (*$ #use "code_gen/gen.cinaps";;

@@ -217,8 +217,8 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     let feature_lazy_pages = S.constant "FEATURE_LAZY_PAGES" ullong
   end
 
-  module Migrate_opts = struct
-    let t = lift_typ Types.Migrate_opts.t
+  module Migrate_opts__glue = struct
+    let t = lift_typ Types.Migrate_opts__glue.t
 
     let directory = field t "directory" string_opt
 

@@ -474,7 +474,6 @@ module Container = struct
       let cmd = Command.to_c_int cmd |> Unsigned.UInt.of_int64 in
       C.migrate__glue c.lxc_container cmd
         (addr (Options.c_struct_of_t options))
-        (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
       |> int_to_unit_result_zero_is_ok
   end
 
