@@ -1,4 +1,7 @@
 # ocaml-lxc
+
+[![Build Status](https://travis-ci.org/darrenldl/ocaml-lxc.svg?branch=master)](https://travis-ci.org/darrenldl/ocaml-lxc)
+
 OCaml binding to LXC with idiomatic (and opionated) OCaml API design
 
 **Warning**: This is still WIP, do **NOT** use it for anything serious yet
