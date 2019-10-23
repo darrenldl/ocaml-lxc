@@ -1,5 +1,9 @@
 #include "lxc_glue.h"
 
+#ifndef LXC_DEVEL
+#define LXC_DEVEL 0
+#endif
+
 struct bdev_specs bdev_specs__glue_dissolve(struct bdev_specs__glue *src) {
   struct bdev_specs ret = {0};
 
