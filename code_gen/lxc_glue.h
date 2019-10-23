@@ -1,6 +1,12 @@
 #include <lxc/lxccontainer.h>
 #include <stdint.h>
 
+#define VERSION_AT_LEAST(major, minor, patch)                                  \
+  ((LXC_DEVEL == 1) || (LXC_VERSION_MAJOR > major) ||                          \
+   (LXC_VERSION_MAJOR == major && LXC_VERSION_MINOR > minor) ||                \
+   (LXC_VERSION_MAJOR == major && LXC_VERSION_MINOR == minor &&                \
+    LXC_VERSION_PATCH >= patch))
+
 #ifndef LXC_GLUE_H
 #define LXC_GLUE_H
 
@@ -21,6 +27,32 @@ struct bdev_specs__glue {
     char *rbdpool;
   } rbd;
 };
+
+// dummy definitions of struct for older versions of LXC
+#if !VERSION_AT_LEAST(2, 0, 0)
+struct migrate_opts {
+  char *directory;
+  bool verbose;
+  bool stop;
+  char *predump_dir;
+  char *pageserver_address;
+  char *pageserver_port;
+  bool preserves_inodes;
+  char *action_script;
+  bool disable_skip_in_flight;
+  uint64_t ghost_limit;
+  uint64_t features_to_check;
+};
+#endif
+
+#if !VERSION_AT_LEAST(3, 0, 0)
+struct lxc_console_log {
+  bool clear;
+  bool read;
+  uint64_t *read_max;
+  char *data;
+};
+#endif
 
 struct bdev_specs bdev_specs__glue_dissolve(struct bdev_specs__glue *src);
 
