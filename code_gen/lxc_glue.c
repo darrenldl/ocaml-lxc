@@ -32,6 +32,14 @@ bool create__glue(struct lxc_container *c, const char *t, const char *bdevtype,
   }
 }
 
+bool lxc_config_item_is_supported__glue(const char *key) {
+#if VERSION_AT_LEAST(2, 1, 0)
+  return lxc_config_item_is_supported(key);
+#else
+  return false;
+#endif
+}
+
 int attach_run_command__glue(struct lxc_container *c,
                              lxc_attach_options_t *options,
                              struct lxc_attach_command_t *cmd,
@@ -237,22 +245,38 @@ bool remove_device_node__glue(struct lxc_container *c, char *a0, char *a1) {
 }
 
 bool attach_interface__glue(struct lxc_container *c, char *a0, char *a1) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->attach_interface((struct lxc_container *)c, (const char *)a0,
                                    (const char *)a1);
+#else
+  return (false);
+#endif
 }
 
 bool detach_interface__glue(struct lxc_container *c, char *a0, char *a1) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->detach_interface((struct lxc_container *)c, (const char *)a0,
                                    (const char *)a1);
+#else
+  return (false);
+#endif
 }
 
 bool checkpoint__glue(struct lxc_container *c, char *a0, bool a1, bool a2) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->checkpoint((struct lxc_container *)c, (char *)a0, (bool)a1,
                              (bool)a2);
+#else
+  return (false);
+#endif
 }
 
 bool restore__glue(struct lxc_container *c, char *a0, bool a1) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->restore((struct lxc_container *)c, (char *)a0, (bool)a1);
+#else
+  return (false);
+#endif
 }
 
 bool destroy_with_snapshots__glue(struct lxc_container *c) {
@@ -264,7 +288,11 @@ bool destroy_with_snapshots__glue(struct lxc_container *c) {
 }
 
 bool snapshot_destroy_all__glue(struct lxc_container *c) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->snapshot_destroy_all((struct lxc_container *)c);
+#else
+  return (false);
+#endif
 }
 
 int migrate__glue(struct lxc_container *c, unsigned int a0,
@@ -274,8 +302,12 @@ int migrate__glue(struct lxc_container *c, unsigned int a0,
 }
 
 int console_log__glue(struct lxc_container *c, struct lxc_console_log *a0) {
+#if VERSION_AT_LEAST(3, 0, 0)
   return (int)c->console_log((struct lxc_container *)c,
                              (struct lxc_console_log *)a0);
+#else
+  return (false);
+#endif
 }
 
 bool reboot2__glue(struct lxc_container *c, int a0) {

@@ -144,7 +144,7 @@ val lxc_log_init : Lxc_log.t structure ptr -> int
 
 val lxc_log_close : unit -> unit
 
-val lxc_config_item_is_supported : string -> bool
+val lxc_config_item_is_supported__glue : string -> bool
 
 val lxc_has_api_extension : string -> bool
 

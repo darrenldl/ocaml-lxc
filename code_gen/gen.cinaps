@@ -191,19 +191,19 @@ let funptr_records =
   ; { ret_ty = "bool"
     ; fun_name = "attach_interface"
     ; other_param_tys = ["const char *"; "const char *"]
-    ; version_at_least = None }
+    ; version_at_least = Some {version = (1, 1, 0); default_value = "false"} }
   ; { ret_ty = "bool"
     ; fun_name = "detach_interface"
     ; other_param_tys = ["const char *"; "const char *"]
-    ; version_at_least = None }
+    ; version_at_least = Some {version = (1, 1, 0); default_value = "false"} }
   ; { ret_ty = "bool"
     ; fun_name = "checkpoint"
     ; other_param_tys = ["char *"; "bool"; "bool"]
-    ; version_at_least = None }
+    ; version_at_least = Some {version = (1, 1, 0); default_value = "false"} }
   ; { ret_ty = "bool"
     ; fun_name = "restore"
     ; other_param_tys = ["char *"; "bool"]
-    ; version_at_least = None }
+    ; version_at_least = Some {version = (1, 1, 0); default_value = "false"} }
   ; { ret_ty = "bool"
     ; fun_name = "destroy_with_snapshots"
     ; other_param_tys = []
@@ -211,7 +211,7 @@ let funptr_records =
   ; { ret_ty = "bool"
     ; fun_name = "snapshot_destroy_all"
     ; other_param_tys = []
-    ; version_at_least = None }
+    ; version_at_least = Some {version = (1, 1, 0); default_value = "false"} }
   ; { ret_ty = "int"
     ; fun_name = "migrate"
     ; other_param_tys =
@@ -220,7 +220,7 @@ let funptr_records =
   ; { ret_ty = "int"
     ; fun_name = "console_log"
     ; other_param_tys = ["struct lxc_console_log *"]
-    ; version_at_least = None }
+    ; version_at_least = Some {version = (3, 0, 0); default_value = "false"} }
   ; { ret_ty = "bool"
     ; fun_name = "reboot2"
     ; other_param_tys = ["int"]

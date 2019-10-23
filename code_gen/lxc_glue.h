@@ -61,6 +61,8 @@ bool create__glue(struct lxc_container *c, const char *t, const char *bdevtype,
                   struct bdev_specs__glue *specs__glue, int flags,
                   char *const argv[]);
 
+bool lxc_config_item_is_supported__glue(const char *key);
+
 int attach_run_command__glue(struct lxc_container *c,
                              lxc_attach_options_t *options,
                              struct lxc_attach_command_t *cmd,

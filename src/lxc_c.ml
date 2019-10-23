@@ -292,7 +292,7 @@ end
     ; "list_all_containers"
     ; "lxc_log_init"
     ; "lxc_log_close"
-    ; "lxc_config_item_is_supported"
+    ; "lxc_config_item_is_supported__glue"
     ; "lxc_has_api_extension" ]
  *)
 
@@ -324,7 +324,8 @@ end
 
    let lxc_log_close = Fun_stubs.lxc_log_close
 
-   let lxc_config_item_is_supported = Fun_stubs.lxc_config_item_is_supported
+   let lxc_config_item_is_supported__glue =
+   Fun_stubs.lxc_config_item_is_supported__glue
 
    let lxc_has_api_extension = Fun_stubs.lxc_has_api_extension
 
