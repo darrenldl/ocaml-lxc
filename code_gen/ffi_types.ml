@@ -520,12 +520,6 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     field lxc_container "snapshot_destroy_all"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let migrate__raw =
-    field lxc_container "migrate"
-      (static_funptr
-         ( ptr lxc_container @-> uint @-> ptr Migrate_opts.t @-> uint
-           @-> returning int ))
-
   let console_log__raw =
     field lxc_container "console_log"
       (static_funptr

@@ -293,7 +293,7 @@ end
     ; "lxc_log_init"
     ; "lxc_log_close"
     ; "lxc_config_item_is_supported__glue"
-    ; "lxc_has_api_extension" ]
+    ; "lxc_has_api_extension__glue" ]
  *)
 
    let create__glue = Fun_stubs.create__glue
@@ -327,7 +327,7 @@ end
    let lxc_config_item_is_supported__glue =
    Fun_stubs.lxc_config_item_is_supported__glue
 
-   let lxc_has_api_extension = Fun_stubs.lxc_has_api_extension
+   let lxc_has_api_extension__glue = Fun_stubs.lxc_has_api_extension__glue
 
    (*$*)
 
@@ -429,8 +429,6 @@ end
    let destroy_with_snapshots = Fun_stubs.destroy_with_snapshots
 
    let snapshot_destroy_all = Fun_stubs.snapshot_destroy_all
-
-   let migrate = Fun_stubs.migrate
 
    let console_log = Fun_stubs.console_log
 

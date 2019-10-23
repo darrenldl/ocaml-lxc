@@ -284,13 +284,6 @@ val destroy_with_snapshots : Types.lxc_container structure ptr -> bool
 
 val snapshot_destroy_all : Types.lxc_container structure ptr -> bool
 
-val migrate :
-  Types.lxc_container structure ptr
-  -> Unsigned.uint
-  -> Migrate_opts.t structure ptr
-  -> Unsigned.uint
-  -> int
-
 val console_log :
   Types.lxc_container structure ptr -> Lxc_console_log.t structure ptr -> int
 

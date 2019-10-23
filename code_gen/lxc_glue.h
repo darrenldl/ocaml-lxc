@@ -174,9 +174,6 @@ bool destroy_with_snapshots__glue(struct lxc_container *c);
 
 bool snapshot_destroy_all__glue(struct lxc_container *c);
 
-int migrate__glue(struct lxc_container *c, unsigned int a0,
-                  struct migrate_opts *a1, unsigned int a2);
-
 int console_log__glue(struct lxc_container *c, struct lxc_console_log *a0);
 
 bool reboot2__glue(struct lxc_container *c, int a0);

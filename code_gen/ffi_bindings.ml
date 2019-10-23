@@ -73,8 +73,8 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
   let lxc_config_item_is_supported__glue =
     foreign "lxc_config_item_is_supported__glue" (string @-> returning bool)
 
-  let lxc_has_api_extension =
-    foreign "lxc_has_api_extension" (string @-> returning bool)
+  let lxc_has_api_extension__glue =
+    foreign "lxc_has_api_extension__glue" (string @-> returning bool)
 
   (*$ #use "code_gen/gen.cinaps";;
 
@@ -254,11 +254,6 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
 
   let snapshot_destroy_all =
     foreign "snapshot_destroy_all__glue" (ptr lxc_container @-> returning bool)
-
-  let migrate =
-    foreign "migrate__glue"
-      ( ptr lxc_container @-> uint @-> ptr Migrate_opts.t @-> uint
-        @-> returning int )
 
   let console_log =
     foreign "console_log__glue"

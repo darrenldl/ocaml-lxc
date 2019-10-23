@@ -40,6 +40,20 @@ bool lxc_config_item_is_supported__glue(const char *key) {
 #endif
 }
 
+bool lxc_has_api_extension__glue(const char *extension) {
+#if VERSION_AT_LEAST(3, 1, 0)
+  return lxc_has_api_extension(extension);
+#else
+  return false;
+#endif
+}
+
+int migrate__glue(struct lxc_container *c, unsigned int a0,
+                  struct migrate_opts *a1, unsigned int a2) {
+  return (int)c->migrate((struct lxc_container *)c, (unsigned int)a0,
+                         (struct migrate_opts *)a1, (unsigned int)a2);
+}
+
 int attach_run_command__glue(struct lxc_container *c,
                              lxc_attach_options_t *options,
                              struct lxc_attach_command_t *cmd,
@@ -293,12 +307,6 @@ bool snapshot_destroy_all__glue(struct lxc_container *c) {
 #else
   return (false);
 #endif
-}
-
-int migrate__glue(struct lxc_container *c, unsigned int a0,
-                  struct migrate_opts *a1, unsigned int a2) {
-  return (int)c->migrate((struct lxc_container *)c, (unsigned int)a0,
-                         (struct migrate_opts *)a1, (unsigned int)a2);
 }
 
 int console_log__glue(struct lxc_container *c, struct lxc_console_log *a0) {

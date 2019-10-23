@@ -119,7 +119,7 @@ let list_all_containers ?(lxcpath : string option) () =
 
 let config_item_is_supported ~key = C.lxc_config_item_is_supported__glue key
 
-let has_api_extension ~extension = C.lxc_has_api_extension extension
+let has_api_extension ~extension = C.lxc_has_api_extension__glue extension
 
 module Container = struct
   let is_defined c = C.is_defined c.lxc_container
