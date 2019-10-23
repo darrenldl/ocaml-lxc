@@ -48,10 +48,9 @@ bool lxc_has_api_extension__glue(const char *extension) {
 #endif
 }
 
-int migrate__glue(struct lxc_container *c, unsigned int a0,
-                  struct migrate_opts *a1, unsigned int a2) {
-  return (int)c->migrate((struct lxc_container *)c, (unsigned int)a0,
-                         (struct migrate_opts *)a1, (unsigned int)a2);
+int migrate__glue(struct lxc_container *c, unsigned int cmd,
+                  struct migrate_opts *opts, unsigned int size) {
+  return c->migrate(c, cmd, opts, size);
 }
 
 int attach_run_command__glue(struct lxc_container *c,

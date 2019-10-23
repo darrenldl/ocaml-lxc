@@ -11,9 +11,25 @@
 #ifndef LXC_GLUE_H
 #define LXC_GLUE_H
 
-// dummy definitions of struct for older versions of LXC
+/* dummy definitions of struct for older versions of LXC */
+#if !VERSION_AT_LEAST(3, 0, 0)
+struct lxc_console_log {
+  bool clear;
+  bool read;
+  uint64_t *read_max;
+  char *data;
+};
+#endif
+
 #if !VERSION_AT_LEAST(2, 0, 0)
-struct migrate_opts {
+struct migrate_tops {
+}
+#endif
+
+/* migrate_opts__glue for easier handling of LXC version dependent compilation
+   where definition of migrate_opts varies
+ */
+struct migrate_opts__glue {
   char *directory;
   bool verbose;
   bool stop;
@@ -26,17 +42,13 @@ struct migrate_opts {
   uint64_t ghost_limit;
   uint64_t features_to_check;
 };
-#endif
 
-#if !VERSION_AT_LEAST(3, 0, 0)
-struct lxc_console_log {
-  bool clear;
-  bool read;
-  uint64_t *read_max;
-  char *data;
-};
-#endif
+struct migrate_opts
+migrate_opts__glue_dissolve(struct migrate_opts__glue *opts);
 
+/* bdev_specs__glue for working around ctypes not supporting anonymous structs,
+   which are used in bdev_specs definition
+ */
 struct bdev_specs__glue {
   char *fstype;
   uint64_t fssize;
@@ -71,6 +83,11 @@ int attach_run_command__glue(struct lxc_container *c,
 int attach_run_shell__glue(struct lxc_container *c,
                            lxc_attach_options_t *options,
                            pid_t *attached_process_pid);
+
+bool lxc_has_api_extension__glue(const char *extension);
+
+int migrate__glue(struct lxc_container *c, unsigned int cmd,
+                  struct migrate_opts *opts, unsigned int size);
 
 /*$ #use "code_gen/gen.cinaps";;
 
