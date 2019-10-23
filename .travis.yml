@@ -24,7 +24,7 @@ script:
   - bash -ex .travis-opam.sh
   - opam install --verbose --yes dune
   - opam install --verbose --yes odoc
-  - make doc
+  - eval $(opam env); make doc
 
 deploy:
   provider: pages
