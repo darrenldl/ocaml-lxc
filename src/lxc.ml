@@ -117,9 +117,9 @@ let list_all_containers ?(lxcpath : string option) () =
 
   (*$*)
 
-let config_item_is_supported ~key = C.lxc_config_item_is_supported key
+let config_item_is_supported ~key = C.lxc_config_item_is_supported__glue key
 
-let has_api_extension ~extension = C.lxc_has_api_extension extension
+let has_api_extension ~extension = C.lxc_has_api_extension__glue extension
 
 module Container = struct
   let is_defined c = C.is_defined c.lxc_container
@@ -472,9 +472,8 @@ module Container = struct
 
     let migrate c (cmd : Command.t) (options : Options.t) =
       let cmd = Command.to_c_int cmd |> Unsigned.UInt.of_int64 in
-      C.migrate c.lxc_container cmd
+      C.migrate__glue c.lxc_container cmd
         (addr (Options.c_struct_of_t options))
-        (Unsigned.UInt.of_int (Ctypes.sizeof Types.Migrate_opts.t))
       |> int_to_unit_result_zero_is_ok
   end
 

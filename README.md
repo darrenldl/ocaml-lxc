@@ -1,4 +1,7 @@
 # ocaml-lxc
+
+[![Build Status](https://travis-ci.org/darrenldl/ocaml-lxc.svg?branch=master)](https://travis-ci.org/darrenldl/ocaml-lxc)
+
 OCaml binding to LXC with idiomatic (and opionated) OCaml API design
 
 **Warning**: This is still WIP, do **NOT** use it for anything serious yet
@@ -7,7 +10,9 @@ OCaml binding to LXC with idiomatic (and opionated) OCaml API design
 Huge portion of high level design of ocaml-lxc is derived from [go-lxc](https://github.com/lxc/go-lxc)
 with adjustments to be closer to (hopefully) idomatic OCaml
 
-Test suite of ocaml-lxc also copies test suite of go-lxc
+The following elements are also derived/copied from go-lxc
+- Code for conditional compilation (see `code_gen/lxc_glue.c` and `code_gen/lxc_glue.h`) for adapting to different LXC versions
+- Large portion of the test suite (i.e. `tests/*`)
 
 ## TODO
 - Add test code (copy go-lxc's test suite)

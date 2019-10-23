@@ -26,12 +26,12 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
 
     let lxc_clone_maxflags = S.constant "LXC_CLONE_MAXFLAGS" int
 
-    let lxc_clone_allow_running = S.constant "LXC_CLONE_ALLOW_RUNNING" int
+    (* let lxc_clone_allow_running = S.constant "LXC_CLONE_ALLOW_RUNNING" int *)
   end
 
-  module Lxc_mount_api_version = struct
-    let lxc_mount_api_v1 = S.constant "LXC_MOUNT_API_V1" int
-  end
+  (* module Lxc_mount_api_version = struct
+   *   let lxc_mount_api_v1 = S.constant "LXC_MOUNT_API_V1" int
+   * end *)
 
   module Lxc_create_flags = struct
     let lxc_create_quiet = S.constant "LXC_CREATE_QUIET" int
@@ -217,8 +217,8 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     let feature_lazy_pages = S.constant "FEATURE_LAZY_PAGES" ullong
   end
 
-  module Migrate_opts = struct
-    let t = lift_typ Types.Migrate_opts.t
+  module Migrate_opts__glue = struct
+    let t = lift_typ Types.Migrate_opts__glue.t
 
     let directory = field t "directory" string_opt
 
@@ -259,13 +259,13 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     let () = seal t
   end
 
-  module Lxc_mount = struct
-    let t = lift_typ Types.Lxc_mount.t
-
-    let version = field t "version" int
-
-    let () = seal t
-  end
+  (* module Lxc_mount = struct
+   *   let t = lift_typ Types.Lxc_mount.t
+   * 
+   *   let version = field t "version" int
+   * 
+   *   let () = seal t
+   * end *)
 
   module Lxc_log = struct
     let t = lift_typ Types.Lxc_log.t
@@ -520,12 +520,6 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
     field lxc_container "snapshot_destroy_all"
       (static_funptr (ptr lxc_container @-> returning bool))
 
-  let migrate__raw =
-    field lxc_container "migrate"
-      (static_funptr
-         ( ptr lxc_container @-> uint @-> ptr Migrate_opts.t @-> uint
-           @-> returning int ))
-
   let console_log__raw =
     field lxc_container "console_log"
       (static_funptr
@@ -534,22 +528,6 @@ module Types_stubs (S : Cstubs_structs.TYPE) = struct
   let reboot2__raw =
     field lxc_container "reboot2"
       (static_funptr (ptr lxc_container @-> int @-> returning bool))
-
-  let mount__raw =
-    field lxc_container "mount"
-      (static_funptr
-         ( ptr lxc_container @-> string_opt @-> string_opt @-> string_opt
-           @-> ulong @-> ptr void @-> ptr Lxc_mount.t @-> returning int ))
-
-  let umount__raw =
-    field lxc_container "umount"
-      (static_funptr
-         ( ptr lxc_container @-> string_opt @-> ulong @-> ptr Lxc_mount.t
-           @-> returning int ))
-
-  let seccomp_notify_fd__raw =
-    field lxc_container "seccomp_notify_fd"
-      (static_funptr (ptr lxc_container @-> returning int))
 
     (*$*)
 

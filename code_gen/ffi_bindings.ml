@@ -70,11 +70,16 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
 
   let lxc_log_close = foreign "lxc_log_close" (void @-> returning void)
 
-  let lxc_config_item_is_supported =
-    foreign "lxc_config_item_is_supported" (string @-> returning bool)
+  let lxc_config_item_is_supported__glue =
+    foreign "lxc_config_item_is_supported__glue" (string @-> returning bool)
 
-  let lxc_has_api_extension =
-    foreign "lxc_has_api_extension" (string @-> returning bool)
+  let lxc_has_api_extension__glue =
+    foreign "lxc_has_api_extension__glue" (string @-> returning bool)
+
+  let migrate__glue =
+    foreign "migrate__glue"
+      ( ptr lxc_container @-> uint @-> ptr Migrate_opts__glue.t
+        @-> returning int )
 
   (*$ #use "code_gen/gen.cinaps";;
 
@@ -255,30 +260,12 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
   let snapshot_destroy_all =
     foreign "snapshot_destroy_all__glue" (ptr lxc_container @-> returning bool)
 
-  let migrate =
-    foreign "migrate__glue"
-      ( ptr lxc_container @-> uint @-> ptr Migrate_opts.t @-> uint
-        @-> returning int )
-
   let console_log =
     foreign "console_log__glue"
       (ptr lxc_container @-> ptr Lxc_console_log.t @-> returning int)
 
   let reboot2 =
     foreign "reboot2__glue" (ptr lxc_container @-> int @-> returning bool)
-
-  let mount =
-    foreign "mount__glue"
-      ( ptr lxc_container @-> string_opt @-> string_opt @-> string_opt @-> ulong
-        @-> ptr void @-> ptr Lxc_mount.t @-> returning int )
-
-  let umount =
-    foreign "umount__glue"
-      ( ptr lxc_container @-> string_opt @-> ulong @-> ptr Lxc_mount.t
-        @-> returning int )
-
-  let seccomp_notify_fd =
-    foreign "seccomp_notify_fd__glue" (ptr lxc_container @-> returning int)
 
     (*$*)
 end

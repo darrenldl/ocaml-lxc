@@ -1,5 +1,9 @@
 #include "lxc_glue.h"
 
+#ifndef LXC_DEVEL
+#define LXC_DEVEL 0
+#endif
+
 struct bdev_specs bdev_specs__glue_dissolve(struct bdev_specs__glue *src) {
   struct bdev_specs ret = {0};
 
@@ -30,6 +34,53 @@ bool create__glue(struct lxc_container *c, const char *t, const char *bdevtype,
 
     return c->create(c, t, bdevtype, &specs, flags, argv);
   }
+}
+
+bool lxc_config_item_is_supported__glue(const char *key) {
+#if VERSION_AT_LEAST(2, 1, 0)
+  return lxc_config_item_is_supported(key);
+#else
+  return false;
+#endif
+}
+
+bool lxc_has_api_extension__glue(const char *extension) {
+#if VERSION_AT_LEAST(3, 1, 0)
+  return lxc_has_api_extension(extension);
+#else
+  return false;
+#endif
+}
+
+struct migrate_opts
+migrate_opts__glue_dissolve(struct migrate_opts__glue *opts) {
+  struct migrate_opts ret = {0};
+
+#if VERSION_AT_LEAST(3, 0, 0)
+  ret.features_to_check = opts->features_to_check;
+#endif
+
+#if VERSION_AT_LEAST(2, 0, 4)
+  ret.action_script = opts->action_script;
+  ret.ghost_limit = opts->ghost_limit;
+#endif
+
+#if VERSION_AT_LEAST(2, 0, 1)
+  ret.preserves_inodes = opts->preserves_inodes;
+#endif
+
+  return ret;
+}
+
+int migrate__glue(struct lxc_container *c, unsigned int cmd,
+                  struct migrate_opts__glue *opts__glue) {
+  struct migrate_opts opts = migrate_opts__glue_dissolve(opts__glue);
+
+#if VERSION_AT_LEAST(2, 0, 0)
+  return c->migrate(c, cmd, &opts, sizeof(struct migrate_opts));
+#else
+  return -EINVAL;
+#endif
 }
 
 int attach_run_command__glue(struct lxc_container *c,
@@ -237,62 +288,67 @@ bool remove_device_node__glue(struct lxc_container *c, char *a0, char *a1) {
 }
 
 bool attach_interface__glue(struct lxc_container *c, char *a0, char *a1) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->attach_interface((struct lxc_container *)c, (const char *)a0,
                                    (const char *)a1);
+#else
+  return (false);
+#endif
 }
 
 bool detach_interface__glue(struct lxc_container *c, char *a0, char *a1) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->detach_interface((struct lxc_container *)c, (const char *)a0,
                                    (const char *)a1);
+#else
+  return (false);
+#endif
 }
 
 bool checkpoint__glue(struct lxc_container *c, char *a0, bool a1, bool a2) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->checkpoint((struct lxc_container *)c, (char *)a0, (bool)a1,
                              (bool)a2);
+#else
+  return (false);
+#endif
 }
 
 bool restore__glue(struct lxc_container *c, char *a0, bool a1) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->restore((struct lxc_container *)c, (char *)a0, (bool)a1);
+#else
+  return (false);
+#endif
 }
 
 bool destroy_with_snapshots__glue(struct lxc_container *c) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->destroy_with_snapshots((struct lxc_container *)c);
+#else
+  return (false);
+#endif
 }
 
 bool snapshot_destroy_all__glue(struct lxc_container *c) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->snapshot_destroy_all((struct lxc_container *)c);
-}
-
-int migrate__glue(struct lxc_container *c, unsigned int a0,
-                  struct migrate_opts *a1, unsigned int a2) {
-  return (int)c->migrate((struct lxc_container *)c, (unsigned int)a0,
-                         (struct migrate_opts *)a1, (unsigned int)a2);
+#else
+  return (false);
+#endif
 }
 
 int console_log__glue(struct lxc_container *c, struct lxc_console_log *a0) {
+#if VERSION_AT_LEAST(3, 0, 0)
   return (int)c->console_log((struct lxc_container *)c,
                              (struct lxc_console_log *)a0);
+#else
+  return (false);
+#endif
 }
 
 bool reboot2__glue(struct lxc_container *c, int a0) {
   return (bool)c->reboot2((struct lxc_container *)c, (int)a0);
-}
-
-int mount__glue(struct lxc_container *c, char *a0, char *a1, char *a2,
-                unsigned long a3, const void *a4, struct lxc_mount *a5) {
-  return (int)c->mount((struct lxc_container *)c, (const char *)a0,
-                       (const char *)a1, (const char *)a2, (unsigned long)a3,
-                       (const void *)a4, (struct lxc_mount *)a5);
-}
-
-int umount__glue(struct lxc_container *c, char *a0, unsigned long a1,
-                 struct lxc_mount *a2) {
-  return (int)c->umount((struct lxc_container *)c, (const char *)a0,
-                        (unsigned long)a1, (struct lxc_mount *)a2);
-}
-
-int seccomp_notify_fd__glue(struct lxc_container *c) {
-  return (int)c->seccomp_notify_fd((struct lxc_container *)c);
 }
 
 /*$*/

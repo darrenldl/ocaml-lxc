@@ -1,10 +1,54 @@
-#include <lxc/attach_options.h>
 #include <lxc/lxccontainer.h>
+#include <lxc/version.h>
 #include <stdint.h>
+
+#define VERSION_AT_LEAST(major, minor, micro)                                  \
+  ((LXC_DEVEL == 1) || (LXC_VERSION_MAJOR > major) ||                          \
+   (LXC_VERSION_MAJOR == major && LXC_VERSION_MINOR > minor) ||                \
+   (LXC_VERSION_MAJOR == major && LXC_VERSION_MINOR == minor &&                \
+    LXC_VERSION_MICRO >= micro))
 
 #ifndef LXC_GLUE_H
 #define LXC_GLUE_H
 
+/* dummy definitions of struct for older versions of LXC */
+#if !VERSION_AT_LEAST(3, 0, 0)
+struct lxc_console_log {
+  bool clear;
+  bool read;
+  uint64_t *read_max;
+  char *data;
+};
+#endif
+
+#if !VERSION_AT_LEAST(2, 0, 0)
+struct migrate_tops {
+}
+#endif
+
+/* migrate_opts__glue for easier handling of LXC version dependent compilation
+   where definition of migrate_opts varies
+ */
+struct migrate_opts__glue {
+  char *directory;
+  bool verbose;
+  bool stop;
+  char *predump_dir;
+  char *pageserver_address;
+  char *pageserver_port;
+  bool preserves_inodes;
+  char *action_script;
+  bool disable_skip_in_flight;
+  uint64_t ghost_limit;
+  uint64_t features_to_check;
+};
+
+struct migrate_opts
+migrate_opts__glue_dissolve(struct migrate_opts__glue *opts);
+
+/* bdev_specs__glue for working around ctypes not supporting anonymous structs,
+   which are used in bdev_specs definition
+ */
 struct bdev_specs__glue {
   char *fstype;
   uint64_t fssize;
@@ -28,6 +72,22 @@ struct bdev_specs bdev_specs__glue_dissolve(struct bdev_specs__glue *src);
 bool create__glue(struct lxc_container *c, const char *t, const char *bdevtype,
                   struct bdev_specs__glue *specs__glue, int flags,
                   char *const argv[]);
+
+bool lxc_config_item_is_supported__glue(const char *key);
+
+int attach_run_command__glue(struct lxc_container *c,
+                             lxc_attach_options_t *options,
+                             struct lxc_attach_command_t *cmd,
+                             pid_t *attached_process_pid);
+
+int attach_run_shell__glue(struct lxc_container *c,
+                           lxc_attach_options_t *options,
+                           pid_t *attached_process_pid);
+
+bool lxc_has_api_extension__glue(const char *extension);
+
+int migrate__glue(struct lxc_container *c, unsigned int cmd,
+                  struct migrate_opts__glue *opts__glue);
 
 /*$ #use "code_gen/gen.cinaps";;
 
@@ -131,20 +191,9 @@ bool destroy_with_snapshots__glue(struct lxc_container *c);
 
 bool snapshot_destroy_all__glue(struct lxc_container *c);
 
-int migrate__glue(struct lxc_container *c, unsigned int a0,
-                  struct migrate_opts *a1, unsigned int a2);
-
 int console_log__glue(struct lxc_container *c, struct lxc_console_log *a0);
 
 bool reboot2__glue(struct lxc_container *c, int a0);
-
-int mount__glue(struct lxc_container *c, char *a0, char *a1, char *a2,
-                unsigned long a3, const void *a4, struct lxc_mount *a5);
-
-int umount__glue(struct lxc_container *c, char *a0, unsigned long a1,
-                 struct lxc_mount *a2);
-
-int seccomp_notify_fd__glue(struct lxc_container *c);
 
 /*$*/
 

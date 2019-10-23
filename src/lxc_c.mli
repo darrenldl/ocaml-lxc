@@ -27,9 +27,9 @@ module Lxc_clone_flags : sig
   val to_c_int : t -> int
 end
 
-module Lxc_mount_api_version : sig
-  val lxc_mount_api_v1 : int
-end
+(* module Lxc_mount_api_version : sig
+ *   val lxc_mount_api_v1 : int
+ * end *)
 
 module Lxc_create_flags : sig
   type t = Create_quiet
@@ -144,9 +144,15 @@ val lxc_log_init : Lxc_log.t structure ptr -> int
 
 val lxc_log_close : unit -> unit
 
-val lxc_config_item_is_supported : string -> bool
+val lxc_config_item_is_supported__glue : string -> bool
 
-val lxc_has_api_extension : string -> bool
+val lxc_has_api_extension__glue : string -> bool
+
+val migrate__glue :
+  lxc_container structure ptr
+  -> Unsigned.UInt.t
+  -> Migrate_opts__glue.t structure ptr
+  -> int
 
 (*$ #use "code_gen/gen.cinaps";;
 
@@ -284,35 +290,9 @@ val destroy_with_snapshots : Types.lxc_container structure ptr -> bool
 
 val snapshot_destroy_all : Types.lxc_container structure ptr -> bool
 
-val migrate :
-  Types.lxc_container structure ptr
-  -> Unsigned.uint
-  -> Migrate_opts.t structure ptr
-  -> Unsigned.uint
-  -> int
-
 val console_log :
   Types.lxc_container structure ptr -> Lxc_console_log.t structure ptr -> int
 
 val reboot2 : Types.lxc_container structure ptr -> int -> bool
 
-val mount :
-  Types.lxc_container structure ptr
-  -> string option
-  -> string option
-  -> string option
-  -> Unsigned.ulong
-  -> unit ptr
-  -> Lxc_mount.t structure ptr
-  -> int
-
-val umount :
-  Types.lxc_container structure ptr
-  -> string option
-  -> Unsigned.ulong
-  -> Lxc_mount.t structure ptr
-  -> int
-
-val seccomp_notify_fd : Types.lxc_container structure ptr -> int
-
-                                                             (*$*)
+                                                          (*$*)

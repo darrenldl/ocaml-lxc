@@ -4,9 +4,9 @@ module Feature_checks = Lxc_c.Feature_checks
 module Command = Lxc_c.Migrate_cmd
 
 module Options = struct
-  module M = Stubs.Type_stubs.Migrate_opts
+  module M = Stubs.Type_stubs.Migrate_opts__glue
 
-  type c_struct = Types.Migrate_opts.t structure
+  type c_struct = Types.Migrate_opts__glue.t structure
 
   type t =
     { dir : string

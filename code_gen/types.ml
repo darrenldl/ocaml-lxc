@@ -42,10 +42,10 @@ module Bdev_specs__glue = struct
   let t : t structure typ = structure "bdev_specs__glue"
 end
 
-module Migrate_opts = struct
+module Migrate_opts__glue = struct
   type t
 
-  let t : t structure typ = structure "migrate_opts"
+  let t : t structure typ = structure "migrate_opts__glue"
 end
 
 module Lxc_console_log = struct
@@ -54,11 +54,11 @@ module Lxc_console_log = struct
   let t : t structure typ = structure "lxc_console_log"
 end
 
-module Lxc_mount = struct
-  type t
-
-  let t : t structure typ = structure "lxc_mount"
-end
+(* module Lxc_mount = struct
+ *   type t
+ * 
+ *   let t : t structure typ = structure "lxc_mount"
+ * end *)
 
 module Lxc_log = struct
   type t
