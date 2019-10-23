@@ -146,7 +146,14 @@ val lxc_log_close : unit -> unit
 
 val lxc_config_item_is_supported__glue : string -> bool
 
-val lxc_has_api_extension : string -> bool
+val lxc_has_api_extension__glue : string -> bool
+
+val migrate__glue :
+  lxc_container structure ptr
+  -> Unsigned.UInt.t
+  -> Migrate_opts.t structure ptr
+  -> Unsigned.UInt.t
+  -> int
 
 (*$ #use "code_gen/gen.cinaps";;
 

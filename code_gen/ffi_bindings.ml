@@ -76,6 +76,11 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
   let lxc_has_api_extension__glue =
     foreign "lxc_has_api_extension__glue" (string @-> returning bool)
 
+  let migrate__glue =
+    foreign "migrate__glue"
+      ( ptr lxc_container @-> uint @-> ptr Migrate_opts.t @-> uint
+        @-> returning int )
+
   (*$ #use "code_gen/gen.cinaps";;
 
        For_ffi_bindings_dot_ml.gen_lxc_container_funptr_field_ml_glue_all ()
