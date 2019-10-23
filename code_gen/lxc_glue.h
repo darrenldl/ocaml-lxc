@@ -1,32 +1,15 @@
 #include <lxc/lxccontainer.h>
+#include <lxc/version.h>
 #include <stdint.h>
 
-#define VERSION_AT_LEAST(major, minor, patch)                                  \
+#define VERSION_AT_LEAST(major, minor, micro)                                  \
   ((LXC_DEVEL == 1) || (LXC_VERSION_MAJOR > major) ||                          \
    (LXC_VERSION_MAJOR == major && LXC_VERSION_MINOR > minor) ||                \
    (LXC_VERSION_MAJOR == major && LXC_VERSION_MINOR == minor &&                \
-    LXC_VERSION_PATCH >= patch))
+    LXC_VERSION_MICRO >= micro))
 
 #ifndef LXC_GLUE_H
 #define LXC_GLUE_H
-
-struct bdev_specs__glue {
-  char *fstype;
-  uint64_t fssize;
-  struct zfs__glue {
-    char *zfsroot;
-  } zfs;
-  struct lvm__glue {
-    char *vg;
-    char *lv;
-    char *thinpool;
-  } lvm;
-  char *dir;
-  struct rbd__glue {
-    char *rbdname;
-    char *rbdpool;
-  } rbd;
-};
 
 // dummy definitions of struct for older versions of LXC
 #if !VERSION_AT_LEAST(2, 0, 0)
@@ -53,6 +36,24 @@ struct lxc_console_log {
   char *data;
 };
 #endif
+
+struct bdev_specs__glue {
+  char *fstype;
+  uint64_t fssize;
+  struct zfs__glue {
+    char *zfsroot;
+  } zfs;
+  struct lvm__glue {
+    char *vg;
+    char *lv;
+    char *thinpool;
+  } lvm;
+  char *dir;
+  struct rbd__glue {
+    char *rbdname;
+    char *rbdpool;
+  } rbd;
+};
 
 struct bdev_specs bdev_specs__glue_dissolve(struct bdev_specs__glue *src);
 

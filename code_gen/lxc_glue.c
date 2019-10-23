@@ -256,7 +256,11 @@ bool restore__glue(struct lxc_container *c, char *a0, bool a1) {
 }
 
 bool destroy_with_snapshots__glue(struct lxc_container *c) {
+#if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->destroy_with_snapshots((struct lxc_container *)c);
+#else
+  return (false);
+#endif
 }
 
 bool snapshot_destroy_all__glue(struct lxc_container *c) {

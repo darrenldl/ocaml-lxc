@@ -1,8 +1,15 @@
+type version_at_least =
+  { version : int * int * int
+  ; default_value : string }
+
+let version_to_str (major, minor, patch) =
+  Printf.sprintf "%d, %d, %d" major minor patch
+
 type funptr_record =
   { fun_name : string
   ; other_param_tys : string list
   ; ret_ty : string
-  ; version_at_least : (int * int * int) option }
+  ; version_at_least : version_at_least option }
 
 let glue_fun_name_suffix = "__glue"
 
@@ -200,7 +207,7 @@ let funptr_records =
   ; { ret_ty = "bool"
     ; fun_name = "destroy_with_snapshots"
     ; other_param_tys = []
-    ; version_at_least = None }
+    ; version_at_least = Some {version = (1, 1, 0); default_value = "false"} }
   ; { ret_ty = "bool"
     ; fun_name = "snapshot_destroy_all"
     ; other_param_tys = []
@@ -302,8 +309,19 @@ module For_lxc_glue_dot_c = struct
     Printf.printf "%s %s%s(%s) {\n" (patch_c_type ret_ty) fun_name
       glue_fun_name_suffix
       (gen_c_func_arg_field params);
+    Option.iter
+      (fun version_at_least ->
+         Printf.printf "#if VERSION_AT_LEAST(%s)\n"
+           (version_to_str version_at_least.version))
+      version_at_least;
     Printf.printf "  return (%s)c->%s(%s);\n" (patch_c_type ret_ty) fun_name
       (gen_c_func_arg_names params);
+    Option.iter
+      (fun version_at_least ->
+         Printf.printf "#else\n";
+         Printf.printf "return (%s);\n" version_at_least.default_value;
+         Printf.printf "#endif\n")
+      version_at_least;
     print_endline "}";
     print_newline ()
 
