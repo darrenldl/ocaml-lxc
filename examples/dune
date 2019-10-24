@@ -21,3 +21,9 @@
  (modules run)
  (libraries lxc
  ))
+
+(executable
+ (name console)
+ (modules console)
+ (libraries lxc
+ ))

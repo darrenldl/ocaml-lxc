@@ -1,4 +1,4 @@
-let container_name = "ocaml-lxc_example"
+let container_name = "ocaml-lxc-example"
 
 let () =
   let c = Lxc.new_container container_name |> Result.get_ok in
