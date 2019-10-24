@@ -340,20 +340,20 @@ module Container : sig
     end
 
     module Options : sig
-  type t =
-    { attach_flags : Flags.t list option
-    ; namespace_flags : Namespace_flags.t list option
-    ; personality : int64 option
-    ; initial_cwd : string option
-    ; uid : int option
-    ; gid : int option
-    ; env_policy : Env_policy.t option
-    ; extra_env_vars : string list option
-    ; extra_keep_env : string list option
-    ; stdin_fd : int option
-    ; stdout_fd : int option
-    ; stderr_fd : int option
-    ; log_fd : int option }
+      type t =
+        { attach_flags : Flags.t list option
+        ; namespace_flags : Namespace_flags.t list option
+        ; personality : int64 option
+        ; initial_cwd : string option
+        ; uid : int option
+        ; gid : int option
+        ; env_policy : Env_policy.t option
+        ; extra_env_vars : string list option
+        ; extra_keep_env : string list option
+        ; stdin_fd : int option
+        ; stdout_fd : int option
+        ; stderr_fd : int option
+        ; log_fd : int option }
     end
 
     val run_shell : ?options:Options.t -> container -> (int, unit) result

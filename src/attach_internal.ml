@@ -44,14 +44,16 @@ module Options = struct
     let default_ptr = Lxc_c.get_lxc_attach_options_default__glue () in
     let c_struct = make L.t in
     let aux c_struct_field field f =
-      setf c_struct c_struct_field (match field with
-          | None -> getf !@default_ptr c_struct_field
-          | Some v -> f v
-        )
+      setf c_struct c_struct_field
+        ( match field with
+          | None ->
+            getf !@default_ptr c_struct_field
+          | Some v ->
+            f v )
     in
     aux L.attach_flags t.attach_flags (lor_flags Flags.to_c_int);
     aux L.namespaces t.namespace_flags (lor_flags Namespace_flags.to_c_int);
-    aux L.personality t.personality (Signed.Long.of_int64);
+    aux L.personality t.personality Signed.Long.of_int64;
     setf c_struct L.initial_cwd t.initial_cwd;
     aux L.uid t.uid Posix_types.Uid.of_int;
     aux L.gid t.gid Posix_types.Gid.of_int;
