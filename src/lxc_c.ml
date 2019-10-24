@@ -4,6 +4,12 @@ exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
 
+module Version = struct
+  let version = Stubs.Type_stubs.Version.(major, minor, micro)
+
+  let is_devel = Stubs.Type_stubs.Version.devel <> 0
+end
+
 module Namespace_flags = struct
   open Type_stubs.Namespace_flags
 

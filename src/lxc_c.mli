@@ -5,6 +5,12 @@ exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
 
+module Version : sig
+  val version : int * int * int
+
+  val is_devel : bool
+end
+
 module Namespace_flags : sig
   type t =
     | Clone_newcgroup
