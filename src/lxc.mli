@@ -364,7 +364,7 @@ module Container : sig
       -> argv:string array
       -> (int, unit) result
 
-    val command_ret_status :
+    val command_ret_waitpid_status :
       ?options:Options.t
       -> container
       -> argv:string array

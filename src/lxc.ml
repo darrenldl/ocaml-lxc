@@ -389,7 +389,7 @@ module Container = struct
       | _ ->
         raise C.Unexpected_value_from_C
 
-    let command_ret_status ?(options = Options.default) c ~argv =
+    let command_ret_waitpid_status ?(options = Options.default) c ~argv =
       let options = Options.c_struct_of_t options in
       match
         C.attach_run_wait c.lxc_container (addr options)
