@@ -24,7 +24,12 @@ The following elements are also derived/copied from go-lxc
 - Document code architecture
 
 ## Examples
-See [here](examples/)
+Following replicates the C example listed on
+[linuxcontainers.org](https://linuxcontainers.org/lxc/documentation/)
+See [here](examples/) for the complete versions and other examples.
+
+```ocaml
+```
 
 ## Contribution
 Contributions are welcome. Note that by submitting contributions, you agree to license your work under the same license used by this project as stated in the LICENSE file.
