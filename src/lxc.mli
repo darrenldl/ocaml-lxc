@@ -1,5 +1,13 @@
 type container
 
+exception Unexpected_value_from_C
+
+exception Unexpected_value_from_ML
+
+exception Not_supported_by_installed_lxc_version
+
+module Error : sig end
+
 module Backing_store : sig
   type store_type =
     | Btrfs
@@ -66,6 +74,8 @@ module Create_options : sig
     ; force_cache : bool option
     ; extra_args : string array option }
 
+  val blank : t
+
   module Templates : sig
     val download_ubuntu_trusty_amd64 : t
 
@@ -102,6 +112,8 @@ module State : sig
     | Freezing
     | Frozen
     | Thawed
+
+  val to_string : t -> string
 end
 
 type getfd_result =
@@ -295,7 +307,7 @@ module Container : sig
   module Snapshot : sig
     type t
 
-    val create : container -> comment_file:string -> (int, unit) result
+    val create : ?comment_file:string -> container -> (int, unit) result
 
     val list : container -> (t list, unit) result
 
@@ -310,7 +322,7 @@ module Container : sig
     val destroy_all : container -> (unit, unit) result
   end
 
-  module Run : sig
+  module Attach : sig
     module Flags : sig
       type t =
         | Attach_move_to_cgroup
@@ -333,30 +345,30 @@ module Container : sig
 
     module Options : sig
       type t =
-        { attach_flags : Flags.t list
-        ; namespace_flags : Namespace_flags.t list
-        ; personality : int64
+        { attach_flags : Flags.t list option
+        ; namespace_flags : Namespace_flags.t list option
+        ; personality : int64 option
         ; initial_cwd : string option
-        ; uid : int
-        ; gid : int
-        ; env_policy : Env_policy.t
+        ; uid : int option
+        ; gid : int option
+        ; env_policy : Env_policy.t option
         ; extra_env_vars : string list option
         ; extra_keep_env : string list option
-        ; stdin_fd : int
-        ; stdout_fd : int
-        ; stderr_fd : int
-        ; log_fd : int }
+        ; stdin_fd : int option
+        ; stdout_fd : int option
+        ; stderr_fd : int option
+        ; log_fd : int option }
     end
 
     val shell : ?options:Options.t -> container -> (int, unit) result
 
-    val command_no_wait :
+    val run_command_no_wait :
       ?options:Options.t
       -> container
       -> argv:string array
       -> (int, unit) result
 
-    val command_ret_status :
+    val run_command_ret_waitpid_status :
       ?options:Options.t
       -> container
       -> argv:string array

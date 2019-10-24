@@ -4,6 +4,13 @@
 #define LXC_DEVEL 0
 #endif
 
+static lxc_attach_options_t lxc_attach_options_default =
+    LXC_ATTACH_OPTIONS_DEFAULT;
+
+lxc_attach_options_t *get_lxc_attach_options_default__glue(void) {
+  return &lxc_attach_options_default;
+}
+
 struct bdev_specs bdev_specs__glue_dissolve(struct bdev_specs__glue *src) {
   struct bdev_specs ret = {0};
 
@@ -292,7 +299,7 @@ bool attach_interface__glue(struct lxc_container *c, char *a0, char *a1) {
   return (bool)c->attach_interface((struct lxc_container *)c, (const char *)a0,
                                    (const char *)a1);
 #else
-  return (false);
+  return false;
 #endif
 }
 
@@ -301,7 +308,7 @@ bool detach_interface__glue(struct lxc_container *c, char *a0, char *a1) {
   return (bool)c->detach_interface((struct lxc_container *)c, (const char *)a0,
                                    (const char *)a1);
 #else
-  return (false);
+  return false;
 #endif
 }
 
@@ -310,7 +317,7 @@ bool checkpoint__glue(struct lxc_container *c, char *a0, bool a1, bool a2) {
   return (bool)c->checkpoint((struct lxc_container *)c, (char *)a0, (bool)a1,
                              (bool)a2);
 #else
-  return (false);
+  return false;
 #endif
 }
 
@@ -318,7 +325,7 @@ bool restore__glue(struct lxc_container *c, char *a0, bool a1) {
 #if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->restore((struct lxc_container *)c, (char *)a0, (bool)a1);
 #else
-  return (false);
+  return false;
 #endif
 }
 
@@ -326,7 +333,7 @@ bool destroy_with_snapshots__glue(struct lxc_container *c) {
 #if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->destroy_with_snapshots((struct lxc_container *)c);
 #else
-  return (false);
+  return false;
 #endif
 }
 
@@ -334,7 +341,7 @@ bool snapshot_destroy_all__glue(struct lxc_container *c) {
 #if VERSION_AT_LEAST(1, 1, 0)
   return (bool)c->snapshot_destroy_all((struct lxc_container *)c);
 #else
-  return (false);
+  return false;
 #endif
 }
 
@@ -343,7 +350,7 @@ int console_log__glue(struct lxc_container *c, struct lxc_console_log *a0) {
   return (int)c->console_log((struct lxc_container *)c,
                              (struct lxc_console_log *)a0);
 #else
-  return (false);
+  return false;
 #endif
 }
 

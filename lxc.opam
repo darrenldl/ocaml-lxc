@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "lxc"
-version: "0.0.1"
+version: "0.1.0"
 synopsis: "OCaml binding to LXC"
 description: """
 OCaml binding to LXC

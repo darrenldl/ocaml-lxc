@@ -1,4 +1,4 @@
-SRCFILES = src/*.ml* code_gen/*.ml*
+SRCFILES = src/*.ml* code_gen/*.ml* tests/*.ml examples/*.ml
 
 C_FILES = code_gen/*.c code_gen/*.h
 

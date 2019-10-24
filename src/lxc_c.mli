@@ -5,6 +5,14 @@ exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
 
+exception Not_supported_by_installed_lxc_version
+
+module Version : sig
+  val version : int * int * int
+
+  val is_devel : bool
+end
+
 module Namespace_flags : sig
   type t =
     | Clone_newcgroup
@@ -86,6 +94,9 @@ module State : sig
 
   val of_string : string -> t
 end
+
+val get_lxc_attach_options_default__glue :
+  unit -> Lxc_attach_options_t.t structure ptr
 
 val create__glue :
   lxc_container structure ptr

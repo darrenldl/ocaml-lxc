@@ -2,6 +2,16 @@ open Misc_utils
 open Ctypes
 module C = Lxc_c
 
+exception Unexpected_value_from_C = C.Unexpected_value_from_C
+
+exception Unexpected_value_from_ML = C.Unexpected_value_from_ML
+
+exception
+  Not_supported_by_installed_lxc_version = C
+                                           .Not_supported_by_installed_lxc_version
+
+module Error = struct end
+
 type container =
   {lxc_container : Types.lxc_container Ctypes.structure Ctypes.ptr}
 
@@ -18,8 +28,12 @@ module Namespace_flags = C.Namespace_flags
 module Feature_checks = C.Feature_checks
 module State = C.State
 
-let new_container ?config_path name =
-  match C.lxc_container_new name config_path with
+let get_global_config_item ~key =
+  C.lxc_get_global_config_item key |> string_from_string_ptr ~free:true
+
+let new_container ?(config_path = get_global_config_item ~key:"lxc.lxcpath")
+    name =
+  match C.lxc_container_new name (Some config_path) with
   | None ->
     Error ()
   | Some lxc_container ->
@@ -39,9 +53,6 @@ let release t =
     Error ()
   | _ ->
     raise C.Unexpected_value_from_C
-
-let get_global_config_item ~key =
-  C.lxc_get_global_config_item key |> string_from_string_ptr ~free:true
 
 let get_version () = C.lxc_get_version ()
 
@@ -345,11 +356,11 @@ module Container = struct
     | _ ->
       raise C.Unexpected_value_from_C
 
-  module Run = struct
-    module Flags = Run_internal.Flags
-    module Env_policy = Run_internal.Env_policy
-    module Options = Run_internal.Options
-    module Command = Run_internal.Command
+  module Attach = struct
+    module Flags = Attach_internal.Flags
+    module Env_policy = Attach_internal.Env_policy
+    module Options = Attach_internal.Options
+    module Command = Attach_internal.Command
 
     let shell ?(options = Options.default) c =
       let options = Options.c_struct_of_t options in
@@ -364,7 +375,7 @@ module Container = struct
       | _ ->
         raise C.Unexpected_value_from_C
 
-    let command_no_wait ?(options = Options.default) c ~argv =
+    let run_command_no_wait ?(options = Options.default) c ~argv =
       let options = Options.c_struct_of_t options in
       let command = Command.c_struct_of_string_array argv in
       let pid_t_ptr = allocate Posix_types.pid_t (Posix_types.Pid.of_int 0) in
@@ -379,7 +390,7 @@ module Container = struct
       | _ ->
         raise C.Unexpected_value_from_C
 
-    let command_ret_status ?(options = Options.default) c ~argv =
+    let run_command_ret_waitpid_status ?(options = Options.default) c ~argv =
       let options = Options.c_struct_of_t options in
       match
         C.attach_run_wait c.lxc_container (addr options)
@@ -395,8 +406,8 @@ module Container = struct
   module Snapshot = struct
     type t = Snapshot_internal.t
 
-    let create c ~comment_file =
-      match C.snapshot c.lxc_container (Some comment_file) with
+    let create ?comment_file c =
+      match C.snapshot c.lxc_container comment_file with
       | -1 ->
         Error ()
       | n ->

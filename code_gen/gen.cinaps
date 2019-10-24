@@ -264,21 +264,25 @@ let patch_c_type s =
   | _ ->
     s
 
-let gen_c_func_arg_field param_and_ty_list =
+let gen_c_fun_arg_field param_and_ty_list =
   String.concat ", "
     (List.map
        (fun (name, ty) -> Printf.sprintf "%s %s" (patch_c_type ty) name)
        param_and_ty_list)
 
-let gen_c_func_arg_names param_and_ty_list =
+let gen_c_fun_arg_names param_and_ty_list =
   String.concat ", "
     (List.map
        (fun (name, ty) -> Printf.sprintf "(%s) %s" ty name)
        param_and_ty_list)
 
+let gen_ocaml_fun_arg_field param_and_ty_list =
+  String.concat " "
+    (List.mapi (fun i _ -> Printf.sprintf "a%d" i) param_and_ty_list)
+
 module For_lxc_glue_dot_h = struct
   let gen_lxc_container_funptr_field_c_glue_header
-      {fun_name; other_param_tys; ret_ty; version_at_least} =
+      {fun_name; other_param_tys; ret_ty; _} =
     let container_param_and_ty = ("c", "struct lxc_container *") in
     let other_param_and_ty =
       other_param_tys |> List.mapi (fun i ty -> (Printf.sprintf "a%d" i, ty))
@@ -286,7 +290,7 @@ module For_lxc_glue_dot_h = struct
     let params = container_param_and_ty :: other_param_and_ty in
     Printf.printf "%s %s%s(%s);\n" (patch_c_type ret_ty) fun_name
       glue_fun_name_suffix
-      (gen_c_func_arg_field params);
+      (gen_c_fun_arg_field params);
     print_newline ()
 
   let gen_lxc_container_funptr_field_c_glue_header_all () =
@@ -303,18 +307,18 @@ module For_lxc_glue_dot_c = struct
     let params = container_param_and_ty :: other_param_and_ty in
     Printf.printf "%s %s%s(%s) {\n" (patch_c_type ret_ty) fun_name
       glue_fun_name_suffix
-      (gen_c_func_arg_field params);
+      (gen_c_fun_arg_field params);
     Option.iter
       (fun version_at_least ->
          Printf.printf "#if VERSION_AT_LEAST(%s)\n"
            (version_to_str version_at_least.version))
       version_at_least;
     Printf.printf "  return (%s)c->%s(%s);\n" (patch_c_type ret_ty) fun_name
-      (gen_c_func_arg_names params);
+      (gen_c_fun_arg_names params);
     Option.iter
       (fun version_at_least ->
          Printf.printf "#else\n";
-         Printf.printf "return (%s);\n" version_at_least.default_value;
+         Printf.printf "return %s;\n" version_at_least.default_value;
          Printf.printf "#endif\n")
       version_at_least;
     print_endline "}";
@@ -427,8 +431,8 @@ let c_type_to_ocaml_type s =
     aux (strip_chars "*" s) pointer_count
 
 module For_ffi_types_dot_ml = struct
-  let gen_lxc_container_funptr_field_ml
-      {fun_name; other_param_tys; ret_ty; version_at_least} =
+  let gen_lxc_container_funptr_field_ml {fun_name; other_param_tys; ret_ty; _}
+    =
     Printf.printf "let %s%s =\n" fun_name funptr_field_ml_raw_suffix;
     Printf.printf "  field lxc_container \"%s\"\n" fun_name;
     Printf.printf "    (static_funptr\n";
@@ -444,7 +448,7 @@ end
 
 module For_ffi_bindings_dot_ml = struct
   let gen_lxc_container_funptr_field_ml_glue
-      {fun_name; other_param_tys; ret_ty; version_at_least} =
+      {fun_name; other_param_tys; ret_ty; _} =
     Printf.printf "let %s =\n" fun_name;
     Printf.printf "  foreign \"%s%s\"\n" fun_name glue_fun_name_suffix;
     Printf.printf "    (%s\n"
@@ -458,7 +462,7 @@ end
 
 module For_lxc_c_dot_ml = struct
   let gen_lxc_container_funptr_field_ml_wrapper
-      {fun_name; other_param_tys; ret_ty; version_at_least} =
+      {fun_name; other_param_tys; ret_ty; _} =
     let raw_fun_name = fun_name ^ funptr_field_ml_raw_suffix in
     Printf.printf "let %s (c : Types.lxc_container structure ptr) %s =\n"
       fun_name
@@ -479,8 +483,21 @@ module For_lxc_c_dot_ml = struct
   let gen_lxc_container_funptr_field_ml_wrapper_all () =
     List.iter gen_lxc_container_funptr_field_ml_wrapper funptr_records
 
-  let gen_lxc_container_funptr_field_ml_glue {fun_name; _} =
-    Printf.printf "let %s = Fun_stubs.%s\n" fun_name fun_name
+  let gen_lxc_container_funptr_field_ml_glue
+      {fun_name; other_param_tys; version_at_least; _} =
+    match version_at_least with
+    | None ->
+      Printf.printf "let %s = Fun_stubs.%s\n" fun_name fun_name
+    | Some ver ->
+      let arg_field = gen_ocaml_fun_arg_field other_param_tys in
+      Printf.printf "let %s %s =\n" fun_name arg_field;
+      Printf.printf
+        "if Version.is_devel || Misc_utils.version_a_at_least_b \
+         ~a:Version.version ~b:(%s) then\n"
+        (version_to_str ver.version);
+      Printf.printf "Fun_stubs.%s %s\n" fun_name arg_field;
+      Printf.printf "else\n";
+      Printf.printf "raise Not_supported_by_installed_lxc_version\n"
 
   let gen_lxc_container_funptr_field_ml_glue_all () =
     List.iter gen_lxc_container_funptr_field_ml_glue funptr_records
@@ -488,7 +505,7 @@ end
 
 module For_lxc_c_dot_mli = struct
   let gen_lxc_container_funptr_field_ml_wrapper_sig
-      {fun_name; other_param_tys; ret_ty; version_at_least} =
+      {fun_name; other_param_tys; ret_ty; _} =
     Printf.printf "val %s : Types.lxc_container structure ptr -> %s\n" fun_name
       (String.concat " -> "
          ( List.map c_type_to_ocaml_type_sig other_param_tys
@@ -498,7 +515,7 @@ module For_lxc_c_dot_mli = struct
     List.iter gen_lxc_container_funptr_field_ml_wrapper_sig funptr_records
 
   let gen_lxc_container_funptr_field_ml_glue_sig
-      {fun_name; other_param_tys; ret_ty; version_at_least} =
+      {fun_name; other_param_tys; ret_ty; _} =
     Printf.printf "val %s : Types.lxc_container structure ptr -> %s\n" fun_name
       (String.concat " -> "
          ( List.map c_type_to_ocaml_type_sig other_param_tys

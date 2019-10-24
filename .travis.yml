@@ -32,7 +32,6 @@ deploy:
   skip_cleanup: true
   github_token:
     secure: "YZ5GvOIkf5QebUBydE8SBN5j0aWsR/4mhvtTb+hC1KoLC6LQCbS+c2cNqh+ZlikkrAiMhyvYi7bg1L3PrdU/mFgxrrhkHe9QzW6rsE4H++r//5ECQVL0OL5Kmi/Kubv+JtH4VotXq1xFNh7alVXQJ6TQKt6n3EBHO3b3d33b4s1BjdL02TJDlaKy+udG1BGGLExe8WUhvJn8vQK4x9Ck/eEtm8m+A3faympNSWz5B6h+2eKkile/0q56Qh41jr34PuvG5sySJOp9iJZ1tFVNP+LEL/50EFKpnYV5L+fesWYvxR8QxadnFpWxcdlrAk0fPzf+YDFNHZoTPwz5FVbfMk0oo9IE5NYrodJZInrVVOVBJYd2uXF+xKNA1Z/EP8dulXtxIvATtoffaJGVOVTmZpLfXCavh+ZHicMvejx3bLIRl68ydCJ+j0prK3IBykDoA49KXwOuazDR5NlFY05kfCeYAOWQBUWTsdJK92paUsSA/0CswA+fe5YlPtz/+n1JEZTCES/LhhLrA4SMK6xjAFDkW/agkE7LSXXizNP9HZriLWNGaGn2+B6TunQ89cyFlg9t92TrLWjyA9ZHGd6F6WGctEsAO2OAEyJ+bPCZHYN1VOLiIEApDePY/2yaaUvercRPWLAt+oOGQiDimyVtaJugpskCEdVXNeIYYyS7afA="
-  keep_history: true
   local_dir: _build/default/_doc/_html/
   on:
     branch: master

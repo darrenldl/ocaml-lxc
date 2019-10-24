@@ -1,0 +1,41 @@
+(executable
+ (name start)
+ (modules start)
+ (libraries lxc
+ ))
+
+(executable
+ (name create)
+ (modules create)
+ (libraries lxc
+ ))
+
+(executable
+ (name create_snapshot)
+ (modules create_snapshot)
+ (libraries lxc
+ ))
+
+(executable
+ (name attach)
+ (modules attach)
+ (libraries lxc
+ ))
+
+(executable
+ (name console)
+ (modules console)
+ (libraries lxc
+ ))
+
+(executable
+ (name checkpoint)
+ (modules checkpoint)
+ (libraries lxc
+ ))
+
+(executable
+ (name main_demo)
+ (modules main_demo)
+ (libraries lxc
+ ))
