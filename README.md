@@ -72,7 +72,7 @@ But I'd like to thank the teams behind the following two projects here due to th
 - [Ctypes](https://github.com/ocamllabs/ocaml-ctypes)
     - Incredibly nice and powerful C FFI library to use, (obviously) crucial to this library
 - [Cinaps](https://github.com/janestreet/cinaps)
-    - There are 53 function pointer fields in `lxc_container` - writing wrapper/glue code for each manually would be exceedingly tedious and error prone
+    - There are roughly 53 function pointer fields in `lxc_container` - writing wrapper/glue code for each manually would be exceedingly tedious and error prone
 
 ## License
 LGPL v2.1 as specified in the LICENSE file
