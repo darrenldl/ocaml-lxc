@@ -40,8 +40,8 @@ then run `make cinaps` and check if any of your modification was overwritten
 
 #### Formatting
 This project uses ocamlformat and ocp-indent for formatting OCaml code, and clang-format for formatting C code
-- If your modification involves OCaml code, please make sure you have ocamlformat and ocp-indent, then run `make format`
-- If your modification involves C code, please make sure you have clang-format, then run `make format_c`
+- If your modification involves OCaml code, please make sure you have ocamlformat and ocp-indent, then run `make format` before submitting your work
+- If your modification involves C code, please make sure you have clang-format, then run `make format_c` before submitting your work
 
 ## Details
 #### Index
