@@ -286,7 +286,7 @@ end
    let migrate__glue a0 a1 a2 =
    if
     Version.is_devel
-    || Misc_utils.version_a_at_least_b ~a:Version.version ~b:(1, 1, 0)
+    || Misc_utils.version_a_at_least_b ~a:Version.version ~b:(2, 0, 0)
    then Fun_stubs.migrate__glue a0 a1 a2
    else raise Not_supported_by_installed_lxc_version
 
