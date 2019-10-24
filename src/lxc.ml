@@ -362,7 +362,7 @@ module Container = struct
     module Options = Attach_internal.Options
     module Command = Attach_internal.Command
 
-    let run_shell ?(options = Options.default) c =
+    let shell ?(options = Options.default) c =
       let options = Options.c_struct_of_t options in
       let pid_t_ptr = allocate Posix_types.pid_t (Posix_types.Pid.of_int 0) in
       match

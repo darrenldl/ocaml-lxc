@@ -5,7 +5,7 @@ let () =
   if not (Lxc.Container.is_defined c) then (
     print_endline "Container is not defined";
     exit 1 );
-  ( match Lxc.Container.Attach.run_shell c with
+  ( match Lxc.Container.Attach.shell c with
     | Ok _ ->
       ()
     | Error _ ->

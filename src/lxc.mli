@@ -356,7 +356,7 @@ module Container : sig
         ; log_fd : int option }
     end
 
-    val run_shell : ?options:Options.t -> container -> (int, unit) result
+    val shell : ?options:Options.t -> container -> (int, unit) result
 
     val run_command_no_wait :
       ?options:Options.t
