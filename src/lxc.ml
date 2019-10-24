@@ -2,6 +2,10 @@ open Misc_utils
 open Ctypes
 module C = Lxc_c
 
+exception Unexpected_value_from_C = C.Unexpected_value_from_C
+
+exception Unexpected_value_from_ML = C.Unexpected_value_from_ML
+
 type container =
   {lxc_container : Types.lxc_container Ctypes.structure Ctypes.ptr}
 

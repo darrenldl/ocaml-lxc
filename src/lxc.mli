@@ -1,5 +1,9 @@
 type container
 
+exception Unexpected_value_from_C
+
+exception Unexpected_value_from_ML
+
 module Backing_store : sig
   type store_type =
     | Btrfs
