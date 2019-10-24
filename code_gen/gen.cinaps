@@ -318,7 +318,7 @@ module For_lxc_glue_dot_c = struct
     Option.iter
       (fun version_at_least ->
          Printf.printf "#else\n";
-         Printf.printf "return (%s);\n" version_at_least.default_value;
+         Printf.printf "return %s;\n" version_at_least.default_value;
          Printf.printf "#endif\n")
       version_at_least;
     print_endline "}";
