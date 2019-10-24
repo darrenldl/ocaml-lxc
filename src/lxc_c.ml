@@ -288,7 +288,7 @@ let migrate__glue a0 a1 a2 =
 (* allocating another copy here since it's not clear
    if attach call modifies the options
  *)
-   let get_lxc_attach_options_default__glue =
+   let get_lxc_attach_options_default__glue () =
    Ctypes.allocate Type_stubs.Lxc_attach_options_t.t
     Ctypes.(!@(Fun_stubs.get_lxc_attach_options_default__glue ()))
 
