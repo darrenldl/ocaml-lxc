@@ -97,62 +97,62 @@ module Lxc_clone_flags = struct
       (*$*)
 end
 
-   module Lxc_create_flags = struct
-   open Stubs.Type_stubs.Lxc_create_flags
+module Lxc_create_flags = struct
+  open Stubs.Type_stubs.Lxc_create_flags
 
-   (*$
-    let l = ["quiet"]
+  (*$
+       let l = ["quiet"]
 
-    ;;
-    print_endline "type t ="
+       ;;
+       print_endline "type t ="
 
-    ;;
-    List.iter (fun s -> Printf.printf "| Create_%s\n" s) l
+       ;;
+       List.iter (fun s -> Printf.printf "| Create_%s\n" s) l
 
-    ;;
-    print_endline "let to_c_int t = match t with"
+       ;;
+       print_endline "let to_c_int t = match t with"
 
-    ;;
-    List.iter (fun s -> Printf.printf "| Create_%s -> lxc_create_%s\n" s s) l
+       ;;
+       List.iter (fun s -> Printf.printf "| Create_%s -> lxc_create_%s\n" s s) l
   *)
 
-   type t = Create_quiet
+  type t = Create_quiet
 
-   let to_c_int t = match t with Create_quiet -> lxc_create_quiet
+  let to_c_int t = match t with Create_quiet -> lxc_create_quiet
 
-   (*$*)
-   end
+                                                (*$*)
+end
 
-   module Lxc_attach_flags = struct
-   open Type_stubs.Lxc_attach_flags
+module Lxc_attach_flags = struct
+  open Type_stubs.Lxc_attach_flags
 
-   (*$
-    let l =
-      [ "move_to_cgroup"
-      ; "drop_capabilities"
-      ; "set_personality"
-      ; "lsm_exec"
-      ; "remount_proc_sys"
-      ; "lsm_now"
-      ; "no_new_privs"
-      ; "terminal"
-      ; "default"
-      ; "lsm" ]
+  (*$
+       let l =
+         [ "move_to_cgroup"
+         ; "drop_capabilities"
+         ; "set_personality"
+         ; "lsm_exec"
+         ; "remount_proc_sys"
+         ; "lsm_now"
+         ; "no_new_privs"
+         ; "terminal"
+         ; "default"
+         ; "lsm" ]
 
-    ;;
-    print_endline "type t ="
+       ;;
+       print_endline "type t ="
 
-    ;;
-    List.iter (fun s -> Printf.printf "| Attach_%s\n" s) l
+       ;;
+       List.iter (fun s -> Printf.printf "| Attach_%s\n" s) l
 
-    ;;
-    print_endline "let to_c_int t = match t with"
+       ;;
+       print_endline "let to_c_int t = match t with"
 
-    ;;
-    List.iter (fun s -> Printf.printf "| Attach_%s -> lxc_attach_%s\n" s s) l
+       ;;
+       List.iter (fun s -> Printf.printf "| Attach_%s -> lxc_attach_%s\n" s s) l
   *)
 
-   type t =
+  type t =
     | Attach_move_to_cgroup
     | Attach_drop_capabilities
     | Attach_set_personality
@@ -164,70 +164,70 @@ end
     | Attach_default
     | Attach_lsm
 
-   let to_c_int t =
+  let to_c_int t =
     match t with
     | Attach_move_to_cgroup ->
-        lxc_attach_move_to_cgroup
+      lxc_attach_move_to_cgroup
     | Attach_drop_capabilities ->
-        lxc_attach_drop_capabilities
+      lxc_attach_drop_capabilities
     | Attach_set_personality ->
-        lxc_attach_set_personality
+      lxc_attach_set_personality
     | Attach_lsm_exec ->
-        lxc_attach_lsm_exec
+      lxc_attach_lsm_exec
     | Attach_remount_proc_sys ->
-        lxc_attach_remount_proc_sys
+      lxc_attach_remount_proc_sys
     | Attach_lsm_now ->
-        lxc_attach_lsm_now
+      lxc_attach_lsm_now
     | Attach_no_new_privs ->
-        lxc_attach_no_new_privs
+      lxc_attach_no_new_privs
     | Attach_terminal ->
-        lxc_attach_terminal
+      lxc_attach_terminal
     | Attach_default ->
-        lxc_attach_default
+      lxc_attach_default
     | Attach_lsm ->
-        lxc_attach_lsm
+      lxc_attach_lsm
 
-   (*$*)
-   end
+      (*$*)
+end
 
-   module Migrate_cmd = struct
-   open Type_stubs.Migrate_cmd
+module Migrate_cmd = struct
+  open Type_stubs.Migrate_cmd
 
-   type t =
+  type t =
     | Migrate_pre_dump
     | Migrate_dump
     | Migrate_restore
     | Migrate_feature_check
 
-   let to_c_int t =
+  let to_c_int t =
     match t with
     | Migrate_pre_dump ->
-        migrate_pre_dump
+      migrate_pre_dump
     | Migrate_dump ->
-        migrate_dump
+      migrate_dump
     | Migrate_restore ->
-        migrate_restore
+      migrate_restore
     | Migrate_feature_check ->
-        migrate_feature_check
-   end
+      migrate_feature_check
+end
 
-   module Feature_checks = struct
-   open Stubs.Type_stubs.Feature_checks
+module Feature_checks = struct
+  open Stubs.Type_stubs.Feature_checks
 
-   type t =
+  type t =
     | Feature_mem_track
     | Feature_lazy_pages
 
-   let to_c_int t =
+  let to_c_int t =
     match t with
     | Feature_mem_track ->
-        feature_mem_track |> Unsigned.ULLong.to_int
+      feature_mem_track |> Unsigned.ULLong.to_int
     | Feature_lazy_pages ->
-        feature_lazy_pages |> Unsigned.ULLong.to_int
-   end
+      feature_lazy_pages |> Unsigned.ULLong.to_int
+end
 
-   module State = struct
-   type t =
+module State = struct
+  type t =
     | Stopped
     | Starting
     | Running
@@ -237,55 +237,55 @@ end
     | Frozen
     | Thawed
 
-   let to_string t =
+  let to_string t =
     match t with
     | Stopped ->
-        "STOPPED"
+      "STOPPED"
     | Starting ->
-        "STARTING"
+      "STARTING"
     | Running ->
-        "RUNNING"
+      "RUNNING"
     | Stopping ->
-        "STOPPING"
+      "STOPPING"
     | Aborting ->
-        "ABORTING"
+      "ABORTING"
     | Freezing ->
-        "FREEZING"
+      "FREEZING"
     | Frozen ->
-        "FROZEN"
+      "FROZEN"
     | Thawed ->
-        "THAWED"
+      "THAWED"
 
-   let of_string t =
+  let of_string t =
     match t with
     | "STOPPED" ->
-        Stopped
+      Stopped
     | "STARTING" ->
-        Starting
+      Starting
     | "RUNNING" ->
-        Running
+      Running
     | "STOPPING" ->
-        Stopping
+      Stopping
     | "ABORTING" ->
-        Aborting
+      Aborting
     | "FREEZING" ->
-        Freezing
+      Freezing
     | "FROZEN" ->
-        Frozen
+      Frozen
     | "THAWED" ->
-        Thawed
+      Thawed
     | _ ->
-        raise Unexpected_value_from_C
-   end
+      raise Unexpected_value_from_C
+end
 
-   let migrate__glue a0 a1 a2 =
-   if
+let migrate__glue a0 a1 a2 =
+  if
     Version.is_devel
     || Misc_utils.version_a_at_least_b ~a:Version.version ~b:(2, 0, 0)
-   then Fun_stubs.migrate__glue a0 a1 a2
-   else raise Not_supported_by_installed_lxc_version
+  then Fun_stubs.migrate__glue a0 a1 a2
+  else raise Not_supported_by_installed_lxc_version
 
-   (* allocating another copy here since it's not clear
+(* allocating another copy here since it's not clear
    if attach call modifies the options
  *)
    let get_lxc_attach_options_default__glue =
