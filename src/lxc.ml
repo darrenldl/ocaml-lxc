@@ -28,8 +28,11 @@ module Namespace_flags = C.Namespace_flags
 module Feature_checks = C.Feature_checks
 module State = C.State
 
-let new_container ?config_path name =
-  match C.lxc_container_new name config_path with
+let get_global_config_item ~key =
+  C.lxc_get_global_config_item key |> string_from_string_ptr ~free:true
+
+let new_container ?(config_path = get_global_config_item ~key:"lxc.lxcpath") name =
+  match C.lxc_container_new name (Some config_path) with
   | None ->
     Error ()
   | Some lxc_container ->
@@ -49,9 +52,6 @@ let release t =
     Error ()
   | _ ->
     raise C.Unexpected_value_from_C
-
-let get_global_config_item ~key =
-  C.lxc_get_global_config_item key |> string_from_string_ptr ~free:true
 
 let get_version () = C.lxc_get_version ()
 
