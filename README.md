@@ -24,7 +24,7 @@ The following elements are also derived/copied from go-lxc
 - Document code architecture
 
 ## Examples
-WIP
+See [here](examples/)
 
 ## Contribution
 Contributions are welcome. Note that by submitting contributions, you agree to license your work under the same license used by this project as stated in the LICENSE file.
