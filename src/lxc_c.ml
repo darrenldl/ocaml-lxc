@@ -290,6 +290,10 @@ end
    then Fun_stubs.migrate__glue a0 a1 a2
    else raise Not_supported_by_installed_lxc_version
 
+   let get_lxc_attach_options_default__glue =
+   Ctypes.allocate Type_stubs.Lxc_attach_options_t.t
+    Ctypes.(!@(Fun_stubs.get_lxc_attach_options_default__glue ()))
+
    (*$
    List.iter
     (fun s -> Printf.printf "let %s = Fun_stubs.%s\n" s s)

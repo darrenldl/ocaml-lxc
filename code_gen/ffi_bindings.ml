@@ -8,8 +8,8 @@ module Fun_stubs (F : Cstubs.FOREIGN) = struct
 
   let strlen = foreign "strlen" (ptr char @-> returning long)
 
-  let get_lxc_attach_options_default =
-    foreign "get_lxc_attach_options_default"
+  let get_lxc_attach_options_default__glue =
+    foreign "get_lxc_attach_options_default__glue"
       (void @-> returning (ptr Lxc_attach_options_t.t))
 
   let create__glue =

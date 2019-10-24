@@ -4,9 +4,10 @@
 #define LXC_DEVEL 0
 #endif
 
-static lxc_attach_options_t lxc_attach_options_default =LXC_ATTACH_OPTIONS_DEFAULT;
+static lxc_attach_options_t lxc_attach_options_default =
+    LXC_ATTACH_OPTIONS_DEFAULT;
 
-lxc_attach_options_t *get_lxc_attach_options_default(void) {
+lxc_attach_options_t *get_lxc_attach_options_default__glue(void) {
   return &lxc_attach_options_default;
 }
 
