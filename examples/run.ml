@@ -11,12 +11,12 @@ let () =
       ()
     | Error _ ->
       print_endline "Failed to run shell";
-      exit 1 );
+      );
   print_endline "Container.Run.command";
   ( match Lxc.Container.Run.command_ret_waitpid_status c ~argv:[|"id"|] with
     | Ok _ ->
       ()
     | Error _ ->
-      print_endline "Failed to run shell";
-      exit 1 );
+      print_endline "Failed to run command";
+      );
   ()
