@@ -3,6 +3,7 @@ open Stubs
 exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
+
 exception Not_supported_by_installed_lxc_version
 
 module Version = struct
@@ -428,20 +429,54 @@ end
 
    let remove_device_node = Fun_stubs.remove_device_node
 
-   let attach_interface =
-   Fun_stubs.attach_interface
+   let attach_interface a0 a1 =
+   if
+    Version.is_devel
+    || Misc_utils.version_a_at_least_b ~a:Version.version ~b:(1, 1, 0)
+   then Fun_stubs.attach_interface a0 a1
+   else raise Not_supported_by_installed_lxc_version
 
-   let detach_interface = Fun_stubs.detach_interface
+   let detach_interface a0 a1 =
+   if
+    Version.is_devel
+    || Misc_utils.version_a_at_least_b ~a:Version.version ~b:(1, 1, 0)
+   then Fun_stubs.detach_interface a0 a1
+   else raise Not_supported_by_installed_lxc_version
 
-   let checkpoint = Fun_stubs.checkpoint
+   let checkpoint a0 a1 a2 =
+   if
+    Version.is_devel
+    || Misc_utils.version_a_at_least_b ~a:Version.version ~b:(1, 1, 0)
+   then Fun_stubs.checkpoint a0 a1 a2
+   else raise Not_supported_by_installed_lxc_version
 
-   let restore = Fun_stubs.restore
+   let restore a0 a1 =
+   if
+    Version.is_devel
+    || Misc_utils.version_a_at_least_b ~a:Version.version ~b:(1, 1, 0)
+   then Fun_stubs.restore a0 a1
+   else raise Not_supported_by_installed_lxc_version
 
-   let destroy_with_snapshots = Fun_stubs.destroy_with_snapshots
+   let destroy_with_snapshots =
+   if
+    Version.is_devel
+    || Misc_utils.version_a_at_least_b ~a:Version.version ~b:(1, 1, 0)
+   then Fun_stubs.destroy_with_snapshots
+   else raise Not_supported_by_installed_lxc_version
 
-   let snapshot_destroy_all = Fun_stubs.snapshot_destroy_all
+   let snapshot_destroy_all =
+   if
+    Version.is_devel
+    || Misc_utils.version_a_at_least_b ~a:Version.version ~b:(1, 1, 0)
+   then Fun_stubs.snapshot_destroy_all
+   else raise Not_supported_by_installed_lxc_version
 
-   let console_log = Fun_stubs.console_log
+   let console_log a0 =
+   if
+    Version.is_devel
+    || Misc_utils.version_a_at_least_b ~a:Version.version ~b:(3, 0, 0)
+   then Fun_stubs.console_log a0
+   else raise Not_supported_by_installed_lxc_version
 
    let reboot2 = Fun_stubs.reboot2
 

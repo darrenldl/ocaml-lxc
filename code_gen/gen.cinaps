@@ -492,8 +492,8 @@ module For_lxc_c_dot_ml = struct
       let arg_field = gen_ocaml_fun_arg_field other_param_tys in
       Printf.printf "let %s %s =\n" fun_name arg_field;
       Printf.printf
-        "if Version.is_devel || version_a_at_least_b ~a:Version.version \
-         ~b:(%s) then\n"
+        "if Version.is_devel || Misc_utils.version_a_at_least_b \
+         ~a:Version.version ~b:(%s) then\n"
         (version_to_str ver.version);
       Printf.printf "Fun_stubs.%s %s\n" fun_name arg_field;
       Printf.printf "else\n";
