@@ -355,11 +355,11 @@ module Container = struct
     | _ ->
       raise C.Unexpected_value_from_C
 
-  module Run = struct
-    module Flags = Run_internal.Flags
-    module Env_policy = Run_internal.Env_policy
-    module Options = Run_internal.Options
-    module Command = Run_internal.Command
+  module Attach = struct
+    module Flags = Attach_internal.Flags
+    module Env_policy = Attach_internal.Env_policy
+    module Options = Attach_internal.Options
+    module Command = Attach_internal.Command
 
     let shell ?(options = Options.default) c =
       let options = Options.c_struct_of_t options in

@@ -5,12 +5,12 @@ let () =
   if not (Lxc.Container.is_defined c) then (
     print_endline "Container is not defined";
     exit 1 );
-  ( match Lxc.Container.Run.shell c with
+  ( match Lxc.Container.Attach.shell c with
     | Ok _ ->
       ()
     | Error _ ->
       print_endline "Failed to run shell" );
-  ( match Lxc.Container.Run.command_ret_waitpid_status c ~argv:[|"id"|] with
+  ( match Lxc.Container.Attach.command_ret_waitpid_status c ~argv:[|"id"|] with
     | Ok _ ->
       ()
     | Error _ ->

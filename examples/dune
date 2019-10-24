@@ -17,8 +17,8 @@
  ))
 
 (executable
- (name run)
- (modules run)
+ (name attach)
+ (modules attach)
  (libraries lxc
  ))
 

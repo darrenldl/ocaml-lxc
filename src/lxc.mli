@@ -318,7 +318,7 @@ module Container : sig
     val destroy_all : container -> (unit, unit) result
   end
 
-  module Run : sig
+  module Attach : sig
     module Flags : sig
       type t =
         | Attach_move_to_cgroup
