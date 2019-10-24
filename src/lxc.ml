@@ -361,7 +361,7 @@ module Container = struct
     module Options = Attach_internal.Options
     module Command = Attach_internal.Command
 
-    let shell ?(options = Options.default) c =
+    let run_shell ?(options = Options.default) c =
       let options = Options.c_struct_of_t options in
       let pid_t_ptr = allocate Posix_types.pid_t (Posix_types.Pid.of_int 0) in
       match
@@ -374,7 +374,7 @@ module Container = struct
       | _ ->
         raise C.Unexpected_value_from_C
 
-    let command_no_wait ?(options = Options.default) c ~argv =
+    let run_command_no_wait ?(options = Options.default) c ~argv =
       let options = Options.c_struct_of_t options in
       let command = Command.c_struct_of_string_array argv in
       let pid_t_ptr = allocate Posix_types.pid_t (Posix_types.Pid.of_int 0) in
@@ -389,7 +389,7 @@ module Container = struct
       | _ ->
         raise C.Unexpected_value_from_C
 
-    let command_ret_waitpid_status ?(options = Options.default) c ~argv =
+    let run_command_ret_waitpid_status ?(options = Options.default) c ~argv =
       let options = Options.c_struct_of_t options in
       match
         C.attach_run_wait c.lxc_container (addr options)

@@ -356,15 +356,15 @@ module Container : sig
         ; log_fd : int }
     end
 
-    val shell : ?options:Options.t -> container -> (int, unit) result
+    val run_shell : ?options:Options.t -> container -> (int, unit) result
 
-    val command_no_wait :
+    val run_command_no_wait :
       ?options:Options.t
       -> container
       -> argv:string array
       -> (int, unit) result
 
-    val command_ret_waitpid_status :
+    val run_command_ret_waitpid_status :
       ?options:Options.t
       -> container
       -> argv:string array
