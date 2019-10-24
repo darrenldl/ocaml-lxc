@@ -2,7 +2,8 @@ open Ctypes
 
 (* module Bigstring = Core.Bigstring *)
 
-let version_a_at_least_b ~a:(a_major, a_minor, a_micro) ~b:(b_major, b_minor, b_micro) =
+let version_a_at_least_b ~a:(a_major, a_minor, a_micro)
+    ~b:(b_major, b_minor, b_micro) =
   a_major > b_major
   || (a_major = b_major && a_minor > b_minor)
   || (a_major = b_major && a_minor = b_minor && a_micro >= b_micro)

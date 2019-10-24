@@ -3,10 +3,10 @@ type container
 exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
+
 exception Not_supported_by_installed_lxc_version
 
-module Error : sig
-end
+module Error : sig end
 
 module Backing_store : sig
   type store_type =

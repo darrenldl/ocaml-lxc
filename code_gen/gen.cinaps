@@ -277,7 +277,8 @@ let gen_c_fun_arg_names param_and_ty_list =
        param_and_ty_list)
 
 let gen_ocaml_fun_arg_field param_and_ty_list =
-  String.concat " " (List.mapi (fun i _ -> Printf.sprintf "a%d" i) param_and_ty_list)
+  String.concat " "
+    (List.mapi (fun i _ -> Printf.sprintf "a%d" i) param_and_ty_list)
 
 module For_lxc_glue_dot_h = struct
   let gen_lxc_container_funptr_field_c_glue_header
@@ -482,16 +483,21 @@ module For_lxc_c_dot_ml = struct
   let gen_lxc_container_funptr_field_ml_wrapper_all () =
     List.iter gen_lxc_container_funptr_field_ml_wrapper funptr_records
 
-  let gen_lxc_container_funptr_field_ml_glue {fun_name; other_param_tys; version_at_least; _} =
+  let gen_lxc_container_funptr_field_ml_glue
+      {fun_name; other_param_tys; version_at_least; _} =
     match version_at_least with
-    | None -> Printf.printf "let %s = Fun_stubs.%s\n" fun_name fun_name
+    | None ->
+      Printf.printf "let %s = Fun_stubs.%s\n" fun_name fun_name
     | Some ver ->
       let arg_field = gen_ocaml_fun_arg_field other_param_tys in
       Printf.printf "let %s %s =\n" fun_name arg_field;
-      Printf.printf "if Version.is_devel || version_a_at_least_b ~a:Version.version ~b:(%s) then\n" (version_to_str ver.version);
+      Printf.printf
+        "if Version.is_devel || version_a_at_least_b ~a:Version.version \
+         ~b:(%s) then\n"
+        (version_to_str ver.version);
       Printf.printf "Fun_stubs.%s %s\n" fun_name arg_field;
       Printf.printf "else\n";
-      Printf.printf "raise Not_supported_by_installed_lxc_version"
+      Printf.printf "raise Not_supported_by_installed_lxc_version\n"
 
   let gen_lxc_container_funptr_field_ml_glue_all () =
     List.iter gen_lxc_container_funptr_field_ml_glue funptr_records
