@@ -1,6 +1,16 @@
 module Types_stubs (S : Cstubs_structs.TYPE) = struct
   open S
 
+  module Version = struct
+    let major = constant "LXC_VERSION_MAJOR" int
+
+    let minor = constant "LXC_VERSION_MINOR" int
+
+    let micro = constant "LXC_VERSION_MICRO" int
+
+    let devel = constant "LXC_DEVEL" int
+  end
+
   module Errno = struct
     let ebadf = constant "EBADF" int
   end
