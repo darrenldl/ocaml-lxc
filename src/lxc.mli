@@ -74,6 +74,8 @@ module Create_options : sig
     ; force_cache : bool option
     ; extra_args : string array option }
 
+  val blank : t
+
   module Templates : sig
     val download_ubuntu_trusty_amd64 : t
 
@@ -110,6 +112,8 @@ module State : sig
     | Freezing
     | Frozen
     | Thawed
+
+  val to_string : t -> string
 end
 
 type getfd_result =
