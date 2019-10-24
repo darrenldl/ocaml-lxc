@@ -29,6 +29,11 @@ WIP
 ## Examples
 WIP
 
+## Contribution
+Contributions are welcome. Note that by submitting contributions, you agree to license your work under the same license used by this project as stated in the LICENSE file.
+
+Note that cinaps is used heavily in this project, please make sure your modifications will not be overwritten by `make cinaps`. To do so, commit or save your changes in some way, then run `make cinaps` and check if any of your modification was overwritten.
+
 ## Details
 #### Index
 See [here](doc/INDEX.md)
