@@ -25,8 +25,9 @@ The following elements are also derived/copied from go-lxc
 
 ## Examples
 Following replicates the C example listed on
-[linuxcontainers.org](https://linuxcontainers.org/lxc/documentation/)
-See [here](examples/) for the complete versions and other examples.
+[linuxcontainers.org](https://linuxcontainers.org/lxc/documentation/). It is also available as a file [here](examples/main_demo.ml)
+
+Also see [here](examples/) for other examples.
 
 ```ocaml
 ```

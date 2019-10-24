@@ -33,3 +33,9 @@
  (modules checkpoint)
  (libraries lxc
  ))
+
+(executable
+ (name main_demo)
+ (modules main_demo)
+ (libraries lxc
+ ))
