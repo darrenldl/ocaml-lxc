@@ -32,15 +32,16 @@ WIP
 ## Contribution
 Contributions are welcome. Note that by submitting contributions, you agree to license your work under the same license used by this project as stated in the LICENSE file.
 
-Note that cinaps is used heavily in this project, please make sure your modifications are not overwritten by `make cinaps`.
+#### Cinaps
+Cinaps is used heavily in this project, please make sure your modifications are not overwritten by `make cinaps`
+
 To do so, commit your changes (or save your changes outside of the repo in some way to avoid losing progress),
-then run `make cinaps` and check if any of your modification was overwritten.
+then run `make cinaps` and check if any of your modification was overwritten
 
+#### Formatting
 This project uses ocamlformat and ocp-indent for formatting OCaml code, and clang-format for formatting C code
-
-If your modification involves OCaml code, please make sure you have ocamlformat and ocp-indent, then run `make format`
-
-If your modification involves C code, please make sure you have clang-format, then run `make format_c`
+- If your modification involves OCaml code, please make sure you have ocamlformat and ocp-indent, then run `make format`
+- If your modification involves C code, please make sure you have clang-format, then run `make format_c`
 
 ## Details
 #### Index
