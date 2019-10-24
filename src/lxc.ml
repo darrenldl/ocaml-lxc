@@ -405,8 +405,8 @@ module Container = struct
   module Snapshot = struct
     type t = Snapshot_internal.t
 
-    let create c ~comment_file =
-      match C.snapshot c.lxc_container (Some comment_file) with
+    let create ?comment_file c =
+      match C.snapshot c.lxc_container comment_file with
       | -1 ->
         Error ()
       | n ->

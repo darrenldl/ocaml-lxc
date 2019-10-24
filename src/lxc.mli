@@ -303,7 +303,7 @@ module Container : sig
   module Snapshot : sig
     type t
 
-    val create : container -> comment_file:string -> (int, unit) result
+    val create : ?comment_file:string -> container -> (int, unit) result
 
     val list : container -> (t list, unit) result
 
