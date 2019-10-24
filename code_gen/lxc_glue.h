@@ -1,6 +1,7 @@
 #include <lxc/lxccontainer.h>
 #include <lxc/version.h>
 #include <stdint.h>
+#include <errno.h>
 
 #define VERSION_AT_LEAST(major, minor, micro)                                  \
   ((LXC_DEVEL == 1) || (LXC_VERSION_MAJOR > major) ||                          \
@@ -10,6 +11,8 @@
 
 #ifndef LXC_GLUE_H
 #define LXC_GLUE_H
+
+lxc_attach_options_t *get_lxc_attach_options_default(void);
 
 /* dummy definitions of struct for older versions of LXC */
 #if !VERSION_AT_LEAST(3, 0, 0)

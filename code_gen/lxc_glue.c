@@ -4,6 +4,12 @@
 #define LXC_DEVEL 0
 #endif
 
+static lxc_attach_options_t lxc_attach_options_default =LXC_ATTACH_OPTIONS_DEFAULT;
+
+lxc_attach_options_t *get_lxc_attach_options_default(void) {
+  return &lxc_attach_options_default;
+}
+
 struct bdev_specs bdev_specs__glue_dissolve(struct bdev_specs__glue *src) {
   struct bdev_specs ret = {0};
 
