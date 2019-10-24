@@ -97,11 +97,6 @@ module Lxc_clone_flags = struct
       (*$*)
 end
 
-(* module Lxc_mount_api_version = struct
- *   let lxc_mount_api_v1 =
- *     Stubs.Type_stubs.Lxc_mount_api_version.lxc_mount_api_v1
- * end *)
-
    module Lxc_create_flags = struct
    open Stubs.Type_stubs.Lxc_create_flags
 
