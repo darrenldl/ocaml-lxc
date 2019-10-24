@@ -283,13 +283,19 @@ end
         raise Unexpected_value_from_C
    end
 
+   let migrate__glue a0 a1 a2 =
+   if
+    Version.is_devel
+    || Misc_utils.version_a_at_least_b ~a:Version.version ~b:(1, 1, 0)
+   then Fun_stubs.migrate__glue a0 a1 a2
+   else raise Not_supported_by_installed_lxc_version
+
    (*$
    List.iter
     (fun s -> Printf.printf "let %s = Fun_stubs.%s\n" s s)
     [ "create__glue"
     ; "attach_run_command__glue"
     ; "attach_run_shell__glue"
-    ; "migrate__glue"
     ; "lxc_container_new"
     ; "lxc_container_get"
     ; "lxc_container_put"
@@ -310,8 +316,6 @@ end
    let attach_run_command__glue = Fun_stubs.attach_run_command__glue
 
    let attach_run_shell__glue = Fun_stubs.attach_run_shell__glue
-
-   let migrate__glue = Fun_stubs.migrate__glue
 
    let lxc_container_new = Fun_stubs.lxc_container_new
 
