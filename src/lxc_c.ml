@@ -3,6 +3,7 @@ open Stubs
 exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
+exception Not_supported_by_installed_lxc_version
 
 module Version = struct
   let version = Stubs.Type_stubs.Version.(major, minor, micro)
@@ -427,7 +428,8 @@ end
 
    let remove_device_node = Fun_stubs.remove_device_node
 
-   let attach_interface = Fun_stubs.attach_interface
+   let attach_interface =
+   Fun_stubs.attach_interface
 
    let detach_interface = Fun_stubs.detach_interface
 

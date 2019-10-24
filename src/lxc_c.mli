@@ -4,6 +4,7 @@ open Types
 exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
+exception Not_supported_by_installed_lxc_version
 
 module Version : sig
   val version : int * int * int

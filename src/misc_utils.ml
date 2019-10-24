@@ -2,6 +2,11 @@ open Ctypes
 
 (* module Bigstring = Core.Bigstring *)
 
+let version_a_at_least_b ~a:(a_major, a_minor, a_micro) ~b:(b_major, b_minor, b_micro) =
+  a_major > b_major
+  || (a_major = b_major && a_minor > b_minor)
+  || (a_major = b_major && a_minor = b_minor && a_micro >= b_micro)
+
 let int_to_bool x = x <> 0
 
 let int_to_unit_result_zero_is_ok x = if x = 0 then Ok () else Error ()

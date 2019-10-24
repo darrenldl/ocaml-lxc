@@ -6,6 +6,11 @@ exception Unexpected_value_from_C = C.Unexpected_value_from_C
 
 exception Unexpected_value_from_ML = C.Unexpected_value_from_ML
 
+exception Not_supported_by_installed_lxc_version = C.Not_supported_by_installed_lxc_version
+
+module Error = struct
+end
+
 type container =
   {lxc_container : Types.lxc_container Ctypes.structure Ctypes.ptr}
 
