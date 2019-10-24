@@ -19,12 +19,9 @@ The following elements are also derived/copied from go-lxc
 ## TODO
 - Add test code (copy go-lxc's test suite)
 - Add examples
-- API documentation + Travis CI doc build for master
+- API documentation
 - Document build flow architecture (specifically how dune fits into it maybe)
 - Document code architecture
-
-## Documentation
-WIP
 
 ## Examples
 WIP
