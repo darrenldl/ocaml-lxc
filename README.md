@@ -27,7 +27,7 @@ The following elements are also derived/copied from go-lxc
 Following replicates the C example listed on
 [linuxcontainers.org](https://linuxcontainers.org/lxc/documentation/). It is also available as a file [here](examples/main_demo.ml)
 
-Also see [here](examples/** for other examples.
+Also see [here](examples/) for other examples
 
 **Note**: The following example is very roughly written and can definitely be improved. Feel free to contribute.
 
