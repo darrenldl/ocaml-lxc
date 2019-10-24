@@ -31,7 +31,8 @@ module State = C.State
 let get_global_config_item ~key =
   C.lxc_get_global_config_item key |> string_from_string_ptr ~free:true
 
-let new_container ?(config_path = get_global_config_item ~key:"lxc.lxcpath") name =
+let new_container ?(config_path = get_global_config_item ~key:"lxc.lxcpath")
+    name =
   match C.lxc_container_new name (Some config_path) with
   | None ->
     Error ()

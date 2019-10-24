@@ -10,7 +10,9 @@ let () =
       ()
     | Error _ ->
       print_endline "Failed to run shell" );
-  ( match Lxc.Container.Attach.run_command_ret_waitpid_status c ~argv:[|"id"|] with
+  ( match
+      Lxc.Container.Attach.run_command_ret_waitpid_status c ~argv:[|"id"|]
+    with
     | Ok _ ->
       ()
     | Error _ ->
