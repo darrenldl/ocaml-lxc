@@ -27,3 +27,9 @@
  (modules console)
  (libraries lxc
  ))
+
+(executable
+ (name checkpoint)
+ (modules checkpoint)
+ (libraries lxc
+ ))
