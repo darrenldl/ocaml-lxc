@@ -11,6 +11,12 @@
  ))
 
 (executable
+ (name create_snapshot)
+ (modules create_snapshot)
+ (libraries lxc
+ ))
+
+(executable
  (name run)
  (modules run)
  (libraries lxc
