@@ -54,7 +54,17 @@ let release t =
   | _ ->
     raise C.Unexpected_value_from_C
 
-let get_version () = C.lxc_get_version ()
+type lxc_version =
+  { version : int * int * int
+  ; is_devel : bool }
+
+let lxc_version = {version = C.Version.version; is_devel = C.Version.is_devel}
+
+let lxc_version_string =
+  let major, minor, micro = C.Version.version in
+  if C.Version.is_devel then
+    Printf.sprintf "%d.%d.%d (devel)" major minor micro
+  else Printf.sprintf "%d.%d.%d" major minor micro
 
 let list_container_names_internal f ~(lxcpath : string option) =
   let name_arr_typ = ptr (ptr char) in

@@ -131,8 +131,6 @@ val lxc_get_wait_states : string ptr -> int
 
 val lxc_get_global_config_item : string -> char ptr
 
-val lxc_get_version : unit -> string
-
 val list_defined_containers :
   string option
   -> char ptr ptr ptr

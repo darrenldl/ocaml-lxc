@@ -303,7 +303,6 @@ let migrate__glue a0 a1 a2 =
     ; "lxc_container_put"
     ; "lxc_get_wait_states"
     ; "lxc_get_global_config_item"
-    ; "lxc_get_version"
     ; "list_defined_containers"
     ; "list_active_containers"
     ; "list_all_containers"
@@ -328,8 +327,6 @@ let migrate__glue a0 a1 a2 =
    let lxc_get_wait_states = Fun_stubs.lxc_get_wait_states
 
    let lxc_get_global_config_item = Fun_stubs.lxc_get_global_config_item
-
-   let lxc_get_version = Fun_stubs.lxc_get_version
 
    let list_defined_containers = Fun_stubs.list_defined_containers
 

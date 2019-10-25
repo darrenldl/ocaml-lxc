@@ -1,5 +1,9 @@
 type container
 
+type lxc_version =
+  { version : int * int * int
+  ; is_devel : bool }
+
 exception Unexpected_value_from_C
 
 exception Unexpected_value_from_ML
@@ -129,7 +133,9 @@ val release : container -> (unit, unit) result
 
 val get_global_config_item : key:string -> string
 
-val get_version : unit -> string
+val lxc_version : lxc_version
+
+val lxc_version_string : string
 
 val list_defined_container_names : ?lxcpath:string -> unit -> string list
 
