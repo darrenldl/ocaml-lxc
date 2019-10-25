@@ -135,6 +135,8 @@ val get_global_config_item : key:string -> string
 
 val lxc_version : lxc_version
 
+val lxc_version_string : string
+
 val list_defined_container_names : ?lxcpath:string -> unit -> string list
 
 val list_active_container_names : ?lxcpath:string -> unit -> string list
