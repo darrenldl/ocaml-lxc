@@ -54,7 +54,11 @@ let release t =
   | _ ->
     raise C.Unexpected_value_from_C
 
-let get_version () = C.lxc_get_version ()
+type lxc_version =
+  { version : int * int * int
+  ; is_devel : bool }
+
+let lxc_version = {version = C.Version.version; is_devel = C.Version.is_devel}
 
 let list_container_names_internal f ~(lxcpath : string option) =
   let name_arr_typ = ptr (ptr char) in
